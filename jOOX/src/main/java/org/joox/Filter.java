@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
 
 /**
  * A filter indicating whether an element/index should be kept when reducing an
- * {@link X} node set
+ * {@link Elements} node set
  *
  * @author Lukas Eder
  */
@@ -47,9 +47,9 @@ public interface Filter {
 
     /**
      * The filter method indicating whether an element/index should be kept when
-     * reducing an {@link X} node set
+     * reducing an {@link Elements} node set
      *
-     * @param index The index of an element in a respective {@link X} node set
+     * @param index The index of an element in a respective {@link Elements} node set
      * @param element The element being filtered
      * @return Whether the element/index should be kept.
      */

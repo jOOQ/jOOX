@@ -35,7 +35,7 @@
  */
 package org.joox.impl;
 
-import static org.joox.impl.XML.iterable;
+import static org.joox.impl.JOOX.iterable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,11 +45,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.joox.Content;
 import org.joox.Each;
 import org.joox.Filter;
 import org.joox.Mapper;
-import org.joox.X;
-import org.joox.XContent;
+import org.joox.Elements;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -57,7 +57,7 @@ import org.w3c.dom.NodeList;
 /**
  * @author Lukas Eder
  */
-class XImpl implements X {
+class ElementsImpl implements Elements {
 
     private final List<Element> elements;
 
@@ -65,11 +65,11 @@ class XImpl implements X {
     // Initialisation
     // -------------------------------------------------------------------------
 
-    XImpl() {
+    ElementsImpl() {
         this.elements = new ArrayList<Element>();
     }
 
-    XImpl addNodeLists(List<NodeList> lists) {
+    ElementsImpl addNodeLists(List<NodeList> lists) {
         for (NodeList list : lists) {
             addNodeList(list);
         }
@@ -77,7 +77,7 @@ class XImpl implements X {
         return this;
     }
 
-    XImpl addNodeList(NodeList list) {
+    ElementsImpl addNodeList(NodeList list) {
         for (int i = 0; i < list.getLength(); i++) {
             elements.add((Element) list.item(i));
         }
@@ -85,7 +85,7 @@ class XImpl implements X {
         return this;
     }
 
-    XImpl addUniqueElements(Element... e) {
+    ElementsImpl addUniqueElements(Element... e) {
         if (e.length == 1) {
             Element element = e[0];
 
@@ -102,7 +102,7 @@ class XImpl implements X {
         return this;
     }
 
-    XImpl addUniqueElements(List<Element> e) {
+    ElementsImpl addUniqueElements(List<Element> e) {
         int size = e.size();
 
         if (size == 1) {
@@ -121,12 +121,12 @@ class XImpl implements X {
         return this;
     }
 
-    XImpl addElements(Element... e) {
+    ElementsImpl addElements(Element... e) {
         this.elements.addAll(Arrays.asList(e));
         return this;
     }
 
-    XImpl addElements(List<Element> e) {
+    ElementsImpl addElements(List<Element> e) {
         this.elements.addAll(e);
         return this;
     }
@@ -146,7 +146,12 @@ class XImpl implements X {
 
     @Override
     public Element get(int index) {
-        return elements.get(index);
+        try {
+            return elements.get(index);
+        }
+        catch (IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     @Override
@@ -170,7 +175,7 @@ class XImpl implements X {
     }
 
     @Override
-    public int index(X element) {
+    public int index(Elements element) {
         throw new UnsupportedOperationException();
     }
 
@@ -180,17 +185,17 @@ class XImpl implements X {
     }
 
     @Override
-    public XImpl add(Element... e) {
-        XImpl x = copy();
+    public ElementsImpl add(Element... e) {
+        ElementsImpl x = copy();
         x.addUniqueElements(e);
         return x;
     }
 
     @Override
-    public XImpl add(X... e) {
-        XImpl x = copy();
+    public ElementsImpl add(Elements... e) {
+        ElementsImpl x = copy();
 
-        for (X element : e) {
+        for (Elements element : e) {
             x.addUniqueElements(element.get());
         }
 
@@ -198,17 +203,17 @@ class XImpl implements X {
     }
 
     @Override
-    public XImpl children() {
-        return children(XML.all());
+    public ElementsImpl children() {
+        return children(JOOX.all());
     }
 
     @Override
-    public XImpl children(String selector) {
-        return children(XML.selector(selector));
+    public ElementsImpl children(String selector) {
+        return children(JOOX.selector(selector));
     }
 
     @Override
-    public XImpl children(Filter filter) {
+    public ElementsImpl children(Filter filter) {
         List<Element> result = new ArrayList<Element>();
 
         int index = 0;
@@ -220,11 +225,11 @@ class XImpl implements X {
             }
         }
 
-        return new XImpl().addUniqueElements(result);
+        return new ElementsImpl().addUniqueElements(result);
     }
 
     @Override
-    public XImpl each(Each each) {
+    public ElementsImpl each(Each each) {
         for (int i = 0; i < size(); i++) {
             each.each(i, get(i));
         }
@@ -233,12 +238,12 @@ class XImpl implements X {
     }
 
     @Override
-    public XImpl filter(String selector) {
-        return filter(XML.selector(selector));
+    public ElementsImpl filter(String selector) {
+        return filter(JOOX.selector(selector));
     }
 
     @Override
-    public XImpl filter(Filter filter) {
+    public ElementsImpl filter(Filter filter) {
         List<Element> result = new ArrayList<Element>();
 
         for (int i = 0; i < size(); i++) {
@@ -247,32 +252,39 @@ class XImpl implements X {
             }
         }
 
-        return new XImpl().addElements(result);
+        return new ElementsImpl().addElements(result);
     }
 
     @Override
-    public XImpl eq(int index) {
-        return new XImpl().addElements(get(index));
+    public ElementsImpl eq(int index) {
+        Element element = get(index);
+
+        if (element != null) {
+            return new ElementsImpl().addElements(element);
+        }
+        else {
+            return new ElementsImpl();
+        }
     }
 
     @Override
-    public XImpl find() {
-        return find(XML.all());
+    public ElementsImpl find() {
+        return find(JOOX.all());
     }
 
     @Override
-    public XImpl find(String selector) {
+    public ElementsImpl find(String selector) {
         List<NodeList> result = new ArrayList<NodeList>();
 
         for (Element element : elements) {
             result.add(element.getElementsByTagName(selector));
         }
 
-        return new XImpl().addNodeLists(result);
+        return new ElementsImpl().addNodeLists(result);
     }
 
     @Override
-    public XImpl find(Filter filter) {
+    public ElementsImpl find(Filter filter) {
         List<Element> result = new ArrayList<Element>();
 
         int index = 0;
@@ -284,26 +296,26 @@ class XImpl implements X {
             }
         }
 
-        return new XImpl().addUniqueElements(result);
+        return new ElementsImpl().addUniqueElements(result);
     }
 
     @Override
-    public XImpl first() {
+    public ElementsImpl first() {
         if (size() > 0) {
-            return new XImpl().addElements(get(0));
+            return new ElementsImpl().addElements(get(0));
         }
         else {
-            return new XImpl();
+            return new ElementsImpl();
         }
     }
 
     @Override
-    public XImpl has(String selector) {
-        return has(XML.selector(selector));
+    public ElementsImpl has(String selector) {
+        return has(JOOX.selector(selector));
     }
 
     @Override
-    public XImpl has(Filter filter) {
+    public ElementsImpl has(Filter filter) {
         List<Element> result = new ArrayList<Element>();
 
         for (int i = 0; i < size(); i++) {
@@ -317,12 +329,12 @@ class XImpl implements X {
             }
         }
 
-        return new XImpl().addElements(result);
+        return new ElementsImpl().addElements(result);
     }
 
     @Override
     public boolean is(String selector) {
-        return is(XML.selector(selector));
+        return is(JOOX.selector(selector));
     }
 
     @Override
@@ -337,12 +349,12 @@ class XImpl implements X {
     }
 
     @Override
-    public XImpl last() {
+    public ElementsImpl last() {
         if (size() > 0) {
-            return new XImpl().addElements(get(size() - 1));
+            return new ElementsImpl().addElements(get(size() - 1));
         }
         else {
-            return new XImpl();
+            return new ElementsImpl();
         }
     }
 
@@ -358,36 +370,66 @@ class XImpl implements X {
     }
 
     @Override
-    public XImpl next() {
-        return next(XML.all());
+    public ElementsImpl next() {
+        return next(JOOX.all());
     }
 
     @Override
-    public XImpl next(String selector) {
-        return next(XML.selector(selector));
+    public ElementsImpl next(String selector) {
+        return next(JOOX.selector(selector));
     }
 
     @Override
-    public XImpl next(Filter filter) {
-        return next(false, filter);
+    public ElementsImpl next(Filter filter) {
+        return next(false, JOOX.none(), filter);
     }
 
     @Override
-    public XImpl nextAll() {
-        return nextAll(XML.all());
+    public ElementsImpl nextAll() {
+        return nextAll(JOOX.all());
     }
 
     @Override
-    public XImpl nextAll(String selector) {
-        return nextAll(XML.selector(selector));
+    public ElementsImpl nextAll(String selector) {
+        return nextAll(JOOX.selector(selector));
     }
 
     @Override
-    public XImpl nextAll(Filter filter) {
-        return next(true, filter);
+    public ElementsImpl nextAll(Filter filter) {
+        return next(true, JOOX.none(), filter);
     }
 
-    private XImpl next(boolean all, Filter filter) {
+    @Override
+    public ElementsImpl nextUntil(String until) {
+        return nextUntil(JOOX.selector(until));
+    }
+
+    @Override
+    public ElementsImpl nextUntil(Filter until) {
+        return nextUntil(until, JOOX.all());
+    }
+
+    @Override
+    public ElementsImpl nextUntil(String until, String selector) {
+        return nextUntil(JOOX.selector(until), JOOX.selector(selector));
+    }
+
+    @Override
+    public ElementsImpl nextUntil(String until, Filter filter) {
+        return nextUntil(JOOX.selector(until), filter);
+    }
+
+    @Override
+    public ElementsImpl nextUntil(Filter until, String selector) {
+        return nextUntil(until, JOOX.selector(selector));
+    }
+
+    @Override
+    public ElementsImpl nextUntil(Filter until, Filter filter) {
+        return next(true, until, filter);
+    }
+
+    private ElementsImpl next(boolean all, Filter until, Filter filter) {
         List<Element> result = new ArrayList<Element>();
 
         for (Element element : elements) {
@@ -401,6 +443,10 @@ class XImpl implements X {
                 }
                 else if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element next = (Element) node;
+                    if (until.filter(i, next)) {
+                        break;
+                    }
+
                     if (filter.filter(i++, next)) {
                         result.add(next);
                     }
@@ -412,114 +458,173 @@ class XImpl implements X {
             }
         }
 
-        return new XImpl().addUniqueElements(result);
+        return new ElementsImpl().addUniqueElements(result);
     }
 
     @Override
-    public XImpl nextUntil(String selector) {
-        throw new UnsupportedOperationException();
+    public ElementsImpl not(String selector) {
+        return not(JOOX.selector(selector));
     }
 
     @Override
-    public XImpl nextUntil(String selector, Filter filter) {
-        throw new UnsupportedOperationException();
+    public ElementsImpl not(Filter filter) {
+        return filter(JOOX.not(filter));
     }
 
     @Override
-    public XImpl not(String selector) {
-        return not(XML.selector(selector));
+    public ElementsImpl parent() {
+        return parent(JOOX.all());
     }
 
     @Override
-    public XImpl not(Filter filter) {
-        return filter(XML.not(filter));
+    public ElementsImpl parent(String selector) {
+        return parent(JOOX.selector(selector));
     }
 
     @Override
-    public XImpl parent() {
-        return parent(XML.all());
+    public ElementsImpl parent(Filter filter) {
+        return parents(false, JOOX.none(), filter);
     }
 
     @Override
-    public XImpl parent(String selector) {
-        return parent(XML.selector(selector));
+    public ElementsImpl parents() {
+        return parents(JOOX.all());
     }
 
     @Override
-    public XImpl parent(Filter filter) {
+    public ElementsImpl parents(String selector) {
+        return parents(JOOX.selector(selector));
+    }
+
+    @Override
+    public ElementsImpl parents(Filter filter) {
+        return parents(true, JOOX.none(), filter);
+    }
+
+    @Override
+    public ElementsImpl parentsUntil(String until) {
+        return parentsUntil(JOOX.selector(until), JOOX.all());
+    }
+
+    @Override
+    public ElementsImpl parentsUntil(Filter until) {
+        return parentsUntil(until, JOOX.all());
+    }
+
+    @Override
+    public ElementsImpl parentsUntil(String until, String selector) {
+        return parentsUntil(JOOX.selector(until), JOOX.selector(selector));
+    }
+
+    @Override
+    public ElementsImpl parentsUntil(String until, Filter filter) {
+        return parentsUntil(JOOX.selector(until), filter);
+    }
+
+    @Override
+    public ElementsImpl parentsUntil(Filter until, String selector) {
+        return parentsUntil(until, JOOX.selector(selector));
+    }
+
+    @Override
+    public ElementsImpl parentsUntil(Filter until, Filter filter) {
+        return parents(true, until, filter);
+    }
+
+    private ElementsImpl parents(boolean all, Filter until, Filter filter) {
         List<Element> result = new ArrayList<Element>();
 
-        for (int i = 0; i < size(); i++) {
-            Node node = get(i).getParentNode();
+        // Maybe reverse iteration and reverse result?
+        for (Element element : elements) {
+            Node node = element;
 
-            if (node instanceof Element) {
-                Element parent = (Element) node;
+            for (int i = 0;;) {
+                node = node.getParentNode();
 
-                if (filter.filter(i, parent)) {
-                    result.add(parent);
+                if (node == null) {
+                    break;
+                }
+                else if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element next = (Element) node;
+                    if (until.filter(i, next)) {
+                        break;
+                    }
+
+                    if (filter.filter(i++, next)) {
+                        result.add(next);
+                    }
+
+                    if (!all) {
+                        break;
+                    }
                 }
             }
         }
 
-        return new XImpl().addUniqueElements(result);
+        return new ElementsImpl().addUniqueElements(result);
     }
 
     @Override
-    public XImpl parents() {
-        return parents(XML.all());
+    public ElementsImpl prev() {
+        return prev(JOOX.all());
     }
 
     @Override
-    public XImpl parents(String selector) {
-        return parents(XML.selector(selector));
+    public ElementsImpl prev(String selector) {
+        return prev(JOOX.selector(selector));
     }
 
     @Override
-    public XImpl parents(Filter filter) {
-        throw new UnsupportedOperationException();
+    public ElementsImpl prev(Filter filter) {
+        return prev(false, JOOX.none(), filter);
     }
 
     @Override
-    public XImpl parentsUntil(String selector) {
-        throw new UnsupportedOperationException();
+    public ElementsImpl prevAll() {
+        return prevAll(JOOX.all());
     }
 
     @Override
-    public XImpl parentsUntil(String selector, Filter filter) {
-        throw new UnsupportedOperationException();
+    public ElementsImpl prevAll(String selector) {
+        return prevAll(JOOX.selector(selector));
     }
 
     @Override
-    public XImpl prev() {
-        return prev(XML.all());
+    public ElementsImpl prevAll(Filter filter) {
+        return prev(true, JOOX.none(), filter);
     }
 
     @Override
-    public XImpl prev(String selector) {
-        return prev(XML.selector(selector));
+    public ElementsImpl prevUntil(String until) {
+        return prevUntil(JOOX.selector(until));
     }
 
     @Override
-    public XImpl prev(Filter filter) {
-        return prev(false, filter);
+    public ElementsImpl prevUntil(Filter until) {
+        return prevUntil(until, JOOX.all());
     }
 
     @Override
-    public XImpl prevAll() {
-        return prevAll(XML.all());
+    public ElementsImpl prevUntil(String until, String selector) {
+        return prevUntil(JOOX.selector(until), JOOX.selector(selector));
     }
 
     @Override
-    public XImpl prevAll(String selector) {
-        return prevAll(XML.selector(selector));
+    public ElementsImpl prevUntil(String until, Filter filter) {
+        return prevUntil(JOOX.selector(until), filter);
     }
 
     @Override
-    public XImpl prevAll(Filter filter) {
-        return prev(true, filter);
+    public ElementsImpl prevUntil(Filter until, String selector) {
+        return prevUntil(until, JOOX.selector(selector));
     }
 
-    private XImpl prev(boolean all, Filter filter) {
+    @Override
+    public ElementsImpl prevUntil(Filter until, Filter filter) {
+        return prev(true, until, filter);
+    }
+
+    private ElementsImpl prev(boolean all, Filter until, Filter filter) {
         List<Element> result = new ArrayList<Element>();
 
         for (Element element : elements) {
@@ -532,9 +637,13 @@ class XImpl implements X {
                     break;
                 }
                 else if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element next = (Element) node;
-                    if (filter.filter(i++, next)) {
-                        result.add(next);
+                    Element prev = (Element) node;
+                    if (until.filter(i, prev)) {
+                        break;
+                    }
+
+                    if (filter.filter(i++, prev)) {
+                        result.add(prev);
                     }
 
                     if (!all) {
@@ -545,41 +654,31 @@ class XImpl implements X {
         }
 
         Collections.reverse(result);
-        return new XImpl().addUniqueElements(result);
+        return new ElementsImpl().addUniqueElements(result);
     }
 
     @Override
-    public XImpl prevUntil(String selector) {
-        throw new UnsupportedOperationException();
+    public ElementsImpl siblings() {
+        return siblings(JOOX.all());
     }
 
     @Override
-    public XImpl prevUntil(String selector, Filter filter) {
-        throw new UnsupportedOperationException();
+    public ElementsImpl siblings(String selector) {
+        return siblings(JOOX.selector(selector));
     }
 
     @Override
-    public XImpl siblings() {
-        return siblings(XML.all());
+    public ElementsImpl siblings(Filter filter) {
+        return prevAll(filter).add(nextAll(filter));
     }
 
     @Override
-    public XImpl siblings(String selector) {
-        return siblings(XML.selector(selector));
-    }
-
-    @Override
-    public XImpl siblings(Filter filter) {
-        return null;
-    }
-
-    @Override
-    public XImpl slice(int start) {
+    public ElementsImpl slice(int start) {
         return slice(start, Integer.MAX_VALUE);
     }
 
     @Override
-    public XImpl slice(int start, int end) {
+    public ElementsImpl slice(int start, int end) {
         if (start < 0) {
             start = size() + start;
         }
@@ -591,108 +690,156 @@ class XImpl implements X {
         end = Math.min(size(), end);
 
         if (start > end) {
-            return new XImpl();
+            return new ElementsImpl();
         }
         if (start == 0 && end == size()) {
             return this;
         }
 
-        return new XImpl().addElements(elements.subList(start, end));
+        return new ElementsImpl().addElements(elements.subList(start, end));
     }
 
     @Override
-    public XImpl after(String... content) {
+    public ElementsImpl after(String... content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl after(Element... elements) {
+    public ElementsImpl after(Element... elements) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl after(X... elements) {
+    public ElementsImpl after(Elements... elements) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl after(XContent content) {
+    public ElementsImpl after(Content content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl append(String... content) {
+    public ElementsImpl append(String... content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl append(Element... elements) {
+    public ElementsImpl append(Element... elements) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl append(X... elements) {
+    public ElementsImpl append(Elements... elements) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl append(XContent content) {
+    public ElementsImpl append(Content content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl appendTo(String selector) {
+    public ElementsImpl appendTo(String selector) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl appendTo(Element element) {
+    public ElementsImpl appendTo(Element element) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl appendTo(X element) {
+    public ElementsImpl appendTo(Elements element) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public String attr(String name) {
+        if (size() > 0) {
+            return attr(get(0), name);
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<String> attrs(String name) {
+        List<String> result = new ArrayList<String>();
+
+        for (Element element : elements) {
+            result.add(attr(element, name));
+        }
+
+        return result;
+    }
+
+    private String attr(Element element, String name) {
+        if (element.hasAttribute(name)) {
+            return element.getAttribute(name);
+        }
+
+        return null;
+    }
+
+    @Override
+    public ElementsImpl attr(String name, String value) {
+        return attr(name, JOOX.content(value));
+    }
+
+    @Override
+    public ElementsImpl attr(String name, Content content) {
+        for (int i = 0; i < size(); i++) {
+            Element element = get(i);
+            String value = content.content(i, element);
+
+            if (value == null) {
+                element.removeAttribute(name);
+            }
+            else {
+                element.setAttribute(name, value);
+            }
+        }
+
+        return this;
+    }
+
+    @Override
+    public ElementsImpl removeAttr(String name) {
+        return attr(name, (String) null);
+    }
+
+    @Override
+    public ElementsImpl before(String... content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl attr(String name, String value) {
+    public ElementsImpl before(Element... elements) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl attr(String name, XContent value) {
+    public ElementsImpl before(Elements... elements) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl before(String... content) {
+    public ElementsImpl before(Content content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl before(Element... elements) {
-        throw new UnsupportedOperationException();
-    }
+    public ElementsImpl empty() {
+        for (Element element : elements) {
+            Node child;
 
-    @Override
-    public XImpl before(X... elements) {
-        throw new UnsupportedOperationException();
-    }
+            while ((child = element.getFirstChild()) != null) {
+                element.removeChild(child);
+            }
+        }
 
-    @Override
-    public XImpl before(XContent content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public XImpl empty() {
-        throw new UnsupportedOperationException();
+        return this;
     }
 
     @Override
@@ -701,218 +848,223 @@ class XImpl implements X {
     }
 
     @Override
-    public XImpl content(String content) {
+    public ElementsImpl content(String content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl content(XContent content) {
+    public ElementsImpl content(Content content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public String text() {
-        StringBuilder sb = new StringBuilder();
+        if (size() > 0) {
+            return get(0).getTextContent();
+        }
+        else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<String> texts() {
+        List<String> result = new ArrayList<String>();
 
         for (Element element : elements) {
-            sb.append(element.getTextContent());
+            result.add(element.getTextContent());
         }
 
-        return sb.toString();
+        return result;
     }
 
     @Override
-    public XImpl text(String content) {
+    public ElementsImpl text(String content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl text(XContent content) {
+    public ElementsImpl text(Content content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl insertAfter(String... content) {
+    public ElementsImpl insertAfter(String... content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl insertAfter(Element... elements) {
+    public ElementsImpl insertAfter(Element... elements) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl insertAfter(X... elements) {
+    public ElementsImpl insertAfter(Elements... elements) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl insertAfter(XContent content) {
+    public ElementsImpl insertAfter(Content content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl insertBefore(String... content) {
+    public ElementsImpl insertBefore(String... content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl insertBefore(Element... elements) {
+    public ElementsImpl insertBefore(Element... elements) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl insertBefore(X... elements) {
+    public ElementsImpl insertBefore(Elements... elements) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl insertBefore(XContent content) {
+    public ElementsImpl insertBefore(Content content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl prepend(String... content) {
+    public ElementsImpl prepend(String... content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl prepend(Element... elements) {
+    public ElementsImpl prepend(Element... elements) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl prepend(X... elements) {
+    public ElementsImpl prepend(Elements... elements) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl prepend(XContent content) {
+    public ElementsImpl prepend(Content content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl prependTo(String selector) {
+    public ElementsImpl prependTo(String selector) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl prependTo(Element element) {
+    public ElementsImpl prependTo(Element element) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl prependTo(X element) {
+    public ElementsImpl prependTo(Elements element) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl remove() {
+    public ElementsImpl remove() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl remove(String selector) {
+    public ElementsImpl remove(String selector) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl removeAttr(String name) {
+    public ElementsImpl replaceAll(String selector) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl replaceAll(String selector) {
+    public ElementsImpl replaceAll(Element... elements) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl replaceAll(Element... elements) {
+    public ElementsImpl replaceAll(Elements... elements) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl replaceAll(X... elements) {
+    public ElementsImpl replaceWith(String content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl replaceWith(String content) {
+    public ElementsImpl replaceWith(Element... elements) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl replaceWith(Element... elements) {
+    public ElementsImpl replaceWith(Elements... elements) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl replaceWith(X... elements) {
+    public ElementsImpl replaceWith(Content content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl replaceWith(XContent content) {
+    public ElementsImpl unwrap() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl unwrap() {
+    public ElementsImpl wrap(String content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl wrap(String content) {
+    public ElementsImpl wrap(Element element) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl wrap(Element element) {
+    public ElementsImpl wrap(Elements element) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl wrap(X element) {
+    public ElementsImpl wrap(Content content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl wrap(XContent content) {
+    public ElementsImpl wrapAll(String content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl wrapAll(String content) {
+    public ElementsImpl wrapAll(Element element) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl wrapAll(Element element) {
+    public ElementsImpl wrapAll(Elements element) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl wrapAll(X element) {
+    public ElementsImpl wrapInner(String content) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl wrapInner(String content) {
+    public ElementsImpl wrapInner(Element element) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl wrapInner(Element element) {
+    public ElementsImpl wrapInner(Elements element) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public XImpl wrapInner(X element) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public XImpl wrapInner(XContent content) {
+    public ElementsImpl wrapInner(Content content) {
         throw new UnsupportedOperationException();
     }
 
@@ -921,8 +1073,8 @@ class XImpl implements X {
     // -------------------------------------------------------------------------
 
     @Override
-    public XImpl copy() {
-        XImpl copy = new XImpl();
+    public ElementsImpl copy() {
+        ElementsImpl copy = new ElementsImpl();
         copy.elements.addAll(elements);
         return copy;
     }
@@ -934,7 +1086,14 @@ class XImpl implements X {
 
     @Override
     public String tag(int index) {
-        return get(index).getTagName();
+        Element element = get(index);
+
+        if (element != null) {
+            return element.getTagName();
+        }
+        else {
+            return null;
+        }
     }
 
     @Override

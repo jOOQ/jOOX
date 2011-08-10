@@ -37,11 +37,13 @@ package org.joox.test;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
-import static org.joox.impl.XML.joox;
+import static org.joox.impl.JOOX.joox;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -54,8 +56,8 @@ import org.apache.commons.io.IOUtil;
 import org.joox.Each;
 import org.joox.Filter;
 import org.joox.Mapper;
-import org.joox.X;
-import org.joox.impl.XML;
+import org.joox.Elements;
+import org.joox.impl.JOOX;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -70,7 +72,8 @@ public class JOOXTest {
     private String xmlString;
     private Document xmlDocument;
     private Element xmlElement;
-    private X joox;
+    private int totalElements;
+    private Elements joox;
 
     @Before
     public void setUp() throws Exception {
@@ -81,6 +84,12 @@ public class JOOXTest {
         xmlDocument = builder.parse(new ByteArrayInputStream(xmlString.getBytes()));
         xmlElement = xmlDocument.getDocumentElement();
         joox = joox(xmlDocument);
+        totalElements = ((Number) XPathFactory
+            .newInstance()
+            .newXPath()
+            .evaluate("count(//*)", xmlDocument, XPathConstants.NUMBER))
+            .intValue() - 1;
+
     }
 
     // -------------------------------------------------------------------------
@@ -103,7 +112,7 @@ public class JOOXTest {
         assertEquals(1, joox().add(xmlElement).size());
         assertEquals(1, joox().add(xmlElement, xmlElement).size());
 
-        X x = joox().add(
+        Elements x = joox().add(
             (Element) xmlElement.getElementsByTagName("director").item(0),
             (Element) xmlElement.getElementsByTagName("actor").item(0));
         assertEquals(2, x.size());
@@ -153,9 +162,9 @@ public class JOOXTest {
 
     @Test
     public void testChildrenFilter() {
-        assertEquals(0, joox.children(XML.none()).size());
-        assertEquals(1, joox.children().children(XML.tag("dvds")).size());
-        assertEquals(1, joox.children().children(XML.tag("dvds")).children(XML.tag("dvd")).size());
+        assertEquals(0, joox.children(JOOX.none()).size());
+        assertEquals(1, joox.children().children(JOOX.tag("dvds")).size());
+        assertEquals(1, joox.children().children(JOOX.tag("dvds")).children(JOOX.tag("dvd")).size());
     }
 
     @Test
@@ -197,9 +206,9 @@ public class JOOXTest {
         assertEquals(0, joox.filter("asdf").size());
         assertEquals(1, joox.filter("document").size());
         assertEquals(3, joox.find().filter("actor").size());
-        assertEquals(3, joox.find().filter("actor").filter(XML.all()).size());
-        assertEquals(2, joox.find().filter("actor").filter(XML.even()).size());
-        assertEquals(1, joox.find().filter("actor").filter(XML.odd()).size());
+        assertEquals(3, joox.find().filter("actor").filter(JOOX.all()).size());
+        assertEquals(2, joox.find().filter("actor").filter(JOOX.even()).size());
+        assertEquals(1, joox.find().filter("actor").filter(JOOX.odd()).size());
     }
 
     @Test
@@ -219,19 +228,13 @@ public class JOOXTest {
 
     @Test
     public void testFindFilter() throws Exception {
-        int total = ((Number) XPathFactory
-            .newInstance()
-            .newXPath()
-            .evaluate("count(//*)", xmlDocument, XPathConstants.NUMBER))
-            .intValue() - 1;
-
-        assertEquals(0, joox.find(XML.none()).size());
-        assertEquals(total, joox.find().size());
-        assertEquals(total, joox.find(XML.all()).size());
-        assertEquals((total + 1) / 2, joox.find(XML.even()).size());
-        assertEquals(total / 2, joox.find(XML.odd()).size());
-        assertEquals(3, joox.find(XML.tag("library")).size());
-        assertEquals(8, joox.find(XML.tag("book")).size());
+        assertEquals(0, joox.find(JOOX.none()).size());
+        assertEquals(totalElements, joox.find().size());
+        assertEquals(totalElements, joox.find(JOOX.all()).size());
+        assertEquals((totalElements + 1) / 2, joox.find(JOOX.even()).size());
+        assertEquals(totalElements / 2, joox.find(JOOX.odd()).size());
+        assertEquals(3, joox.find(JOOX.tag("library")).size());
+        assertEquals(8, joox.find(JOOX.tag("book")).size());
     }
 
     @Test
@@ -256,7 +259,7 @@ public class JOOXTest {
     public void testIs() throws Exception {
         assertFalse(joox.is("abc"));
         assertTrue(joox.is("document"));
-        assertTrue(joox.is(XML.even()));
+        assertTrue(joox.is(JOOX.even()));
     }
 
     @Test
@@ -271,11 +274,11 @@ public class JOOXTest {
     public void testMap() throws Exception {
         assertEquals(
             Arrays.asList("1", "2", "3", "4", "1", "3", "1", "2"),
-            joox.find("book").map(XML.ids()));
+            joox.find("book").map(JOOX.ids()));
 
         assertEquals(
             Arrays.asList("Amazon", "Rösslitor", "Orell Füssli"),
-            joox.find("library").map(XML.attributes("name")));
+            joox.find("library").map(JOOX.attributes("name")));
 
         assertEquals(Arrays.asList(0, 1, 2, 3), joox.children().first().find("book").map(new Mapper<Integer>() {
             @Override
@@ -294,8 +297,8 @@ public class JOOXTest {
         assertEquals(0, joox.find("book").next().next().next().next().size());
 
         assertEquals(1, joox.find("book").eq(0).next().size());
-        assertEquals(1, joox.find("book").eq(0).next(XML.all()).size());
-        assertEquals(0, joox.find("book").eq(0).next(XML.none()).size());
+        assertEquals(1, joox.find("book").eq(0).next(JOOX.all()).size());
+        assertEquals(0, joox.find("book").eq(0).next(JOOX.none()).size());
         assertEquals(0, joox.find("book").eq(0).next(new Filter() {
             @Override
             public boolean filter(int index, Element element) {
@@ -323,10 +326,45 @@ public class JOOXTest {
     }
 
     @Test
+    public void testNextUntil() throws Exception {
+        assertEquals(0, joox.nextUntil("asdf").size());
+        assertEquals(2, joox.find("dvd").children().eq(0).nextUntil("any").size());
+        assertEquals(
+            Arrays.asList("directors", "actors"),
+            joox.find("dvd").children().eq(0).nextUntil("any").tags());
+        assertEquals(1,
+            joox.find("dvd").children().eq(0).nextUntil("actors").size());
+        assertEquals("directors",
+            joox.find("dvd").children().eq(0).nextUntil("actors").tag());
+    }
+
+    @Test
     public void testParent() throws Exception {
         assertEquals(0, joox.parent().size());
         assertEquals(3, joox.find("book").parent().size());
         assertEquals(Arrays.asList("books", "books", "books"), joox.find("book").parent().tags());
+    }
+
+    @Test
+    public void testParents() throws Exception {
+        assertEquals(0, joox.parents().size());
+        assertEquals(1, joox.find("library").parents().size());
+        assertEquals(4, joox.find("books").parents().size());
+        assertEquals(7, joox.find("book").parents().size());
+        assertEquals(15, joox.find("authors").parents().size());
+        assertEquals(23, joox.find("author").parents().size());
+        assertEquals(26, joox.find("author").add(joox.find("actor")).parents().size());
+    }
+
+    @Test
+    public void testParentsUntil() throws Exception {
+        assertEquals(0, joox.parentsUntil("books").size());
+        assertEquals(1, joox.find("library").parentsUntil("books").size());
+        assertEquals(4, joox.find("books").parentsUntil("books").size());
+        assertEquals(0, joox.find("book").parentsUntil("books").size());
+        assertEquals(8, joox.find("authors").parentsUntil("books").size());
+        assertEquals(16, joox.find("author").parentsUntil("books").size());
+        assertEquals(21, joox.find("author").add(joox.find("actor")).parentsUntil("books").size());
     }
 
     @Test
@@ -338,8 +376,8 @@ public class JOOXTest {
         assertEquals(0, joox.find("book").prev().prev().prev().prev().size());
 
         assertEquals(1, joox.find("book").eq(7).prev().size());
-        assertEquals(1, joox.find("book").eq(7).prev(XML.all()).size());
-        assertEquals(0, joox.find("book").eq(7).prev(XML.none()).size());
+        assertEquals(1, joox.find("book").eq(7).prev(JOOX.all()).size());
+        assertEquals(0, joox.find("book").eq(7).prev(JOOX.none()).size());
         assertEquals(0, joox.find("book").eq(7).prev(new Filter() {
             @Override
             public boolean filter(int index, Element element) {
@@ -352,6 +390,47 @@ public class JOOXTest {
                 return "Paulo Coelho".equals(joox(element).find("author").text());
             }
         }).size());
+    }
+
+    @Test
+    public void testPrevAll() throws Exception {
+        assertEquals(0, joox.prevAll().size());
+        assertEquals(5, joox.find("book").prevAll().size());
+        assertEquals(2, joox.find("book").prevAll().prevAll().size());
+        assertEquals(1, joox.find("book").prevAll().prevAll().prevAll().size());
+        assertEquals(0, joox.find("book").prevAll().prevAll().prevAll().prevAll().size());
+
+        assertEquals(3, joox.find("book").eq(3).prevAll().size());
+        assertEquals(2, joox.find("book").eq(3).prevAll().prevAll().size());
+    }
+
+    @Test
+    public void testPrevUntil() throws Exception {
+        assertEquals(0, joox.prevUntil("asdf").size());
+        assertEquals(2, joox.find("dvd").children().eq(2).prevUntil("any").size());
+        assertEquals(
+            Arrays.asList("name", "directors"),
+            joox.find("dvd").children().eq(2).prevUntil("any").tags());
+        assertEquals(1,
+            joox.find("dvd").children().eq(2).prevUntil("name").size());
+        assertEquals("directors",
+            joox.find("dvd").children().eq(2).prevUntil("name").tag());
+    }
+
+    @Test
+    public void testSiblings() throws Exception {
+        assertEquals(0, joox.siblings().size());
+        assertEquals(3, joox.find("library").siblings().size());
+        assertEquals(
+            Arrays.asList("library", "library", "library"),
+            joox.find("library").siblings().tags());
+        assertEquals(2, joox.find("library").eq(0).siblings().size());
+        assertEquals(2, joox.find("library").eq(1).siblings().size());
+        assertEquals(2, joox.find("library").eq(2).siblings().size());
+        assertEquals(
+            Arrays.asList("library", "library"),
+            joox.find("library").eq(0).siblings().tags());
+        assertEquals(0, joox.find("library").eq(3).siblings().size());
     }
 
     @Test
@@ -413,18 +492,74 @@ public class JOOXTest {
     }
 
     @Test
+    public void testDOMAccess() throws Exception {
+        assertEquals(xmlElement, joox.get(0));
+        assertEquals(xmlElement, joox.get().get(0));
+        assertNull(joox.get(1));
+
+        assertEquals("document", joox.tag());
+        assertEquals("document", joox.tags().get(0));
+        assertEquals("document", joox.tag(0));
+        assertNull(joox.tag(1));
+        assertNull(joox.next().tag());
+        assertNull(joox.next().tag(0));
+        assertNull(joox.next().tag(1));
+    }
+
+    @Test
     public void testAndOrNot() throws Exception {
-        assertEquals(1, joox.filter(XML.and(XML.all(), XML.all())).size());
-        assertEquals(0, joox.filter(XML.and(XML.all(), XML.none())).size());
-        assertEquals(0, joox.filter(XML.and(XML.none(), XML.all())).size());
-        assertEquals(0, joox.filter(XML.and(XML.none(), XML.none())).size());
+        assertEquals(1, joox.filter(JOOX.and(JOOX.all(), JOOX.all())).size());
+        assertEquals(0, joox.filter(JOOX.and(JOOX.all(), JOOX.none())).size());
+        assertEquals(0, joox.filter(JOOX.and(JOOX.none(), JOOX.all())).size());
+        assertEquals(0, joox.filter(JOOX.and(JOOX.none(), JOOX.none())).size());
 
-        assertEquals(1, joox.filter(XML.or(XML.all(), XML.all())).size());
-        assertEquals(1, joox.filter(XML.or(XML.all(), XML.none())).size());
-        assertEquals(1, joox.filter(XML.or(XML.none(), XML.all())).size());
-        assertEquals(0, joox.filter(XML.or(XML.none(), XML.none())).size());
+        assertEquals(1, joox.filter(JOOX.or(JOOX.all(), JOOX.all())).size());
+        assertEquals(1, joox.filter(JOOX.or(JOOX.all(), JOOX.none())).size());
+        assertEquals(1, joox.filter(JOOX.or(JOOX.none(), JOOX.all())).size());
+        assertEquals(0, joox.filter(JOOX.or(JOOX.none(), JOOX.none())).size());
 
-        assertEquals(0, joox.filter(XML.not(XML.all())).size());
-        assertEquals(1, joox.filter(XML.not(XML.none())).size());
+        assertEquals(0, joox.filter(JOOX.not(JOOX.all())).size());
+        assertEquals(1, joox.filter(JOOX.not(JOOX.none())).size());
+    }
+
+    @Test
+    public void testAttr() throws Exception {
+        assertNull(joox.attr("any"));
+        assertNull(joox.attr("id"));
+        assertEquals(Arrays.asList((String) null), joox.attrs("any"));
+        assertEquals(Arrays.asList((String) null), joox.attrs("id"));
+        assertEquals("1", joox.find("book").attr("id"));
+        assertEquals(
+            Arrays.asList("1", "2", "3", "4", "1", "3", "1", "2"),
+            joox.find("book").attrs("id"));
+
+        assertEquals(
+            Collections.nCopies(totalElements, "y"),
+            joox.find().attr("x", "y").attrs("x"));
+        assertEquals(
+            Collections.nCopies(totalElements, (String) null),
+            joox.find().attr("x", (String) null).attrs("x"));
+
+        assertEquals(
+            Collections.nCopies(totalElements, (String) null),
+            joox.find().removeAttr("id").attrs("id"));
+    }
+
+    @Test
+    public void testEmpty() throws Exception {
+        assertEquals(0, joox.find("directors").empty().find().size());
+        assertEquals(0, joox.find("director").size());
+        assertEquals(1, joox.empty().size());
+        assertEquals(0, joox.find().size());
+    }
+
+    @Test
+    public void testText() throws Exception {
+        assertNull(joox.find("any").text());
+        assertEquals("Sergio Leone", joox.find("director").text());
+        assertEquals("Charles Bronson", joox.find("actor").text());
+        assertEquals(
+            Arrays.asList("Charles Bronson", "Jason Robards", "Claudia Cardinale"),
+            joox.find("actor").texts());
     }
 }

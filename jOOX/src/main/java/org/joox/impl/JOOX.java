@@ -35,9 +35,10 @@
  */
 package org.joox.impl;
 
+import org.joox.Content;
 import org.joox.Filter;
 import org.joox.Mapper;
-import org.joox.X;
+import org.joox.Elements;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -45,27 +46,27 @@ import org.w3c.dom.NodeList;
 /**
  * @author Lukas Eder
  */
-public final class XML {
+public final class JOOX {
 
     /**
-     * Create an empty jOOX {@link X} element set
+     * Create an empty jOOX {@link Elements} element set
      */
-    public static X joox() {
-        return new XImpl();
+    public static Elements joox() {
+        return new ElementsImpl();
     }
 
     /**
-     * Wrap a DOM document in a jOOX {@link X} element set
+     * Wrap a DOM document in a jOOX {@link Elements} element set
      */
-    public static X joox(Document document) {
+    public static Elements joox(Document document) {
         return joox(document.getDocumentElement());
     }
 
     /**
-     * Wrap a DOM element in a jOOX {@link X} element set
+     * Wrap a DOM element in a jOOX {@link Elements} element set
      */
-    public static X joox(Element element) {
-        return new XImpl().addElements(element);
+    public static Elements joox(Element element) {
+        return new ElementsImpl().addElements(element);
     }
 
     /**
@@ -191,6 +192,19 @@ public final class XML {
     }
 
     /**
+     * Get a constant content that returns the same <code>value</code> for all
+     * elements.
+     */
+    public static Content content(final String value) {
+        return new Content() {
+            @Override
+            public String content(int index, Element element) {
+                return value;
+            }
+        };
+    }
+
+    /**
      * Create a mapper that returns all <code>id</code> attributes
      */
     public static Mapper<String> ids() {
@@ -213,6 +227,6 @@ public final class XML {
      * Wrap a {@link NodeList} into an {@link Iterable}
      */
     static Iterable<Element> iterable(NodeList elements) {
-        return new Elements(elements);
+        return new IterableElements(elements);
     }
 }
