@@ -141,7 +141,8 @@ public final class JOOX {
     /**
      * A filter that returns all elements matched by a given selector.
      * <p>
-     * As of jOOX 0.9.0, this is the same as calling {@link #tag(String)}
+     * As of jOOX 0.9.0, this is the same as calling {@link #tag(String)}. More
+     * sophisticated selector expressions will be added in the future.
      */
     public static Filter selector(final String selector) {
         return tag(selector);
