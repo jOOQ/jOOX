@@ -56,10 +56,10 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.IOUtil;
 import org.joox.Each;
-import org.joox.X;
 import org.joox.Filter;
-import org.joox.jOOX;
 import org.joox.Mapper;
+import org.joox.X;
+import org.joox.jOOX;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -709,6 +709,6 @@ public class JOOXTest {
         assertEquals(0, x.size());
         assertEquals(0, x.children().size());
         assertEquals(0, x.find("any").size());
-        assertEquals(1, x.append("<hello><world/></hello>").size());
+        assertEquals(0, x.append("<hello><world/></hello>").size());
     }
 }
