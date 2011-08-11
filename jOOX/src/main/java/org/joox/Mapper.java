@@ -38,9 +38,18 @@ package org.joox;
 import org.w3c.dom.Element;
 
 /**
+ * A mapping type providing data for every element.
+ *
  * @author Lukas Eder
  */
 public interface Mapper<E> {
 
+    /**
+     * The callback method invoked for every matched element.
+     *
+     * @param index The index of the matched element
+     * @param element The matched element
+     * @return The mapped value for the element
+     */
     E map(int index, Element element);
 }

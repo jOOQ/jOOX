@@ -39,19 +39,18 @@ import org.w3c.dom.Element;
 
 /**
  * A filter indicating whether an element/index should be kept when reducing an
- * {@link Elements} node set
+ * {@link X} node set
  *
  * @author Lukas Eder
  */
 public interface Filter {
 
     /**
-     * The filter method indicating whether an element/index should be kept when
-     * reducing an {@link Elements} node set
+     * The callback method invoked for every matched element.
      *
-     * @param index The index of an element in a respective {@link Elements} node set
-     * @param element The element being filtered
-     * @return Whether the element/index should be kept.
+     * @param index The index of the matched element
+     * @param element The matched element
+     * @return Whether this filter includes the element
      */
     boolean filter(int index, Element element);
 }
