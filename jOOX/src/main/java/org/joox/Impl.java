@@ -17,7 +17,7 @@
  *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * . Neither the name "jOOX" nor the names of its contributors may be
+ * . Neither the name "JOOX" nor the names of its contributors may be
  *   used to endorse or promote products derived from this software without
  *   specific prior written permission.
  *
@@ -35,7 +35,7 @@
  */
 package org.joox;
 
-import static org.joox.jOOX.iterable;
+import static org.joox.JOOX.iterable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -195,12 +195,12 @@ class Impl implements X {
 
     @Override
     public final Impl children() {
-        return children(jOOX.all());
+        return children(JOOX.all());
     }
 
     @Override
     public final Impl children(String selector) {
-        return children(jOOX.selector(selector));
+        return children(JOOX.selector(selector));
     }
 
     @Override
@@ -230,7 +230,7 @@ class Impl implements X {
 
     @Override
     public final Impl filter(String selector) {
-        return filter(jOOX.selector(selector));
+        return filter(JOOX.selector(selector));
     }
 
     @Override
@@ -260,7 +260,7 @@ class Impl implements X {
 
     @Override
     public final Impl find() {
-        return find(jOOX.all());
+        return find(JOOX.all());
     }
 
     @Override
@@ -302,7 +302,7 @@ class Impl implements X {
 
     @Override
     public final Impl has(String selector) {
-        return has(jOOX.selector(selector));
+        return has(JOOX.selector(selector));
     }
 
     @Override
@@ -325,7 +325,7 @@ class Impl implements X {
 
     @Override
     public final boolean is(String selector) {
-        return is(jOOX.selector(selector));
+        return is(JOOX.selector(selector));
     }
 
     @Override
@@ -362,57 +362,57 @@ class Impl implements X {
 
     @Override
     public final Impl next() {
-        return next(jOOX.all());
+        return next(JOOX.all());
     }
 
     @Override
     public final Impl next(String selector) {
-        return next(jOOX.selector(selector));
+        return next(JOOX.selector(selector));
     }
 
     @Override
     public final Impl next(Filter filter) {
-        return next(false, jOOX.none(), filter);
+        return next(false, JOOX.none(), filter);
     }
 
     @Override
     public final Impl nextAll() {
-        return nextAll(jOOX.all());
+        return nextAll(JOOX.all());
     }
 
     @Override
     public final Impl nextAll(String selector) {
-        return nextAll(jOOX.selector(selector));
+        return nextAll(JOOX.selector(selector));
     }
 
     @Override
     public final Impl nextAll(Filter filter) {
-        return next(true, jOOX.none(), filter);
+        return next(true, JOOX.none(), filter);
     }
 
     @Override
     public final Impl nextUntil(String until) {
-        return nextUntil(jOOX.selector(until));
+        return nextUntil(JOOX.selector(until));
     }
 
     @Override
     public final Impl nextUntil(Filter until) {
-        return nextUntil(until, jOOX.all());
+        return nextUntil(until, JOOX.all());
     }
 
     @Override
     public final Impl nextUntil(String until, String selector) {
-        return nextUntil(jOOX.selector(until), jOOX.selector(selector));
+        return nextUntil(JOOX.selector(until), JOOX.selector(selector));
     }
 
     @Override
     public final Impl nextUntil(String until, Filter filter) {
-        return nextUntil(jOOX.selector(until), filter);
+        return nextUntil(JOOX.selector(until), filter);
     }
 
     @Override
     public final Impl nextUntil(Filter until, String selector) {
-        return nextUntil(until, jOOX.selector(selector));
+        return nextUntil(until, JOOX.selector(selector));
     }
 
     @Override
@@ -454,67 +454,67 @@ class Impl implements X {
 
     @Override
     public final Impl not(String selector) {
-        return not(jOOX.selector(selector));
+        return not(JOOX.selector(selector));
     }
 
     @Override
     public final Impl not(Filter filter) {
-        return filter(jOOX.not(filter));
+        return filter(JOOX.not(filter));
     }
 
     @Override
     public final Impl parent() {
-        return parent(jOOX.all());
+        return parent(JOOX.all());
     }
 
     @Override
     public final Impl parent(String selector) {
-        return parent(jOOX.selector(selector));
+        return parent(JOOX.selector(selector));
     }
 
     @Override
     public final Impl parent(Filter filter) {
-        return parents(false, jOOX.none(), filter);
+        return parents(false, JOOX.none(), filter);
     }
 
     @Override
     public final Impl parents() {
-        return parents(jOOX.all());
+        return parents(JOOX.all());
     }
 
     @Override
     public final Impl parents(String selector) {
-        return parents(jOOX.selector(selector));
+        return parents(JOOX.selector(selector));
     }
 
     @Override
     public final Impl parents(Filter filter) {
-        return parents(true, jOOX.none(), filter);
+        return parents(true, JOOX.none(), filter);
     }
 
     @Override
     public final Impl parentsUntil(String until) {
-        return parentsUntil(jOOX.selector(until), jOOX.all());
+        return parentsUntil(JOOX.selector(until), JOOX.all());
     }
 
     @Override
     public final Impl parentsUntil(Filter until) {
-        return parentsUntil(until, jOOX.all());
+        return parentsUntil(until, JOOX.all());
     }
 
     @Override
     public final Impl parentsUntil(String until, String selector) {
-        return parentsUntil(jOOX.selector(until), jOOX.selector(selector));
+        return parentsUntil(JOOX.selector(until), JOOX.selector(selector));
     }
 
     @Override
     public final Impl parentsUntil(String until, Filter filter) {
-        return parentsUntil(jOOX.selector(until), filter);
+        return parentsUntil(JOOX.selector(until), filter);
     }
 
     @Override
     public final Impl parentsUntil(Filter until, String selector) {
-        return parentsUntil(until, jOOX.selector(selector));
+        return parentsUntil(until, JOOX.selector(selector));
     }
 
     @Override
@@ -557,57 +557,57 @@ class Impl implements X {
 
     @Override
     public final Impl prev() {
-        return prev(jOOX.all());
+        return prev(JOOX.all());
     }
 
     @Override
     public final Impl prev(String selector) {
-        return prev(jOOX.selector(selector));
+        return prev(JOOX.selector(selector));
     }
 
     @Override
     public final Impl prev(Filter filter) {
-        return prev(false, jOOX.none(), filter);
+        return prev(false, JOOX.none(), filter);
     }
 
     @Override
     public final Impl prevAll() {
-        return prevAll(jOOX.all());
+        return prevAll(JOOX.all());
     }
 
     @Override
     public final Impl prevAll(String selector) {
-        return prevAll(jOOX.selector(selector));
+        return prevAll(JOOX.selector(selector));
     }
 
     @Override
     public final Impl prevAll(Filter filter) {
-        return prev(true, jOOX.none(), filter);
+        return prev(true, JOOX.none(), filter);
     }
 
     @Override
     public final Impl prevUntil(String until) {
-        return prevUntil(jOOX.selector(until));
+        return prevUntil(JOOX.selector(until));
     }
 
     @Override
     public final Impl prevUntil(Filter until) {
-        return prevUntil(until, jOOX.all());
+        return prevUntil(until, JOOX.all());
     }
 
     @Override
     public final Impl prevUntil(String until, String selector) {
-        return prevUntil(jOOX.selector(until), jOOX.selector(selector));
+        return prevUntil(JOOX.selector(until), JOOX.selector(selector));
     }
 
     @Override
     public final Impl prevUntil(String until, Filter filter) {
-        return prevUntil(jOOX.selector(until), filter);
+        return prevUntil(JOOX.selector(until), filter);
     }
 
     @Override
     public final Impl prevUntil(Filter until, String selector) {
-        return prevUntil(until, jOOX.selector(selector));
+        return prevUntil(until, JOOX.selector(selector));
     }
 
     @Override
@@ -650,12 +650,12 @@ class Impl implements X {
 
     @Override
     public final Impl siblings() {
-        return siblings(jOOX.all());
+        return siblings(JOOX.all());
     }
 
     @Override
     public final Impl siblings(String selector) {
-        return siblings(jOOX.selector(selector));
+        return siblings(JOOX.selector(selector));
     }
 
     @Override
@@ -692,7 +692,7 @@ class Impl implements X {
 
     @Override
     public final Impl after(String content) {
-        return after(jOOX.content(content));
+        return after(JOOX.content(content));
     }
 
     @Override
@@ -710,7 +710,7 @@ class Impl implements X {
             Node next = element.getNextSibling();
 
             if (imported != null) {
-                result.addAll(jOOX.list(imported.getChildNodes()));
+                result.addAll(JOOX.list(imported.getChildNodes()));
                 parent.insertBefore(imported, next);
             }
             else {
@@ -726,7 +726,7 @@ class Impl implements X {
 
     @Override
     public final Impl before(String content) {
-        return before(jOOX.content(content));
+        return before(JOOX.content(content));
     }
 
     @Override
@@ -742,7 +742,7 @@ class Impl implements X {
             Node parent = element.getParentNode();
 
             if (imported != null) {
-                result.addAll(jOOX.list(imported.getChildNodes()));
+                result.addAll(JOOX.list(imported.getChildNodes()));
                 parent.insertBefore(imported, element);
             }
             else {
@@ -760,7 +760,7 @@ class Impl implements X {
 
     @Override
     public final Impl append(String content) {
-        return append(jOOX.content(content));
+        return append(JOOX.content(content));
     }
 
     @Override
@@ -785,7 +785,7 @@ class Impl implements X {
 
     @Override
     public final Impl prepend(String content) {
-        return prepend(jOOX.content(content));
+        return prepend(JOOX.content(content));
     }
 
     @Override
@@ -839,7 +839,7 @@ class Impl implements X {
 
     @Override
     public final Impl attr(String name, String value) {
-        return attr(name, jOOX.content(value));
+        return attr(name, JOOX.content(value));
     }
 
     @Override
@@ -918,7 +918,7 @@ class Impl implements X {
 
     @Override
     public final Impl content(String content) {
-        return content(jOOX.content(content));
+        return content(JOOX.content(content));
     }
 
     @Override
@@ -944,7 +944,7 @@ class Impl implements X {
 
         // Text might hold XML content
         if (text.contains("<")) {
-            DocumentBuilder builder = jOOX.builder();
+            DocumentBuilder builder = JOOX.builder();
 
             try {
                 String wrapped = "<dummy>" + text + "</dummy>";
@@ -994,7 +994,7 @@ class Impl implements X {
 
     @Override
     public final Impl text(String content) {
-        return text(jOOX.content(content));
+        return text(JOOX.content(content));
     }
 
     @Override
@@ -1019,12 +1019,12 @@ class Impl implements X {
 
     @Override
     public final Impl remove() {
-        return remove(jOOX.all());
+        return remove(JOOX.all());
     }
 
     @Override
     public final Impl remove(String selector) {
-        return remove(jOOX.selector(selector));
+        return remove(JOOX.selector(selector));
     }
 
     @Override
@@ -1061,7 +1061,7 @@ class Impl implements X {
 
     @Override
     public final Impl replaceWith(String content) {
-        return replaceWith(jOOX.content(content));
+        return replaceWith(JOOX.content(content));
     }
 
     @Override
@@ -1077,7 +1077,7 @@ class Impl implements X {
             Node parent = element.getParentNode();
 
             if (imported != null) {
-                result.addAll(jOOX.list(imported.getChildNodes()));
+                result.addAll(JOOX.list(imported.getChildNodes()));
                 parent.replaceChild(imported, element);
             }
             else {

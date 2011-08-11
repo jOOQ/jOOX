@@ -17,7 +17,7 @@
  *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * . Neither the name "jOOX" nor the names of its contributors may be
+ * . Neither the name "JOOX" nor the names of its contributors may be
  *   used to endorse or promote products derived from this software without
  *   specific prior written permission.
  *
@@ -40,7 +40,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
-import static org.joox.jOOX.joox;
+import static org.joox.JOOX.joox;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -57,9 +57,9 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.io.IOUtil;
 import org.joox.Each;
 import org.joox.Filter;
+import org.joox.JOOX;
 import org.joox.Mapper;
 import org.joox.X;
-import org.joox.jOOX;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -164,9 +164,9 @@ public class JOOXTest {
 
     @Test
     public void testChildrenFilter() {
-        assertEquals(0, joox.children(jOOX.none()).size());
-        assertEquals(1, joox.children().children(jOOX.tag("dvds")).size());
-        assertEquals(1, joox.children().children(jOOX.tag("dvds")).children(jOOX.tag("dvd")).size());
+        assertEquals(0, joox.children(JOOX.none()).size());
+        assertEquals(1, joox.children().children(JOOX.tag("dvds")).size());
+        assertEquals(1, joox.children().children(JOOX.tag("dvds")).children(JOOX.tag("dvd")).size());
     }
 
     @Test
@@ -208,9 +208,9 @@ public class JOOXTest {
         assertEquals(0, joox.filter("asdf").size());
         assertEquals(1, joox.filter("document").size());
         assertEquals(3, joox.find().filter("actor").size());
-        assertEquals(3, joox.find().filter("actor").filter(jOOX.all()).size());
-        assertEquals(2, joox.find().filter("actor").filter(jOOX.even()).size());
-        assertEquals(1, joox.find().filter("actor").filter(jOOX.odd()).size());
+        assertEquals(3, joox.find().filter("actor").filter(JOOX.all()).size());
+        assertEquals(2, joox.find().filter("actor").filter(JOOX.even()).size());
+        assertEquals(1, joox.find().filter("actor").filter(JOOX.odd()).size());
     }
 
     @Test
@@ -230,13 +230,13 @@ public class JOOXTest {
 
     @Test
     public void testFindFilter() throws Exception {
-        assertEquals(0, joox.find(jOOX.none()).size());
+        assertEquals(0, joox.find(JOOX.none()).size());
         assertEquals(totalElements, joox.find().size());
-        assertEquals(totalElements, joox.find(jOOX.all()).size());
-        assertEquals((totalElements + 1) / 2, joox.find(jOOX.even()).size());
-        assertEquals(totalElements / 2, joox.find(jOOX.odd()).size());
-        assertEquals(3, joox.find(jOOX.tag("library")).size());
-        assertEquals(8, joox.find(jOOX.tag("book")).size());
+        assertEquals(totalElements, joox.find(JOOX.all()).size());
+        assertEquals((totalElements + 1) / 2, joox.find(JOOX.even()).size());
+        assertEquals(totalElements / 2, joox.find(JOOX.odd()).size());
+        assertEquals(3, joox.find(JOOX.tag("library")).size());
+        assertEquals(8, joox.find(JOOX.tag("book")).size());
     }
 
     @Test
@@ -261,7 +261,7 @@ public class JOOXTest {
     public void testIs() throws Exception {
         assertFalse(joox.is("abc"));
         assertTrue(joox.is("document"));
-        assertTrue(joox.is(jOOX.even()));
+        assertTrue(joox.is(JOOX.even()));
     }
 
     @Test
@@ -276,11 +276,11 @@ public class JOOXTest {
     public void testMap() throws Exception {
         assertEquals(
             Arrays.asList("1", "2", "3", "4", "1", "3", "1", "2"),
-            joox.find("book").map(jOOX.ids()));
+            joox.find("book").map(JOOX.ids()));
 
         assertEquals(
             Arrays.asList("Amazon", "Rösslitor", "Orell Füssli"),
-            joox.find("library").map(jOOX.attributes("name")));
+            joox.find("library").map(JOOX.attributes("name")));
 
         assertEquals(Arrays.asList(0, 1, 2, 3), joox.children().first().find("book").map(new Mapper<Integer>() {
             @Override
@@ -299,8 +299,8 @@ public class JOOXTest {
         assertEquals(0, joox.find("book").next().next().next().next().size());
 
         assertEquals(1, joox.find("book").eq(0).next().size());
-        assertEquals(1, joox.find("book").eq(0).next(jOOX.all()).size());
-        assertEquals(0, joox.find("book").eq(0).next(jOOX.none()).size());
+        assertEquals(1, joox.find("book").eq(0).next(JOOX.all()).size());
+        assertEquals(0, joox.find("book").eq(0).next(JOOX.none()).size());
         assertEquals(0, joox.find("book").eq(0).next(new Filter() {
             @Override
             public boolean filter(int index, Element element) {
@@ -379,8 +379,8 @@ public class JOOXTest {
         assertEquals(0, joox.find("book").prev().prev().prev().prev().size());
 
         assertEquals(1, joox.find("book").eq(7).prev().size());
-        assertEquals(1, joox.find("book").eq(7).prev(jOOX.all()).size());
-        assertEquals(0, joox.find("book").eq(7).prev(jOOX.none()).size());
+        assertEquals(1, joox.find("book").eq(7).prev(JOOX.all()).size());
+        assertEquals(0, joox.find("book").eq(7).prev(JOOX.none()).size());
         assertEquals(0, joox.find("book").eq(7).prev(new Filter() {
             @Override
             public boolean filter(int index, Element element) {
@@ -511,18 +511,18 @@ public class JOOXTest {
 
     @Test
     public void testAndOrNot() throws Exception {
-        assertEquals(1, joox.filter(jOOX.and(jOOX.all(), jOOX.all())).size());
-        assertEquals(0, joox.filter(jOOX.and(jOOX.all(), jOOX.none())).size());
-        assertEquals(0, joox.filter(jOOX.and(jOOX.none(), jOOX.all())).size());
-        assertEquals(0, joox.filter(jOOX.and(jOOX.none(), jOOX.none())).size());
+        assertEquals(1, joox.filter(JOOX.and(JOOX.all(), JOOX.all())).size());
+        assertEquals(0, joox.filter(JOOX.and(JOOX.all(), JOOX.none())).size());
+        assertEquals(0, joox.filter(JOOX.and(JOOX.none(), JOOX.all())).size());
+        assertEquals(0, joox.filter(JOOX.and(JOOX.none(), JOOX.none())).size());
 
-        assertEquals(1, joox.filter(jOOX.or(jOOX.all(), jOOX.all())).size());
-        assertEquals(1, joox.filter(jOOX.or(jOOX.all(), jOOX.none())).size());
-        assertEquals(1, joox.filter(jOOX.or(jOOX.none(), jOOX.all())).size());
-        assertEquals(0, joox.filter(jOOX.or(jOOX.none(), jOOX.none())).size());
+        assertEquals(1, joox.filter(JOOX.or(JOOX.all(), JOOX.all())).size());
+        assertEquals(1, joox.filter(JOOX.or(JOOX.all(), JOOX.none())).size());
+        assertEquals(1, joox.filter(JOOX.or(JOOX.none(), JOOX.all())).size());
+        assertEquals(0, joox.filter(JOOX.or(JOOX.none(), JOOX.none())).size());
 
-        assertEquals(0, joox.filter(jOOX.not(jOOX.all())).size());
-        assertEquals(1, joox.filter(jOOX.not(jOOX.none())).size());
+        assertEquals(0, joox.filter(JOOX.not(JOOX.all())).size());
+        assertEquals(1, joox.filter(JOOX.not(JOOX.none())).size());
     }
 
     @Test
@@ -560,8 +560,8 @@ public class JOOXTest {
     public void testRemove() throws Exception {
         assertEquals(0, joox.find("director").remove().size());
         assertEquals(0, joox.find("director").size());
-        assertEquals(3, joox.find("book").remove(jOOX.ids("1", "2")).size());
-        assertEquals(3, joox.find("book").remove(jOOX.ids("1", "2")).size());
+        assertEquals(3, joox.find("book").remove(JOOX.ids("1", "2")).size());
+        assertEquals(3, joox.find("book").remove(JOOX.ids("1", "2")).size());
         assertEquals(0, joox.remove().size());
         assertEquals(0, joox.find().size());
         assertEquals(0, joox.size());
@@ -705,7 +705,7 @@ public class JOOXTest {
 
     @Test
     public void testEmptyJOOX() throws Exception {
-        X x = jOOX.joox();
+        X x = JOOX.joox();
         assertEquals(0, x.size());
         assertEquals(0, x.children().size());
         assertEquals(0, x.find("any").size());
