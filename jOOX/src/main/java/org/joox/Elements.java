@@ -437,8 +437,14 @@ public interface Elements extends Iterable<Element> {
     // Manipulation
     // -------------------------------------------------------------------------
 
+    /**
+     * Add content after each element in the set of matched elements.
+     */
     Elements after(String content);
 
+    /**
+     * Add content after each element in the set of matched elements.
+     */
     Elements after(Content content);
 
     /**

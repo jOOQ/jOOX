@@ -722,7 +722,65 @@ class ElementsImpl implements Elements {
 
     @Override
     public ElementsImpl after(Content content) {
-        throw new UnsupportedOperationException();
+        List<Element> result = new ArrayList<Element>();
+
+        for (int i = 0; i < size(); i++) {
+            Element element = get(i);
+            result.add(element);
+            Document document = element.getOwnerDocument();
+
+            String text = content.content(i, element);
+            DocumentFragment imported = createContent(document, text);
+            Node parent = element.getParentNode();
+            Node next = element.getNextSibling();
+
+            if (imported != null) {
+                result.addAll(JOOX.list(imported.getChildNodes()));
+                parent.insertBefore(imported, next);
+            }
+            else {
+                parent.insertBefore(document.createTextNode(text), next);
+            }
+        }
+
+        elements.clear();
+        elements.addAll(result);
+
+        return this;
+    }
+
+    @Override
+    public ElementsImpl before(String content) {
+        return before(JOOX.content(content));
+    }
+
+    @Override
+    public ElementsImpl before(Content content) {
+        List<Element> result = new ArrayList<Element>();
+
+        for (int i = 0; i < size(); i++) {
+            Element element = get(i);
+            Document document = element.getOwnerDocument();
+
+            String text = content.content(i, element);
+            DocumentFragment imported = createContent(document, text);
+            Node parent = element.getParentNode();
+
+            if (imported != null) {
+                result.addAll(JOOX.list(imported.getChildNodes()));
+                parent.insertBefore(imported, element);
+            }
+            else {
+                parent.insertBefore(document.createTextNode(text), element);
+            }
+
+            result.add(element);
+        }
+
+        elements.clear();
+        elements.addAll(result);
+
+        return this;
     }
 
     @Override
@@ -744,6 +802,32 @@ class ElementsImpl implements Elements {
             }
             else {
                 element.appendChild(document.createTextNode(text));
+            }
+        }
+
+        return this;
+    }
+
+    @Override
+    public ElementsImpl prepend(String content) {
+        return prepend(JOOX.content(content));
+    }
+
+    @Override
+    public ElementsImpl prepend(Content content) {
+        for (int i = 0; i < size(); i++) {
+            Element element = get(i);
+            Document document = element.getOwnerDocument();
+
+            String text = content.content(i, element);
+            DocumentFragment imported = createContent(document, text);
+            Node first = element.getFirstChild();
+
+            if (imported != null) {
+                element.insertBefore(imported, first);
+            }
+            else {
+                element.insertBefore(document.createTextNode(text), first);
             }
         }
 
@@ -803,16 +887,6 @@ class ElementsImpl implements Elements {
     @Override
     public ElementsImpl removeAttr(String name) {
         return attr(name, (String) null);
-    }
-
-    @Override
-    public ElementsImpl before(String content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl before(Content content) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -954,32 +1028,6 @@ class ElementsImpl implements Elements {
             Element element = get(i);
             String text = content.content(i, element);
             element.setTextContent(text);
-        }
-
-        return this;
-    }
-
-    @Override
-    public ElementsImpl prepend(String content) {
-        return prepend(JOOX.content(content));
-    }
-
-    @Override
-    public ElementsImpl prepend(Content content) {
-        for (int i = 0; i < size(); i++) {
-            Element element = get(i);
-            Document document = element.getOwnerDocument();
-
-            String text = content.content(i, element);
-            DocumentFragment imported = createContent(document, text);
-            Node first = element.getFirstChild();
-
-            if (imported != null) {
-                element.insertBefore(imported, first);
-            }
-            else {
-                element.insertBefore(document.createTextNode(text), first);
-            }
         }
 
         return this;

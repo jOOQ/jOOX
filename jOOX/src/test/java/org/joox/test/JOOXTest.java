@@ -612,6 +612,40 @@ public class JOOXTest {
     }
 
     @Test
+    public void testAfter() throws Exception {
+        assertEquals(2, joox.find("dvds").after("<cds/>").size());
+        assertEquals(1, joox.find("cds").size());
+        assertEquals(3, joox.find("library").eq(0).children().size());
+        assertEquals(
+            Arrays.asList("books", "dvds", "cds"),
+            joox.find("library").eq(0).children().tags());
+
+        assertEquals(2, joox.find("dvds").after("<postcards/>").size());
+        assertEquals(1, joox.find("postcards").size());
+        assertEquals(4, joox.find("library").eq(0).children().size());
+        assertEquals(
+            Arrays.asList("books", "dvds", "postcards", "cds"),
+            joox.find("library").eq(0).children().tags());
+    }
+
+    @Test
+    public void testBefore() throws Exception {
+        assertEquals(2, joox.find("dvds").before("<cds/>").size());
+        assertEquals(1, joox.find("cds").size());
+        assertEquals(3, joox.find("library").eq(0).children().size());
+        assertEquals(
+            Arrays.asList("books", "cds", "dvds"),
+            joox.find("library").eq(0).children().tags());
+
+        assertEquals(2, joox.find("dvds").before("<postcards/>").size());
+        assertEquals(1, joox.find("postcards").size());
+        assertEquals(4, joox.find("library").eq(0).children().size());
+        assertEquals(
+            Arrays.asList("books", "cds", "postcards", "dvds"),
+            joox.find("library").eq(0).children().tags());
+    }
+
+    @Test
     public void testAppend() throws Exception {
         assertEquals(1, joox.find("dvds").append("<dvd id=\"6\"/>").size());
         assertEquals(2, joox.find("dvd").size());
