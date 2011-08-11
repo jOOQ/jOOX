@@ -522,8 +522,16 @@ public interface Elements extends Iterable<Element> {
      */
     List<String> texts();
 
+    /**
+     * Set some text content to all elements in the set of matched elements
+     * (possibly replacing existing content).
+     */
     Elements text(String content);
 
+    /**
+     * Set some text content to all elements in the set of matched elements
+     * (possibly replacing existing content).
+     */
     Elements text(Content content);
 
     Elements insertAfter(String... content);

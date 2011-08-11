@@ -47,9 +47,9 @@ import java.util.Set;
 
 import org.joox.Content;
 import org.joox.Each;
+import org.joox.Elements;
 import org.joox.Filter;
 import org.joox.Mapper;
-import org.joox.Elements;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -832,14 +832,18 @@ class ElementsImpl implements Elements {
     @Override
     public ElementsImpl empty() {
         for (Element element : elements) {
-            Node child;
-
-            while ((child = element.getFirstChild()) != null) {
-                element.removeChild(child);
-            }
+            empty(element);
         }
 
         return this;
+    }
+
+    private void empty(Element element) {
+        Node child;
+
+        while ((child = element.getFirstChild()) != null) {
+            element.removeChild(child);
+        }
     }
 
     @Override
@@ -880,12 +884,18 @@ class ElementsImpl implements Elements {
 
     @Override
     public ElementsImpl text(String content) {
-        throw new UnsupportedOperationException();
+        return text(JOOX.content(content));
     }
 
     @Override
     public ElementsImpl text(Content content) {
-        throw new UnsupportedOperationException();
+        for (int i = 0; i < size(); i++) {
+            Element element = get(i);
+            String text = content.content(i, element);
+            element.setTextContent(text);
+        }
+
+        return this;
     }
 
     @Override
@@ -1113,6 +1123,30 @@ class ElementsImpl implements Elements {
 
     @Override
     public String toString() {
-        return elements.toString();
+        if (elements.size() == 0) {
+            return "[]";
+        }
+        else if (elements.size() == 1) {
+            return toString(get(0));
+        }
+        else {
+            StringBuilder sb = new StringBuilder();
+            String separator = "";
+
+            sb.append("[");
+
+            for (Element element : elements) {
+                sb.append(separator);
+                sb.append(toString(element));
+                separator = ",\n";
+            }
+
+            sb.append("]");
+            return sb.toString();
+        }
+    }
+
+    private String toString(Element element) {
+        return element.toString();
     }
 }

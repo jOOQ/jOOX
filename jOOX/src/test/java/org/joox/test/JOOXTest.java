@@ -54,9 +54,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.IOUtil;
 import org.joox.Each;
+import org.joox.Elements;
 import org.joox.Filter;
 import org.joox.Mapper;
-import org.joox.Elements;
 import org.joox.impl.JOOX;
 import org.junit.Before;
 import org.junit.Test;
@@ -561,5 +561,9 @@ public class JOOXTest {
         assertEquals(
             Arrays.asList("Charles Bronson", "Jason Robards", "Claudia Cardinale"),
             joox.find("actor").texts());
+
+        assertEquals(
+            Collections.nCopies(3, "Lukas Eder"),
+            joox.find("actor").text("Lukas Eder").texts());
     }
 }
