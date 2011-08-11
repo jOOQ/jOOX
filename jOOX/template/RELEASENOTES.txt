@@ -1,0 +1,10 @@
+jOOX Release notes
+------------------
+For an overview, see also http://code.google.com/p/joox/issues/list
+
+Version 0.9.0
+=================================================================
+
+This is the initial release providing basic functionality. The
+most important parts of the jQuery API are ported to Java.
+Selectors only match tag names

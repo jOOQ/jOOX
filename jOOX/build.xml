@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <project name="jOOX-release" basedir="." default="release">
-	<property name="dir.workspace" value="${basedir}/.." />
 	<property name="dir.target" value="${basedir}/target" />
 	<property name="dir.release" value="${basedir}/release" />
 
@@ -13,12 +12,12 @@
 		<mkdir dir="${dir.release}/${version}/lib" />
 		<mkdir dir="${dir.release}/${version}/src" />
 		
-		<copy todir="${dir.release}/${version}/lib" file="${dir.workspace}/jOOX/target/joox-${version}.jar"/>
-		<copy todir="${dir.release}/${version}/src" file="${dir.workspace}/jOOX/target/joox-${version}-sources.jar"/>
-		<copy todir="${dir.release}/${version}/doc" file="${dir.workspace}/jOOX/target/joox-${version}-javadoc.jar"/>
+		<copy todir="${dir.release}/${version}/lib" file="${dir.target}/joox-${version}.jar"/>
+		<copy todir="${dir.release}/${version}/src" file="${dir.target}/joox-${version}-sources.jar"/>
+		<copy todir="${dir.release}/${version}/doc" file="${dir.target}/joox-${version}-javadoc.jar"/>
 		
 		<copy todir="${dir.release}/${version}">
-			<fileset dir="${dir.release}/template">
+			<fileset dir="${basedir}/template">
 				<include name="**/*"/>
 			</fileset>
 		</copy>
