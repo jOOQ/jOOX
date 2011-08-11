@@ -437,27 +437,21 @@ public interface Elements extends Iterable<Element> {
     // Manipulation
     // -------------------------------------------------------------------------
 
-    Elements after(String... content);
-
-    Elements after(Element... elements);
-
-    Elements after(Elements... elements);
+    Elements after(String content);
 
     Elements after(Content content);
 
-    Elements append(String... content);
+    /**
+     * Append content to the end of each element's content in the set of matched
+     * elements.
+     */
+    Elements append(String content);
 
-    Elements append(Element... elements);
-
-    Elements append(Elements... elements);
-
+    /**
+     * Append content to the end of each element's content in the set of matched
+     * elements.
+     */
     Elements append(Content content);
-
-    Elements appendTo(String selector);
-
-    Elements appendTo(Element element);
-
-    Elements appendTo(Elements element);
 
     /**
      * Get the attribute <code>name</code> from the first element in the set of
@@ -492,28 +486,40 @@ public interface Elements extends Iterable<Element> {
      */
     Elements removeAttr(String name);
 
-    Elements before(String... content);
-
-    Elements before(Element... elements);
-
-    Elements before(Elements... elements);
+    Elements before(String content);
 
     Elements before(Content content);
 
     /**
-     * Removes all content from all elements in the set of matched elements.
+     * Get the XML content of the first element in the set of matched elements,
+     * or <code>null</code> if there are no matched elements
      */
-    Elements empty();
-
     String content();
 
+    /**
+     * Get all XML content of the elements in the set of matched elements.
+     */
+    List<String> contents();
+
+    /**
+     * Add some XML content to all elements in the set of matched elements
+     * (possibly replacing existing content). If the supplied content is invalid
+     * XML or plain text, then it will be added as text just as with
+     * {@link #text(String)}
+     */
     Elements content(String content);
 
+    /**
+     * Add some XML content to all elements in the set of matched elements
+     * (possibly replacing existing content). If the supplied content is invalid
+     * XML or plain text, then it will be added as text just as with
+     * {@link #text(String)}
+     */
     Elements content(Content content);
 
     /**
      * Get the text content of the first element in the set of matched elements,
-     * or <code>null</code> if there are no matched elements
+     * or <code>null</code> if there are no matched elements.
      */
     String text();
 
@@ -534,75 +540,63 @@ public interface Elements extends Iterable<Element> {
      */
     Elements text(Content content);
 
-    Elements insertAfter(String... content);
+    /**
+     * Prepend content to the beginning of each element's content in the set of
+     * matched elements.
+     */
+    Elements prepend(String content);
 
-    Elements insertAfter(Element... elements);
-
-    Elements insertAfter(Elements... elements);
-
-    Elements insertAfter(Content content);
-
-    Elements insertBefore(String... content);
-
-    Elements insertBefore(Element... elements);
-
-    Elements insertBefore(Elements... elements);
-
-    Elements insertBefore(Content content);
-
-    Elements prepend(String... content);
-
-    Elements prepend(Element... elements);
-
-    Elements prepend(Elements... elements);
-
+    /**
+     * Prepend content to the beginning of each element's content in the set of
+     * matched elements.
+     */
     Elements prepend(Content content);
 
-    Elements prependTo(String selector);
+    /**
+     * Removes all content from all elements in the set of matched elements.
+     */
+    Elements empty();
 
-    Elements prependTo(Element element);
-
-    Elements prependTo(Elements element);
-
+    /**
+     * Removes all elements in the set of matched elements.
+     */
     Elements remove();
 
+    /**
+     * Removes all elements in the set of matched elements, matching a selector
+     */
     Elements remove(String selector);
 
-    Elements replaceAll(String selector);
+    /**
+     * Removes all elements in the set of matched elements, matching a filter
+     */
+    Elements remove(Filter filter);
 
-    Elements replaceAll(Element... elements);
-
-    Elements replaceAll(Elements... elements);
-
+    /**
+     * Replace all elements in the set of matched elements with some new
+     * content.
+     */
     Elements replaceWith(String content);
 
-    Elements replaceWith(Element... elements);
-
-    Elements replaceWith(Elements... elements);
-
+    /**
+     * Replace all elements in the set of matched elements with some new
+     * content.
+     */
     Elements replaceWith(Content content);
 
+    // /**
+    // * Remove the parents of the set of matched elements, leaving the matched
+    // * elements in their place.
+    // */
     Elements unwrap();
 
     Elements wrap(String content);
-
-    Elements wrap(Element element);
-
-    Elements wrap(Elements element);
 
     Elements wrap(Content content);
 
     Elements wrapAll(String content);
 
-    Elements wrapAll(Element element);
-
-    Elements wrapAll(Elements element);
-
     Elements wrapInner(String content);
-
-    Elements wrapInner(Element element);
-
-    Elements wrapInner(Elements element);
 
     Elements wrapInner(Content content);
 
@@ -610,10 +604,17 @@ public interface Elements extends Iterable<Element> {
     // Utility
     // -------------------------------------------------------------------------
 
+    /**
+     * Get a copy of the {@link Elements} wrapper. This is not a deep-copy of
+     * wrapped {@link Element} objects. Both this and the copy will reference
+     * the same <code>Element</code>'s
+     */
     Elements copy();
 
     /**
-     * Get the first tag name
+     * Get the first tag name in the current set of matched elements.
+     * <p>
+     * This is the same as calling <code>tag(0)</code>
      */
     String tag();
 
@@ -626,4 +627,25 @@ public interface Elements extends Iterable<Element> {
      * Get a list of tag names in the current set of matched elements.
      */
     List<String> tags();
+
+    /**
+     * Get the first id value
+     * <p>
+     * This is the same as calling <code>id(0)</code>
+     */
+    String id();
+
+    /**
+     * Get a list of id values in the current set of matched elements.
+     * <p>
+     * This is the same as calling <code>eq(index).attr("id")</code>
+     */
+    String id(int index);
+
+    /**
+     * Get a list of id values in the current set of matched elements.
+     * <p>
+     * This is the same as calling <code>attrs("id")</code>
+     */
+    List<String> ids();
 }

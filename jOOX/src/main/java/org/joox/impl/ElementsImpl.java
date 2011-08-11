@@ -37,6 +37,9 @@ package org.joox.impl;
 
 import static org.joox.impl.JOOX.iterable;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,14 +48,27 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.joox.Content;
 import org.joox.Each;
 import org.joox.Elements;
 import org.joox.Filter;
 import org.joox.Mapper;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * @author Lukas Eder
@@ -700,18 +716,8 @@ class ElementsImpl implements Elements {
     }
 
     @Override
-    public ElementsImpl after(String... content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl after(Element... elements) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl after(Elements... elements) {
-        throw new UnsupportedOperationException();
+    public ElementsImpl after(String content) {
+        return after(JOOX.content(content));
     }
 
     @Override
@@ -720,38 +726,28 @@ class ElementsImpl implements Elements {
     }
 
     @Override
-    public ElementsImpl append(String... content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl append(Element... elements) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl append(Elements... elements) {
-        throw new UnsupportedOperationException();
+    public ElementsImpl append(String content) {
+        return append(JOOX.content(content));
     }
 
     @Override
     public ElementsImpl append(Content content) {
-        throw new UnsupportedOperationException();
-    }
+        for (int i = 0; i < size(); i++) {
+            Element element = get(i);
+            Document document = element.getOwnerDocument();
 
-    @Override
-    public ElementsImpl appendTo(String selector) {
-        throw new UnsupportedOperationException();
-    }
+            String text = content.content(i, element);
+            DocumentFragment imported = createContent(document, text);
 
-    @Override
-    public ElementsImpl appendTo(Element element) {
-        throw new UnsupportedOperationException();
-    }
+            if (imported != null) {
+                element.appendChild(imported);
+            }
+            else {
+                element.appendChild(document.createTextNode(text));
+            }
+        }
 
-    @Override
-    public ElementsImpl appendTo(Elements element) {
-        throw new UnsupportedOperationException();
+        return this;
     }
 
     @Override
@@ -810,17 +806,7 @@ class ElementsImpl implements Elements {
     }
 
     @Override
-    public ElementsImpl before(String... content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl before(Element... elements) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl before(Elements... elements) {
+    public ElementsImpl before(String content) {
         throw new UnsupportedOperationException();
     }
 
@@ -830,35 +816,110 @@ class ElementsImpl implements Elements {
     }
 
     @Override
-    public ElementsImpl empty() {
+    public String content() {
+        if (size() > 0) {
+            return content(get(0));
+        }
+        else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<String> contents() {
+        List<String> result = new ArrayList<String>();
+
         for (Element element : elements) {
-            empty(element);
+            result.add(content(element));
+        }
+
+        return result;
+    }
+
+    private String content(Element element) {
+        NodeList children = element.getChildNodes();
+
+        // The element is empty
+        if (children.getLength() == 0) {
+            return "";
+        }
+
+        // The element contains only text
+        else if (!hasElementNodes(children)) {
+            return element.getTextContent();
+        }
+
+        // The element contains content
+        else {
+            // TODO: Check this code's efficiency
+            String name = element.getTagName();
+            return toString(element).replaceAll("^<" + name + "(?:[^>]*)>(.*)</" + name + ">$", "$1");
+        }
+    }
+
+    private boolean hasElementNodes(NodeList list) {
+        for (int i = 0; i < list.getLength(); i++) {
+            if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public ElementsImpl content(String content) {
+        return content(JOOX.content(content));
+    }
+
+    @Override
+    public ElementsImpl content(Content content) {
+        for (int i = 0; i < size(); i++) {
+            Element element = get(i);
+            String text = content.content(i, element);
+
+            DocumentFragment imported = createContent(element.getOwnerDocument(), text);
+            if (imported != null) {
+                element.setTextContent("");
+                element.appendChild(imported);
+            }
+            else {
+                element.setTextContent(text);
+            }
         }
 
         return this;
     }
 
-    private void empty(Element element) {
-        Node child;
+    private DocumentFragment createContent(Document document, String text) {
 
-        while ((child = element.getFirstChild()) != null) {
-            element.removeChild(child);
+        // Text might hold XML content
+        if (text.contains("<")) {
+            DocumentBuilder builder = JOOX.builder();
+
+            try {
+                String wrapped = "<dummy>" + text + "</dummy>";
+                Document parsed = builder.parse(new InputSource(new StringReader(wrapped)));
+                DocumentFragment fragment = parsed.createDocumentFragment();
+                NodeList children = parsed.getDocumentElement().getChildNodes();
+
+                // appendChild removes children also from NodeList!
+                while (children.getLength() > 0) {
+                    fragment.appendChild(children.item(0));
+                }
+
+                return (DocumentFragment) document.importNode(fragment, true);
+            }
+
+            // This does not occur
+            catch (IOException ignore) {}
+
+            // The XML content is invalid
+            catch (SAXException ignore) {}
         }
-    }
 
-    @Override
-    public String content() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl content(String content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl content(Content content) {
-        throw new UnsupportedOperationException();
+        // Plain text or invalid XML
+        return null;
     }
 
     @Override
@@ -899,123 +960,112 @@ class ElementsImpl implements Elements {
     }
 
     @Override
-    public ElementsImpl insertAfter(String... content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl insertAfter(Element... elements) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl insertAfter(Elements... elements) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl insertAfter(Content content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl insertBefore(String... content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl insertBefore(Element... elements) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl insertBefore(Elements... elements) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl insertBefore(Content content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl prepend(String... content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl prepend(Element... elements) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl prepend(Elements... elements) {
-        throw new UnsupportedOperationException();
+    public ElementsImpl prepend(String content) {
+        return prepend(JOOX.content(content));
     }
 
     @Override
     public ElementsImpl prepend(Content content) {
-        throw new UnsupportedOperationException();
+        for (int i = 0; i < size(); i++) {
+            Element element = get(i);
+            Document document = element.getOwnerDocument();
+
+            String text = content.content(i, element);
+            DocumentFragment imported = createContent(document, text);
+            Node first = element.getFirstChild();
+
+            if (imported != null) {
+                element.insertBefore(imported, first);
+            }
+            else {
+                element.insertBefore(document.createTextNode(text), first);
+            }
+        }
+
+        return this;
     }
 
     @Override
-    public ElementsImpl prependTo(String selector) {
-        throw new UnsupportedOperationException();
-    }
+    public Elements empty() {
+        for (Element element : elements) {
+            empty(element);
+        }
 
-    @Override
-    public ElementsImpl prependTo(Element element) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl prependTo(Elements element) {
-        throw new UnsupportedOperationException();
+        return this;
     }
 
     @Override
     public ElementsImpl remove() {
-        throw new UnsupportedOperationException();
+        return remove(JOOX.all());
     }
 
     @Override
     public ElementsImpl remove(String selector) {
-        throw new UnsupportedOperationException();
+        return remove(JOOX.selector(selector));
     }
 
     @Override
-    public ElementsImpl replaceAll(String selector) {
-        throw new UnsupportedOperationException();
+    public ElementsImpl remove(Filter filter) {
+        List<Element> remove = new ArrayList<Element>();
+
+        for (int i = 0; i < size(); i++) {
+            Element element = get(i);
+
+            if (filter.filter(i, element)) {
+                remove.add(element);
+            }
+        }
+
+        for (Element element : remove) {
+            remove(element);
+        }
+
+        return this;
     }
 
-    @Override
-    public ElementsImpl replaceAll(Element... elements) {
-        throw new UnsupportedOperationException();
+    private void remove(Element element) {
+        element.getParentNode().removeChild(element);
+        elements.remove(element);
     }
 
-    @Override
-    public ElementsImpl replaceAll(Elements... elements) {
-        throw new UnsupportedOperationException();
+    private void empty(Element element) {
+        Node child;
+
+        while ((child = element.getFirstChild()) != null) {
+            element.removeChild(child);
+        }
     }
 
     @Override
     public ElementsImpl replaceWith(String content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl replaceWith(Element... elements) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl replaceWith(Elements... elements) {
-        throw new UnsupportedOperationException();
+        return replaceWith(JOOX.content(content));
     }
 
     @Override
     public ElementsImpl replaceWith(Content content) {
-        throw new UnsupportedOperationException();
+        List<Element> result = new ArrayList<Element>();
+
+        for (int i = 0; i < size(); i++) {
+            Element element = get(i);
+            Document document = element.getOwnerDocument();
+
+            String text = content.content(i, element);
+            DocumentFragment imported = createContent(document, text);
+            Node parent = element.getParentNode();
+
+            if (imported != null) {
+                result.addAll(JOOX.list(imported.getChildNodes()));
+                parent.replaceChild(imported, element);
+            }
+            else {
+                parent.replaceChild(document.createTextNode(text), element);
+            }
+        }
+
+        elements.clear();
+        elements.addAll(result);
+
+        return this;
     }
 
     @Override
@@ -1025,16 +1075,6 @@ class ElementsImpl implements Elements {
 
     @Override
     public ElementsImpl wrap(String content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl wrap(Element element) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl wrap(Elements element) {
         throw new UnsupportedOperationException();
     }
 
@@ -1049,27 +1089,7 @@ class ElementsImpl implements Elements {
     }
 
     @Override
-    public ElementsImpl wrapAll(Element element) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl wrapAll(Elements element) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public ElementsImpl wrapInner(String content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl wrapInner(Element element) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl wrapInner(Elements element) {
         throw new UnsupportedOperationException();
     }
 
@@ -1117,6 +1137,21 @@ class ElementsImpl implements Elements {
         return result;
     }
 
+    @Override
+    public String id() {
+        return id(0);
+    }
+
+    @Override
+    public String id(int index) {
+        return eq(index).attr("id");
+    }
+
+    @Override
+    public List<String> ids() {
+        return attrs("id");
+    }
+
     // -------------------------------------------------------------------------
     // Object
     // -------------------------------------------------------------------------
@@ -1147,6 +1182,17 @@ class ElementsImpl implements Elements {
     }
 
     private String toString(Element element) {
-        return element.toString();
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            Source source = new DOMSource(element);
+            Result target = new StreamResult(out);
+            transformer.transform(source, target);
+            return out.toString();
+        }
+        catch (Exception e) {
+            return "[ ERROR IN toString() : " + e.getMessage() + " ]";
+        }
     }
 }

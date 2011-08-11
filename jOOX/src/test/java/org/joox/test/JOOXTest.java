@@ -35,6 +35,7 @@
  */
 package org.joox.test;
 
+import static java.util.Collections.nCopies;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
@@ -49,6 +50,7 @@ import java.util.Queue;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
@@ -74,6 +76,7 @@ public class JOOXTest {
     private Element xmlElement;
     private int totalElements;
     private Elements joox;
+    private XPath xPath;
 
     @Before
     public void setUp() throws Exception {
@@ -84,9 +87,8 @@ public class JOOXTest {
         xmlDocument = builder.parse(new ByteArrayInputStream(xmlString.getBytes()));
         xmlElement = xmlDocument.getDocumentElement();
         joox = joox(xmlDocument);
-        totalElements = ((Number) XPathFactory
-            .newInstance()
-            .newXPath()
+        xPath = XPathFactory.newInstance().newXPath();
+        totalElements = ((Number) xPath
             .evaluate("count(//*)", xmlDocument, XPathConstants.NUMBER))
             .intValue() - 1;
 
@@ -342,7 +344,8 @@ public class JOOXTest {
     public void testParent() throws Exception {
         assertEquals(0, joox.parent().size());
         assertEquals(3, joox.find("book").parent().size());
-        assertEquals(Arrays.asList("books", "books", "books"), joox.find("book").parent().tags());
+        assertEquals(nCopies(3, "books"), joox.find("book").parent().tags());
+        assertEquals(nCopies(8, "book"), joox.find("authors").parent().tags());
     }
 
     @Test
@@ -554,6 +557,17 @@ public class JOOXTest {
     }
 
     @Test
+    public void testRemove() throws Exception {
+        assertEquals(0, joox.find("director").remove().size());
+        assertEquals(0, joox.find("director").size());
+        assertEquals(3, joox.find("book").remove(JOOX.ids("1", "2")).size());
+        assertEquals(3, joox.find("book").remove(JOOX.ids("1", "2")).size());
+        assertEquals(0, joox.remove().size());
+        assertEquals(0, joox.find().size());
+        assertEquals(0, joox.size());
+    }
+
+    @Test
     public void testText() throws Exception {
         assertNull(joox.find("any").text());
         assertEquals("Sergio Leone", joox.find("director").text());
@@ -565,5 +579,102 @@ public class JOOXTest {
         assertEquals(
             Collections.nCopies(3, "Lukas Eder"),
             joox.find("actor").text("Lukas Eder").texts());
+
+        assertEquals("<abc/>", joox.find("actors").text("<abc/>").text());
+        assertEquals("<><aa>", joox.find("actors").text("<><aa>").text());
+    }
+
+    @Test
+    public void testContent() throws Exception {
+        assertEquals("Sergio Leone", joox.find("director").content());
+        assertEquals(Arrays.asList(
+            "Charles Bronson",
+            "Jason Robards",
+            "Claudia Cardinale"),
+            joox.find("actor").contents());
+
+        assertEquals("<><aa>", joox.find("actors").content("<><aa>").text());
+        assertEquals("<><aa>", joox.find("actors").content());
+        assertEquals("<abc><x></abc>", joox.find("actors").content("<abc><x></abc>").text());
+        assertEquals("<abc><x></abc>", joox.find("actors").content());
+        assertEquals("", joox.find("actors").content("<abc><x/></abc>").text());
+        assertEquals("<abc><x/></abc>", joox.find("actors").content());
+        assertEquals(1, joox.find("abc").size());
+        assertEquals(1, joox.find("x").size());
+        assertEquals(8, joox.find("book").content("<book-content/>").size());
+        assertEquals(8, joox.find("book-content").size());
+        assertEquals(
+            Collections.nCopies(8, "book"),
+            joox.find("book-content").parent().tags());
+
+        assertEquals("<xx/><xx/>", joox.find("actors").content("<xx/><xx/>").content());
+        assertEquals(2, joox.find("xx").size());
+    }
+
+    @Test
+    public void testAppend() throws Exception {
+        assertEquals(1, joox.find("dvds").append("<dvd id=\"6\"/>").size());
+        assertEquals(2, joox.find("dvd").size());
+        assertEquals(2, joox.find("dvds").children().size());
+        assertEquals(
+            Arrays.asList("5", "6"),
+            joox.find("dvd").ids());
+
+        assertEquals(1, joox.find("dvds").append("<dvd id=\"7\"/><dvd id=\"8\"/>").size());
+        assertEquals(4, joox.find("dvd").size());
+        assertEquals(4, joox.find("dvds").children().size());
+        assertEquals(
+            Arrays.asList("5", "6", "7", "8"),
+            joox.find("dvd").ids());
+
+        assertEquals(1, joox.find("director").append("<><aa>").size());
+        assertEquals(0, joox.find("director").children().size());
+        assertEquals("Sergio Leone<><aa>", joox.find("director").text());
+        assertEquals("Sergio Leone<><aa>", joox.find("director").content());
+    }
+
+    @Test
+    public void testPrepend() throws Exception {
+        assertEquals(1, joox.find("dvds").prepend("<dvd id=\"6\"/>").size());
+        assertEquals(2, joox.find("dvd").size());
+        assertEquals(2, joox.find("dvds").children().size());
+        assertEquals(
+            Arrays.asList("6", "5"),
+            joox.find("dvd").ids());
+
+        assertEquals(1, joox.find("dvds").prepend("<dvd id=\"7\"/><dvd id=\"8\"/>").size());
+        assertEquals(4, joox.find("dvd").size());
+        assertEquals(4, joox.find("dvds").children().size());
+        assertEquals(
+            Arrays.asList("7", "8", "6", "5"),
+            joox.find("dvd").ids());
+
+        assertEquals(1, joox.find("director").prepend("<><aa>").size());
+        assertEquals(0, joox.find("director").children().size());
+        assertEquals("<><aa>Sergio Leone", joox.find("director").text());
+        assertEquals("<><aa>Sergio Leone", joox.find("director").content());
+    }
+
+    @Test
+    public void testReplaceWith() throws Exception {
+        assertEquals(
+            "best-director-in-the-world",
+            joox.find("director").replaceWith("<best-director-in-the-world>Jean Claude van Damme</best-director-in-the-world>").tag());
+        assertEquals(0, joox.find("director").size());
+        assertEquals(1, joox.find("best-director-in-the-world").size());
+        assertEquals("directors", joox.find("best-director-in-the-world").parent().tag());
+
+        assertEquals(0, joox.find("best-director-in-the-world").replaceWith("<><aa>").size());
+        assertEquals("<><aa>", joox.find("directors").text().trim());
+        assertEquals("<><aa>", joox.find("directors").content().trim());
+    }
+
+    // @Test
+    public void testUnwrap() throws Exception {
+        assertEquals(1, joox.find("director").unwrap().size());
+        assertEquals(0, joox.find("directors").size());
+        assertEquals("dvd", joox.find("director").parent().tag());
+        assertEquals(1, joox.find("dvd").children(JOOX.tag("director")).size());
+        assertEquals("Sergio Leone", joox.find("director").text());
     }
 }

@@ -35,10 +35,20 @@
  */
 package org.joox.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.joox.Content;
+import org.joox.Elements;
 import org.joox.Filter;
 import org.joox.Mapper;
-import org.joox.Elements;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -67,6 +77,21 @@ public final class JOOX {
      */
     public static Elements joox(Element element) {
         return new ElementsImpl().addElements(element);
+    }
+
+    /**
+     * Get a document builder
+     */
+    public static DocumentBuilder builder() {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+
+            return builder;
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -192,6 +217,20 @@ public final class JOOX {
     }
 
     /**
+     * Create a filter matching id attributes
+     */
+    public static Filter ids(String... ids) {
+        final Set<String> set = new HashSet<String>(Arrays.asList(ids));
+
+        return new Filter() {
+            @Override
+            public boolean filter(int index, Element element) {
+                return set.contains(element.getAttribute("id"));
+            }
+        };
+    }
+
+    /**
      * Get a constant content that returns the same <code>value</code> for all
      * elements.
      */
@@ -226,7 +265,27 @@ public final class JOOX {
     /**
      * Wrap a {@link NodeList} into an {@link Iterable}
      */
-    static Iterable<Element> iterable(NodeList elements) {
+    public static Iterable<Element> iterable(NodeList elements) {
         return new IterableElements(elements);
+    }
+
+    /**
+     * Wrap a {@link NodeList} into an {@link Iterator}
+     */
+    public static Iterator<Element> iterator(NodeList elements) {
+        return new IterableElements(elements).iterator();
+    }
+
+    /**
+     * Wrap a {@link NodeList} into an {@link List}
+     */
+    public static List<Element> list(NodeList elements) {
+        List<Element> list = new ArrayList<Element>();
+
+        for (Element element : iterable(elements)) {
+            list.add(element);
+        }
+
+        return list;
     }
 }
