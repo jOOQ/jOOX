@@ -703,12 +703,12 @@ public class JOOXTest {
         assertEquals("<><aa>", joox.find("directors").content().trim());
     }
 
-    // @Test
-    public void testUnwrap() throws Exception {
-        assertEquals(1, joox.find("director").unwrap().size());
-        assertEquals(0, joox.find("directors").size());
-        assertEquals("dvd", joox.find("director").parent().tag());
-        assertEquals(1, joox.find("dvd").children(JOOX.tag("director")).size());
-        assertEquals("Sergio Leone", joox.find("director").text());
+    @Test
+    public void testEmptyJOOX() throws Exception {
+        Elements x = JOOX.joox();
+        assertEquals(0, x.size());
+        assertEquals(0, x.children().size());
+        assertEquals(0, x.find("any").size());
+        assertEquals(1, x.append("<hello><world/></hello>").size());
     }
 }

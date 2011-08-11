@@ -176,26 +176,6 @@ class ElementsImpl implements Elements {
     }
 
     @Override
-    public int index() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public int index(String selector) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public int index(Element element) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public int index(Elements element) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public int size() {
         return elements.size();
     }
@@ -1114,36 +1094,6 @@ class ElementsImpl implements Elements {
         elements.addAll(result);
 
         return this;
-    }
-
-    @Override
-    public ElementsImpl unwrap() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl wrap(String content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl wrap(Content content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl wrapAll(String content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl wrapInner(String content) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ElementsImpl wrapInner(Content content) {
-        throw new UnsupportedOperationException();
     }
 
     // -------------------------------------------------------------------------

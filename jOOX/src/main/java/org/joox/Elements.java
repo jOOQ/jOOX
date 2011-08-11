@@ -60,14 +60,6 @@ public interface Elements extends Iterable<Element> {
      */
     List<Element> get();
 
-    int index();
-
-    int index(String selector);
-
-    int index(Element element);
-
-    int index(Elements element);
-
     /**
      * Get the number of matched elements in the set of matched elements
      */
@@ -434,8 +426,18 @@ public interface Elements extends Iterable<Element> {
     Elements slice(int start, int end);
 
     // -------------------------------------------------------------------------
-    // Manipulation
+    // Manipulation of elements
     // -------------------------------------------------------------------------
+
+    /**
+     * Add content before each element in the set of matched elements.
+     */
+    Elements before(String content);
+
+    /**
+     * Add content before each element in the set of matched elements.
+     */
+    Elements before(Content content);
 
     /**
      * Add content after each element in the set of matched elements.
@@ -448,6 +450,18 @@ public interface Elements extends Iterable<Element> {
     Elements after(Content content);
 
     /**
+     * Prepend content to the beginning of each element's content in the set of
+     * matched elements.
+     */
+    Elements prepend(String content);
+
+    /**
+     * Prepend content to the beginning of each element's content in the set of
+     * matched elements.
+     */
+    Elements prepend(Content content);
+
+    /**
      * Append content to the end of each element's content in the set of matched
      * elements.
      */
@@ -458,6 +472,42 @@ public interface Elements extends Iterable<Element> {
      * elements.
      */
     Elements append(Content content);
+
+    /**
+     * Replace all elements in the set of matched elements with some new
+     * content.
+     */
+    Elements replaceWith(String content);
+
+    /**
+     * Replace all elements in the set of matched elements with some new
+     * content.
+     */
+    Elements replaceWith(Content content);
+
+    /**
+     * Removes all content from all elements in the set of matched elements.
+     */
+    Elements empty();
+
+    /**
+     * Removes all elements in the set of matched elements.
+     */
+    Elements remove();
+
+    /**
+     * Removes all elements in the set of matched elements, matching a selector
+     */
+    Elements remove(String selector);
+
+    /**
+     * Removes all elements in the set of matched elements, matching a filter
+     */
+    Elements remove(Filter filter);
+
+    // -------------------------------------------------------------------------
+    // Manipulation of attributes
+    // -------------------------------------------------------------------------
 
     /**
      * Get the attribute <code>name</code> from the first element in the set of
@@ -492,9 +542,9 @@ public interface Elements extends Iterable<Element> {
      */
     Elements removeAttr(String name);
 
-    Elements before(String content);
-
-    Elements before(Content content);
+    // -------------------------------------------------------------------------
+    // Manipulation of content
+    // -------------------------------------------------------------------------
 
     /**
      * Get the XML content of the first element in the set of matched elements,
@@ -545,66 +595,6 @@ public interface Elements extends Iterable<Element> {
      * (possibly replacing existing content).
      */
     Elements text(Content content);
-
-    /**
-     * Prepend content to the beginning of each element's content in the set of
-     * matched elements.
-     */
-    Elements prepend(String content);
-
-    /**
-     * Prepend content to the beginning of each element's content in the set of
-     * matched elements.
-     */
-    Elements prepend(Content content);
-
-    /**
-     * Removes all content from all elements in the set of matched elements.
-     */
-    Elements empty();
-
-    /**
-     * Removes all elements in the set of matched elements.
-     */
-    Elements remove();
-
-    /**
-     * Removes all elements in the set of matched elements, matching a selector
-     */
-    Elements remove(String selector);
-
-    /**
-     * Removes all elements in the set of matched elements, matching a filter
-     */
-    Elements remove(Filter filter);
-
-    /**
-     * Replace all elements in the set of matched elements with some new
-     * content.
-     */
-    Elements replaceWith(String content);
-
-    /**
-     * Replace all elements in the set of matched elements with some new
-     * content.
-     */
-    Elements replaceWith(Content content);
-
-    // /**
-    // * Remove the parents of the set of matched elements, leaving the matched
-    // * elements in their place.
-    // */
-    Elements unwrap();
-
-    Elements wrap(String content);
-
-    Elements wrap(Content content);
-
-    Elements wrapAll(String content);
-
-    Elements wrapInner(String content);
-
-    Elements wrapInner(Content content);
 
     // -------------------------------------------------------------------------
     // Utility
