@@ -54,41 +54,34 @@ import org.w3c.dom.NodeList;
  */
 public final class JOOX {
 
+    // ---------------------------------------------------------------------
+    // $ wrapper methods
+    // ---------------------------------------------------------------------
+
     /**
      * Create an empty jOOX {@link X} element set
      */
-    public static X joox() {
+    public static X $() {
         return new Impl();
     }
 
     /**
      * Wrap a DOM document in a jOOX {@link X} element set
      */
-    public static X joox(Document document) {
-        return joox(document.getDocumentElement());
+    public static X $(Document document) {
+        return $(document.getDocumentElement());
     }
 
     /**
      * Wrap a DOM element in a jOOX {@link X} element set
      */
-    public static X joox(Element element) {
+    public static X $(Element element) {
         return new Impl().addElements(element);
     }
 
-    /**
-     * Get a document builder
-     */
-    public static DocumentBuilder builder() {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-
-            return builder;
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+    // ---------------------------------------------------------------------
+    // Filter factories
+    // ---------------------------------------------------------------------
 
     /**
      * A filter that always returns false
@@ -227,6 +220,10 @@ public final class JOOX {
         };
     }
 
+    // ---------------------------------------------------------------------
+    // Content factories
+    // ---------------------------------------------------------------------
+
     /**
      * Get a constant content that returns the same <code>value</code> for all
      * elements.
@@ -240,17 +237,21 @@ public final class JOOX {
         };
     }
 
+    // ---------------------------------------------------------------------
+    // Mapper factories
+    // ---------------------------------------------------------------------
+
     /**
      * Create a mapper that returns all <code>id</code> attributes
      */
     public static Mapper<String> ids() {
-        return attributes("id");
+        return attrs("id");
     }
 
     /**
      * Create a mapper that returns all attributes with a given name
      */
-    public static Mapper<String> attributes(final String attributeName) {
+    public static Mapper<String> attrs(final String attributeName) {
         return new Mapper<String>() {
             @Override
             public String map(int index, Element element) {
@@ -258,6 +259,10 @@ public final class JOOX {
             }
         };
     }
+
+    // ---------------------------------------------------------------------
+    // DOM utilities
+    // ---------------------------------------------------------------------
 
     /**
      * Wrap a {@link NodeList} into an {@link Iterable}
@@ -284,5 +289,20 @@ public final class JOOX {
         }
 
         return list;
+    }
+
+    /**
+     * Get a document builder
+     */
+    public static DocumentBuilder builder() {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+
+            return builder;
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

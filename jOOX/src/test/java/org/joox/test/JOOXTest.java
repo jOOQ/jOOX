@@ -40,7 +40,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
-import static org.joox.JOOX.joox;
+import static org.joox.JOOX.$;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -75,7 +75,7 @@ public class JOOXTest {
     private Document xmlDocument;
     private Element xmlElement;
     private int totalElements;
-    private X joox;
+    private X $;
     private XPath xPath;
 
     @Before
@@ -86,7 +86,7 @@ public class JOOXTest {
         xmlString = IOUtil.toString(JOOXTest.class.getResourceAsStream("/example.xml"));
         xmlDocument = builder.parse(new ByteArrayInputStream(xmlString.getBytes()));
         xmlElement = xmlDocument.getDocumentElement();
-        joox = joox(xmlDocument);
+        $ = $(xmlDocument);
         xPath = XPathFactory.newInstance().newXPath();
         totalElements = ((Number) xPath
             .evaluate("count(//*)", xmlDocument, XPathConstants.NUMBER))
@@ -100,8 +100,8 @@ public class JOOXTest {
 
     @Test
     public void testSize() {
-        assertEquals(1, joox.size());
-        assertEquals(3, joox.children().size());
+        assertEquals(1, $.size());
+        assertEquals(3, $.children().size());
     }
 
     // -------------------------------------------------------------------------
@@ -110,18 +110,18 @@ public class JOOXTest {
 
     @Test
     public void testAdd() {
-        assertEquals(0, joox().size());
-        assertEquals(1, joox().add(xmlElement).size());
-        assertEquals(1, joox().add(xmlElement, xmlElement).size());
+        assertEquals(0, $().size());
+        assertEquals(1, $().add(xmlElement).size());
+        assertEquals(1, $().add(xmlElement, xmlElement).size());
 
-        X x = joox().add(
+        X x = $().add(
             (Element) xmlElement.getElementsByTagName("director").item(0),
             (Element) xmlElement.getElementsByTagName("actor").item(0));
         assertEquals(2, x.size());
         assertEquals("director", x.get(0).getTagName());
         assertEquals("actor", x.get(1).getTagName());
 
-        x = x.add(joox(xmlElement).find("dvds"));
+        x = x.add($(xmlElement).find("dvds"));
         assertEquals(3, x.size());
         assertEquals("director", x.get(0).getTagName());
         assertEquals("actor", x.get(1).getTagName());
@@ -136,37 +136,37 @@ public class JOOXTest {
 
     @Test
     public void testChildren() {
-        assertEquals("library", joox.children().get().get(0).getTagName());
-        assertEquals("library", joox.children().get().get(1).getTagName());
-        assertEquals("library", joox.children().get().get(2).getTagName());
-        assertEquals(2, joox(joox.children().get().get(0)).children().size());
-        assertEquals("books", joox(joox.children().get().get(0)).children().get().get(0).getTagName());
-        assertEquals(5, joox(joox.children().get().get(0)).children().children().size());
-        assertEquals("book", joox(joox.children().get().get(0)).children().children().get().get(0).getTagName());
-        assertEquals("1", joox(joox.children().get().get(0)).children().children().get().get(0).getAttribute("id"));
-        assertEquals("2", joox(joox.children().get().get(0)).children().children().get().get(1).getAttribute("id"));
-        assertEquals("3", joox(joox.children().get().get(0)).children().children().get().get(2).getAttribute("id"));
-        assertEquals("4", joox(joox.children().get().get(0)).children().children().get().get(3).getAttribute("id"));
+        assertEquals("library", $.children().get().get(0).getTagName());
+        assertEquals("library", $.children().get().get(1).getTagName());
+        assertEquals("library", $.children().get().get(2).getTagName());
+        assertEquals(2, $($.children().get().get(0)).children().size());
+        assertEquals("books", $($.children().get().get(0)).children().get().get(0).getTagName());
+        assertEquals(5, $($.children().get().get(0)).children().children().size());
+        assertEquals("book", $($.children().get().get(0)).children().children().get().get(0).getTagName());
+        assertEquals("1", $($.children().get().get(0)).children().children().get().get(0).getAttribute("id"));
+        assertEquals("2", $($.children().get().get(0)).children().children().get().get(1).getAttribute("id"));
+        assertEquals("3", $($.children().get().get(0)).children().children().get().get(2).getAttribute("id"));
+        assertEquals("4", $($.children().get().get(0)).children().children().get().get(3).getAttribute("id"));
 
-        assertEquals(4, joox.children().children().size());
-        assertEquals("books", joox.children().children().get().get(0).getTagName());
-        assertEquals("dvds", joox.children().children().get().get(1).getTagName());
-        assertEquals("books", joox.children().children().get().get(2).getTagName());
-        assertEquals("books", joox.children().children().get().get(3).getTagName());
+        assertEquals(4, $.children().children().size());
+        assertEquals("books", $.children().children().get().get(0).getTagName());
+        assertEquals("dvds", $.children().children().get().get(1).getTagName());
+        assertEquals("books", $.children().children().get().get(2).getTagName());
+        assertEquals("books", $.children().children().get().get(3).getTagName());
     }
 
     @Test
     public void testChildrenSelector() {
-        assertEquals(0, joox.children("document").size());
-        assertEquals(0, joox.children("asdf").size());
-        assertEquals(3, joox.children("library").size());
+        assertEquals(0, $.children("document").size());
+        assertEquals(0, $.children("asdf").size());
+        assertEquals(3, $.children("library").size());
     }
 
     @Test
     public void testChildrenFilter() {
-        assertEquals(0, joox.children(JOOX.none()).size());
-        assertEquals(1, joox.children().children(JOOX.tag("dvds")).size());
-        assertEquals(1, joox.children().children(JOOX.tag("dvds")).children(JOOX.tag("dvd")).size());
+        assertEquals(0, $.children(JOOX.none()).size());
+        assertEquals(1, $.children().children(JOOX.tag("dvds")).size());
+        assertEquals(1, $.children().children(JOOX.tag("dvds")).children(JOOX.tag("dvd")).size());
     }
 
     @Test
@@ -174,7 +174,7 @@ public class JOOXTest {
         final Queue<Integer> queue = new LinkedList<Integer>();
 
         queue.addAll(Arrays.asList(0));
-        joox.each(new Each() {
+        $.each(new Each() {
             @Override
             public void each(int index, Element element) {
                 assertEquals((int) queue.poll(), index);
@@ -185,7 +185,7 @@ public class JOOXTest {
         assertTrue(queue.isEmpty());
         queue.addAll(Arrays.asList(0, 1, 2));
 
-        joox.children().each(new Each() {
+        $.children().each(new Each() {
             @Override
             public void each(int index, Element element) {
                 assertEquals((int) queue.poll(), index);
@@ -198,91 +198,91 @@ public class JOOXTest {
 
     @Test
     public void testEq() {
-        assertEquals("authors", joox.find().eq(4).tag(0));
-        assertEquals("author", joox.find().eq(5).tag(0));
-        assertEquals("George Orwell", joox.find().eq(5).text());
+        assertEquals("authors", $.find().eq(4).tag(0));
+        assertEquals("author", $.find().eq(5).tag(0));
+        assertEquals("George Orwell", $.find().eq(5).text());
     }
 
     @Test
     public void testFilter() {
-        assertEquals(0, joox.filter("asdf").size());
-        assertEquals(1, joox.filter("document").size());
-        assertEquals(3, joox.find().filter("actor").size());
-        assertEquals(3, joox.find().filter("actor").filter(JOOX.all()).size());
-        assertEquals(2, joox.find().filter("actor").filter(JOOX.even()).size());
-        assertEquals(1, joox.find().filter("actor").filter(JOOX.odd()).size());
+        assertEquals(0, $.filter("asdf").size());
+        assertEquals(1, $.filter("document").size());
+        assertEquals(3, $.find().filter("actor").size());
+        assertEquals(3, $.find().filter("actor").filter(JOOX.all()).size());
+        assertEquals(2, $.find().filter("actor").filter(JOOX.even()).size());
+        assertEquals(1, $.find().filter("actor").filter(JOOX.odd()).size());
     }
 
     @Test
     public void testFind() {
-        assertEquals(0, joox.find("document").size());
-        assertEquals(0, joox.find("asdf").size());
-        assertEquals(0, joox.find("document").find("document").size());
-        assertEquals(0, joox.find("document").find("libary").size());
-        assertEquals(3, joox.find("library").size());
-        assertEquals(8, joox.find("book").size());
-        assertEquals(8, joox.find("book").get().size());
-        assertEquals("book", joox.find("book").get().get(2).getTagName());
-        assertEquals("book", joox.find("book").get(2).getTagName());
-        assertEquals("4", joox.find("book").get().get(3).getAttribute("id"));
-        assertEquals("4", joox.find("book").get(3).getAttribute("id"));
+        assertEquals(0, $.find("document").size());
+        assertEquals(0, $.find("asdf").size());
+        assertEquals(0, $.find("document").find("document").size());
+        assertEquals(0, $.find("document").find("libary").size());
+        assertEquals(3, $.find("library").size());
+        assertEquals(8, $.find("book").size());
+        assertEquals(8, $.find("book").get().size());
+        assertEquals("book", $.find("book").get().get(2).getTagName());
+        assertEquals("book", $.find("book").get(2).getTagName());
+        assertEquals("4", $.find("book").get().get(3).getAttribute("id"));
+        assertEquals("4", $.find("book").get(3).getAttribute("id"));
     }
 
     @Test
     public void testFindFilter() throws Exception {
-        assertEquals(0, joox.find(JOOX.none()).size());
-        assertEquals(totalElements, joox.find().size());
-        assertEquals(totalElements, joox.find(JOOX.all()).size());
-        assertEquals((totalElements + 1) / 2, joox.find(JOOX.even()).size());
-        assertEquals(totalElements / 2, joox.find(JOOX.odd()).size());
-        assertEquals(3, joox.find(JOOX.tag("library")).size());
-        assertEquals(8, joox.find(JOOX.tag("book")).size());
+        assertEquals(0, $.find(JOOX.none()).size());
+        assertEquals(totalElements, $.find().size());
+        assertEquals(totalElements, $.find(JOOX.all()).size());
+        assertEquals((totalElements + 1) / 2, $.find(JOOX.even()).size());
+        assertEquals(totalElements / 2, $.find(JOOX.odd()).size());
+        assertEquals(3, $.find(JOOX.tag("library")).size());
+        assertEquals(8, $.find(JOOX.tag("book")).size());
     }
 
     @Test
     public void testFirst() throws Exception {
-        assertEquals(0, joox.find("document").first().size());
-        assertEquals(1, joox.first().size());
-        assertEquals("document", joox.first().tag());
-        assertEquals("books", joox.children().first().children().first().tag());
+        assertEquals(0, $.find("document").first().size());
+        assertEquals(1, $.first().size());
+        assertEquals("document", $.first().tag());
+        assertEquals("books", $.children().first().children().first().tag());
     }
 
     @Test
     public void testHas() throws Exception {
-        assertEquals(0, joox.has("asdf").size());
-        assertEquals(0, joox.has("document").size());
-        assertEquals(1, joox.has("library").size());
-        assertEquals(1, joox.has("authors").size());
-        assertEquals(3, joox.children().has("authors").size());
-        assertEquals(1, joox.children().has("dvds").size());
+        assertEquals(0, $.has("asdf").size());
+        assertEquals(0, $.has("document").size());
+        assertEquals(1, $.has("library").size());
+        assertEquals(1, $.has("authors").size());
+        assertEquals(3, $.children().has("authors").size());
+        assertEquals(1, $.children().has("dvds").size());
     }
 
     @Test
     public void testIs() throws Exception {
-        assertFalse(joox.is("abc"));
-        assertTrue(joox.is("document"));
-        assertTrue(joox.is(JOOX.even()));
+        assertFalse($.is("abc"));
+        assertTrue($.is("document"));
+        assertTrue($.is(JOOX.even()));
     }
 
     @Test
     public void testLast() throws Exception {
-        assertEquals(0, joox.find("document").last().size());
-        assertEquals(1, joox.last().size());
-        assertEquals("document", joox.last().tag());
-        assertEquals("dvds", joox.children().eq(0).children().last().tag());
+        assertEquals(0, $.find("document").last().size());
+        assertEquals(1, $.last().size());
+        assertEquals("document", $.last().tag());
+        assertEquals("dvds", $.children().eq(0).children().last().tag());
     }
 
     @Test
     public void testMap() throws Exception {
         assertEquals(
             Arrays.asList("1", "2", "3", "4", "1", "3", "1", "2"),
-            joox.find("book").map(JOOX.ids()));
+            $.find("book").map(JOOX.ids()));
 
         assertEquals(
             Arrays.asList("Amazon", "Rösslitor", "Orell Füssli"),
-            joox.find("library").map(JOOX.attributes("name")));
+            $.find("library").map(JOOX.attrs("name")));
 
-        assertEquals(Arrays.asList(0, 1, 2, 3), joox.children().first().find("book").map(new Mapper<Integer>() {
+        assertEquals(Arrays.asList(0, 1, 2, 3), $.children().first().find("book").map(new Mapper<Integer>() {
             @Override
             public Integer map(int index, Element element) {
                 return index;
@@ -292,420 +292,420 @@ public class JOOXTest {
 
     @Test
     public void testNext() throws Exception {
-        assertEquals(0, joox.next().size());
-        assertEquals(5, joox.find("book").next().size());
-        assertEquals(2, joox.find("book").next().next().size());
-        assertEquals(1, joox.find("book").next().next().next().size());
-        assertEquals(0, joox.find("book").next().next().next().next().size());
+        assertEquals(0, $.next().size());
+        assertEquals(5, $.find("book").next().size());
+        assertEquals(2, $.find("book").next().next().size());
+        assertEquals(1, $.find("book").next().next().next().size());
+        assertEquals(0, $.find("book").next().next().next().next().size());
 
-        assertEquals(1, joox.find("book").eq(0).next().size());
-        assertEquals(1, joox.find("book").eq(0).next(JOOX.all()).size());
-        assertEquals(0, joox.find("book").eq(0).next(JOOX.none()).size());
-        assertEquals(0, joox.find("book").eq(0).next(new Filter() {
+        assertEquals(1, $.find("book").eq(0).next().size());
+        assertEquals(1, $.find("book").eq(0).next(JOOX.all()).size());
+        assertEquals(0, $.find("book").eq(0).next(JOOX.none()).size());
+        assertEquals(0, $.find("book").eq(0).next(new Filter() {
             @Override
             public boolean filter(int index, Element element) {
-                return "Paulo Coelho".equals(joox(element).find("author").text());
+                return "Paulo Coelho".equals($(element).find("author").text());
             }
         }).size());
-        assertEquals(1, joox.find("book").eq(1).next(new Filter() {
+        assertEquals(1, $.find("book").eq(1).next(new Filter() {
             @Override
             public boolean filter(int index, Element element) {
-                return "Paulo Coelho".equals(joox(element).find("author").text());
+                return "Paulo Coelho".equals($(element).find("author").text());
             }
         }).size());
     }
 
     @Test
     public void testNextAll() throws Exception {
-        assertEquals(0, joox.nextAll().size());
-        assertEquals(5, joox.find("book").nextAll().size());
-        assertEquals(2, joox.find("book").nextAll().nextAll().size());
-        assertEquals(1, joox.find("book").nextAll().nextAll().nextAll().size());
-        assertEquals(0, joox.find("book").nextAll().nextAll().nextAll().nextAll().size());
+        assertEquals(0, $.nextAll().size());
+        assertEquals(5, $.find("book").nextAll().size());
+        assertEquals(2, $.find("book").nextAll().nextAll().size());
+        assertEquals(1, $.find("book").nextAll().nextAll().nextAll().size());
+        assertEquals(0, $.find("book").nextAll().nextAll().nextAll().nextAll().size());
 
-        assertEquals(3, joox.find("book").eq(0).nextAll().size());
-        assertEquals(2, joox.find("book").eq(0).nextAll().nextAll().size());
+        assertEquals(3, $.find("book").eq(0).nextAll().size());
+        assertEquals(2, $.find("book").eq(0).nextAll().nextAll().size());
     }
 
     @Test
     public void testNextUntil() throws Exception {
-        assertEquals(0, joox.nextUntil("asdf").size());
-        assertEquals(2, joox.find("dvd").children().eq(0).nextUntil("any").size());
+        assertEquals(0, $.nextUntil("asdf").size());
+        assertEquals(2, $.find("dvd").children().eq(0).nextUntil("any").size());
         assertEquals(
             Arrays.asList("directors", "actors"),
-            joox.find("dvd").children().eq(0).nextUntil("any").tags());
+            $.find("dvd").children().eq(0).nextUntil("any").tags());
         assertEquals(1,
-            joox.find("dvd").children().eq(0).nextUntil("actors").size());
+            $.find("dvd").children().eq(0).nextUntil("actors").size());
         assertEquals("directors",
-            joox.find("dvd").children().eq(0).nextUntil("actors").tag());
+            $.find("dvd").children().eq(0).nextUntil("actors").tag());
     }
 
     @Test
     public void testParent() throws Exception {
-        assertEquals(0, joox.parent().size());
-        assertEquals(3, joox.find("book").parent().size());
-        assertEquals(nCopies(3, "books"), joox.find("book").parent().tags());
-        assertEquals(nCopies(8, "book"), joox.find("authors").parent().tags());
+        assertEquals(0, $.parent().size());
+        assertEquals(3, $.find("book").parent().size());
+        assertEquals(nCopies(3, "books"), $.find("book").parent().tags());
+        assertEquals(nCopies(8, "book"), $.find("authors").parent().tags());
     }
 
     @Test
     public void testParents() throws Exception {
-        assertEquals(0, joox.parents().size());
-        assertEquals(1, joox.find("library").parents().size());
-        assertEquals(4, joox.find("books").parents().size());
-        assertEquals(7, joox.find("book").parents().size());
-        assertEquals(15, joox.find("authors").parents().size());
-        assertEquals(23, joox.find("author").parents().size());
-        assertEquals(26, joox.find("author").add(joox.find("actor")).parents().size());
+        assertEquals(0, $.parents().size());
+        assertEquals(1, $.find("library").parents().size());
+        assertEquals(4, $.find("books").parents().size());
+        assertEquals(7, $.find("book").parents().size());
+        assertEquals(15, $.find("authors").parents().size());
+        assertEquals(23, $.find("author").parents().size());
+        assertEquals(26, $.find("author").add($.find("actor")).parents().size());
     }
 
     @Test
     public void testParentsUntil() throws Exception {
-        assertEquals(0, joox.parentsUntil("books").size());
-        assertEquals(1, joox.find("library").parentsUntil("books").size());
-        assertEquals(4, joox.find("books").parentsUntil("books").size());
-        assertEquals(0, joox.find("book").parentsUntil("books").size());
-        assertEquals(8, joox.find("authors").parentsUntil("books").size());
-        assertEquals(16, joox.find("author").parentsUntil("books").size());
-        assertEquals(21, joox.find("author").add(joox.find("actor")).parentsUntil("books").size());
+        assertEquals(0, $.parentsUntil("books").size());
+        assertEquals(1, $.find("library").parentsUntil("books").size());
+        assertEquals(4, $.find("books").parentsUntil("books").size());
+        assertEquals(0, $.find("book").parentsUntil("books").size());
+        assertEquals(8, $.find("authors").parentsUntil("books").size());
+        assertEquals(16, $.find("author").parentsUntil("books").size());
+        assertEquals(21, $.find("author").add($.find("actor")).parentsUntil("books").size());
     }
 
     @Test
     public void testPrev() throws Exception {
-        assertEquals(0, joox.prev().size());
-        assertEquals(5, joox.find("book").prev().size());
-        assertEquals(2, joox.find("book").prev().prev().size());
-        assertEquals(1, joox.find("book").prev().prev().prev().size());
-        assertEquals(0, joox.find("book").prev().prev().prev().prev().size());
+        assertEquals(0, $.prev().size());
+        assertEquals(5, $.find("book").prev().size());
+        assertEquals(2, $.find("book").prev().prev().size());
+        assertEquals(1, $.find("book").prev().prev().prev().size());
+        assertEquals(0, $.find("book").prev().prev().prev().prev().size());
 
-        assertEquals(1, joox.find("book").eq(7).prev().size());
-        assertEquals(1, joox.find("book").eq(7).prev(JOOX.all()).size());
-        assertEquals(0, joox.find("book").eq(7).prev(JOOX.none()).size());
-        assertEquals(0, joox.find("book").eq(7).prev(new Filter() {
+        assertEquals(1, $.find("book").eq(7).prev().size());
+        assertEquals(1, $.find("book").eq(7).prev(JOOX.all()).size());
+        assertEquals(0, $.find("book").eq(7).prev(JOOX.none()).size());
+        assertEquals(0, $.find("book").eq(7).prev(new Filter() {
             @Override
             public boolean filter(int index, Element element) {
-                return "Paulo Coelho".equals(joox(element).find("author").text());
+                return "Paulo Coelho".equals($(element).find("author").text());
             }
         }).size());
-        assertEquals(1, joox.find("book").eq(3).prev(new Filter() {
+        assertEquals(1, $.find("book").eq(3).prev(new Filter() {
             @Override
             public boolean filter(int index, Element element) {
-                return "Paulo Coelho".equals(joox(element).find("author").text());
+                return "Paulo Coelho".equals($(element).find("author").text());
             }
         }).size());
     }
 
     @Test
     public void testPrevAll() throws Exception {
-        assertEquals(0, joox.prevAll().size());
-        assertEquals(5, joox.find("book").prevAll().size());
-        assertEquals(2, joox.find("book").prevAll().prevAll().size());
-        assertEquals(1, joox.find("book").prevAll().prevAll().prevAll().size());
-        assertEquals(0, joox.find("book").prevAll().prevAll().prevAll().prevAll().size());
+        assertEquals(0, $.prevAll().size());
+        assertEquals(5, $.find("book").prevAll().size());
+        assertEquals(2, $.find("book").prevAll().prevAll().size());
+        assertEquals(1, $.find("book").prevAll().prevAll().prevAll().size());
+        assertEquals(0, $.find("book").prevAll().prevAll().prevAll().prevAll().size());
 
-        assertEquals(3, joox.find("book").eq(3).prevAll().size());
-        assertEquals(2, joox.find("book").eq(3).prevAll().prevAll().size());
+        assertEquals(3, $.find("book").eq(3).prevAll().size());
+        assertEquals(2, $.find("book").eq(3).prevAll().prevAll().size());
     }
 
     @Test
     public void testPrevUntil() throws Exception {
-        assertEquals(0, joox.prevUntil("asdf").size());
-        assertEquals(2, joox.find("dvd").children().eq(2).prevUntil("any").size());
+        assertEquals(0, $.prevUntil("asdf").size());
+        assertEquals(2, $.find("dvd").children().eq(2).prevUntil("any").size());
         assertEquals(
             Arrays.asList("name", "directors"),
-            joox.find("dvd").children().eq(2).prevUntil("any").tags());
+            $.find("dvd").children().eq(2).prevUntil("any").tags());
         assertEquals(1,
-            joox.find("dvd").children().eq(2).prevUntil("name").size());
+            $.find("dvd").children().eq(2).prevUntil("name").size());
         assertEquals("directors",
-            joox.find("dvd").children().eq(2).prevUntil("name").tag());
+            $.find("dvd").children().eq(2).prevUntil("name").tag());
     }
 
     @Test
     public void testSiblings() throws Exception {
-        assertEquals(0, joox.siblings().size());
-        assertEquals(3, joox.find("library").siblings().size());
+        assertEquals(0, $.siblings().size());
+        assertEquals(3, $.find("library").siblings().size());
         assertEquals(
             Arrays.asList("library", "library", "library"),
-            joox.find("library").siblings().tags());
-        assertEquals(2, joox.find("library").eq(0).siblings().size());
-        assertEquals(2, joox.find("library").eq(1).siblings().size());
-        assertEquals(2, joox.find("library").eq(2).siblings().size());
+            $.find("library").siblings().tags());
+        assertEquals(2, $.find("library").eq(0).siblings().size());
+        assertEquals(2, $.find("library").eq(1).siblings().size());
+        assertEquals(2, $.find("library").eq(2).siblings().size());
         assertEquals(
             Arrays.asList("library", "library"),
-            joox.find("library").eq(0).siblings().tags());
-        assertEquals(0, joox.find("library").eq(3).siblings().size());
+            $.find("library").eq(0).siblings().tags());
+        assertEquals(0, $.find("library").eq(3).siblings().size());
     }
 
     @Test
     public void testSlice() throws Exception {
-        assertEquals(0, joox.slice(1).size());
-        assertEquals(1, joox.slice(0).size());
-        assertEquals(1, joox.slice(-1).size());
-        assertEquals(1, joox.slice(-2).size());
+        assertEquals(0, $.slice(1).size());
+        assertEquals(1, $.slice(0).size());
+        assertEquals(1, $.slice(-1).size());
+        assertEquals(1, $.slice(-2).size());
 
-        assertEquals(0, joox.slice(1, 1).size());
-        assertEquals(1, joox.slice(0, 1).size());
-        assertEquals(1, joox.slice(-1, 1).size());
-        assertEquals(1, joox.slice(-2, 1).size());
+        assertEquals(0, $.slice(1, 1).size());
+        assertEquals(1, $.slice(0, 1).size());
+        assertEquals(1, $.slice(-1, 1).size());
+        assertEquals(1, $.slice(-2, 1).size());
 
-        assertEquals(8, joox.find("book").slice(-9).size());
-        assertEquals(8, joox.find("book").slice(-8).size());
-        assertEquals(2, joox.find("book").slice(-2).size());
-        assertEquals(1, joox.find("book").slice(-1).size());
-        assertEquals(8, joox.find("book").slice(0).size());
-        assertEquals(7, joox.find("book").slice(1).size());
-        assertEquals(6, joox.find("book").slice(2).size());
-        assertEquals(5, joox.find("book").slice(3).size());
-        assertEquals(4, joox.find("book").slice(4).size());
-        assertEquals(3, joox.find("book").slice(5).size());
-        assertEquals(2, joox.find("book").slice(6).size());
-        assertEquals(1, joox.find("book").slice(7).size());
-        assertEquals(0, joox.find("book").slice(8).size());
-        assertEquals(0, joox.find("book").slice(9).size());
+        assertEquals(8, $.find("book").slice(-9).size());
+        assertEquals(8, $.find("book").slice(-8).size());
+        assertEquals(2, $.find("book").slice(-2).size());
+        assertEquals(1, $.find("book").slice(-1).size());
+        assertEquals(8, $.find("book").slice(0).size());
+        assertEquals(7, $.find("book").slice(1).size());
+        assertEquals(6, $.find("book").slice(2).size());
+        assertEquals(5, $.find("book").slice(3).size());
+        assertEquals(4, $.find("book").slice(4).size());
+        assertEquals(3, $.find("book").slice(5).size());
+        assertEquals(2, $.find("book").slice(6).size());
+        assertEquals(1, $.find("book").slice(7).size());
+        assertEquals(0, $.find("book").slice(8).size());
+        assertEquals(0, $.find("book").slice(9).size());
 
-        assertEquals(5, joox.find("book").slice(-9, 5).size());
-        assertEquals(5, joox.find("book").slice(-8, 5).size());
-        assertEquals(0, joox.find("book").slice(-2, 5).size());
-        assertEquals(0, joox.find("book").slice(-1, 5).size());
-        assertEquals(5, joox.find("book").slice(0, 5).size());
-        assertEquals(4, joox.find("book").slice(1, 5).size());
-        assertEquals(3, joox.find("book").slice(2, 5).size());
-        assertEquals(2, joox.find("book").slice(3, 5).size());
-        assertEquals(1, joox.find("book").slice(4, 5).size());
-        assertEquals(0, joox.find("book").slice(5, 5).size());
-        assertEquals(0, joox.find("book").slice(6, 5).size());
-        assertEquals(0, joox.find("book").slice(7, 5).size());
-        assertEquals(0, joox.find("book").slice(8, 5).size());
-        assertEquals(0, joox.find("book").slice(9, 5).size());
+        assertEquals(5, $.find("book").slice(-9, 5).size());
+        assertEquals(5, $.find("book").slice(-8, 5).size());
+        assertEquals(0, $.find("book").slice(-2, 5).size());
+        assertEquals(0, $.find("book").slice(-1, 5).size());
+        assertEquals(5, $.find("book").slice(0, 5).size());
+        assertEquals(4, $.find("book").slice(1, 5).size());
+        assertEquals(3, $.find("book").slice(2, 5).size());
+        assertEquals(2, $.find("book").slice(3, 5).size());
+        assertEquals(1, $.find("book").slice(4, 5).size());
+        assertEquals(0, $.find("book").slice(5, 5).size());
+        assertEquals(0, $.find("book").slice(6, 5).size());
+        assertEquals(0, $.find("book").slice(7, 5).size());
+        assertEquals(0, $.find("book").slice(8, 5).size());
+        assertEquals(0, $.find("book").slice(9, 5).size());
 
-        assertEquals(3, joox.find("book").slice(-9, -5).size());
-        assertEquals(3, joox.find("book").slice(-8, -5).size());
-        assertEquals(0, joox.find("book").slice(-2, -5).size());
-        assertEquals(0, joox.find("book").slice(-1, -5).size());
-        assertEquals(3, joox.find("book").slice(0, -5).size());
-        assertEquals(2, joox.find("book").slice(1, -5).size());
-        assertEquals(1, joox.find("book").slice(2, -5).size());
-        assertEquals(0, joox.find("book").slice(3, -5).size());
-        assertEquals(0, joox.find("book").slice(4, -5).size());
-        assertEquals(0, joox.find("book").slice(5, -5).size());
-        assertEquals(0, joox.find("book").slice(6, -5).size());
-        assertEquals(0, joox.find("book").slice(7, -5).size());
-        assertEquals(0, joox.find("book").slice(8, -5).size());
-        assertEquals(0, joox.find("book").slice(9, -5).size());
+        assertEquals(3, $.find("book").slice(-9, -5).size());
+        assertEquals(3, $.find("book").slice(-8, -5).size());
+        assertEquals(0, $.find("book").slice(-2, -5).size());
+        assertEquals(0, $.find("book").slice(-1, -5).size());
+        assertEquals(3, $.find("book").slice(0, -5).size());
+        assertEquals(2, $.find("book").slice(1, -5).size());
+        assertEquals(1, $.find("book").slice(2, -5).size());
+        assertEquals(0, $.find("book").slice(3, -5).size());
+        assertEquals(0, $.find("book").slice(4, -5).size());
+        assertEquals(0, $.find("book").slice(5, -5).size());
+        assertEquals(0, $.find("book").slice(6, -5).size());
+        assertEquals(0, $.find("book").slice(7, -5).size());
+        assertEquals(0, $.find("book").slice(8, -5).size());
+        assertEquals(0, $.find("book").slice(9, -5).size());
     }
 
     @Test
     public void testDOMAccess() throws Exception {
-        assertEquals(xmlElement, joox.get(0));
-        assertEquals(xmlElement, joox.get().get(0));
-        assertNull(joox.get(1));
+        assertEquals(xmlElement, $.get(0));
+        assertEquals(xmlElement, $.get().get(0));
+        assertNull($.get(1));
 
-        assertEquals("document", joox.tag());
-        assertEquals("document", joox.tags().get(0));
-        assertEquals("document", joox.tag(0));
-        assertNull(joox.tag(1));
-        assertNull(joox.next().tag());
-        assertNull(joox.next().tag(0));
-        assertNull(joox.next().tag(1));
+        assertEquals("document", $.tag());
+        assertEquals("document", $.tags().get(0));
+        assertEquals("document", $.tag(0));
+        assertNull($.tag(1));
+        assertNull($.next().tag());
+        assertNull($.next().tag(0));
+        assertNull($.next().tag(1));
     }
 
     @Test
     public void testAndOrNot() throws Exception {
-        assertEquals(1, joox.filter(JOOX.and(JOOX.all(), JOOX.all())).size());
-        assertEquals(0, joox.filter(JOOX.and(JOOX.all(), JOOX.none())).size());
-        assertEquals(0, joox.filter(JOOX.and(JOOX.none(), JOOX.all())).size());
-        assertEquals(0, joox.filter(JOOX.and(JOOX.none(), JOOX.none())).size());
+        assertEquals(1, $.filter(JOOX.and(JOOX.all(), JOOX.all())).size());
+        assertEquals(0, $.filter(JOOX.and(JOOX.all(), JOOX.none())).size());
+        assertEquals(0, $.filter(JOOX.and(JOOX.none(), JOOX.all())).size());
+        assertEquals(0, $.filter(JOOX.and(JOOX.none(), JOOX.none())).size());
 
-        assertEquals(1, joox.filter(JOOX.or(JOOX.all(), JOOX.all())).size());
-        assertEquals(1, joox.filter(JOOX.or(JOOX.all(), JOOX.none())).size());
-        assertEquals(1, joox.filter(JOOX.or(JOOX.none(), JOOX.all())).size());
-        assertEquals(0, joox.filter(JOOX.or(JOOX.none(), JOOX.none())).size());
+        assertEquals(1, $.filter(JOOX.or(JOOX.all(), JOOX.all())).size());
+        assertEquals(1, $.filter(JOOX.or(JOOX.all(), JOOX.none())).size());
+        assertEquals(1, $.filter(JOOX.or(JOOX.none(), JOOX.all())).size());
+        assertEquals(0, $.filter(JOOX.or(JOOX.none(), JOOX.none())).size());
 
-        assertEquals(0, joox.filter(JOOX.not(JOOX.all())).size());
-        assertEquals(1, joox.filter(JOOX.not(JOOX.none())).size());
+        assertEquals(0, $.filter(JOOX.not(JOOX.all())).size());
+        assertEquals(1, $.filter(JOOX.not(JOOX.none())).size());
     }
 
     @Test
     public void testAttr() throws Exception {
-        assertNull(joox.attr("any"));
-        assertNull(joox.attr("id"));
-        assertEquals(Arrays.asList((String) null), joox.attrs("any"));
-        assertEquals(Arrays.asList((String) null), joox.attrs("id"));
-        assertEquals("1", joox.find("book").attr("id"));
+        assertNull($.attr("any"));
+        assertNull($.attr("id"));
+        assertEquals(Arrays.asList((String) null), $.attrs("any"));
+        assertEquals(Arrays.asList((String) null), $.attrs("id"));
+        assertEquals("1", $.find("book").attr("id"));
         assertEquals(
             Arrays.asList("1", "2", "3", "4", "1", "3", "1", "2"),
-            joox.find("book").attrs("id"));
+            $.find("book").attrs("id"));
 
         assertEquals(
             Collections.nCopies(totalElements, "y"),
-            joox.find().attr("x", "y").attrs("x"));
+            $.find().attr("x", "y").attrs("x"));
         assertEquals(
             Collections.nCopies(totalElements, (String) null),
-            joox.find().attr("x", (String) null).attrs("x"));
+            $.find().attr("x", (String) null).attrs("x"));
 
         assertEquals(
             Collections.nCopies(totalElements, (String) null),
-            joox.find().removeAttr("id").attrs("id"));
+            $.find().removeAttr("id").attrs("id"));
     }
 
     @Test
     public void testEmpty() throws Exception {
-        assertEquals(0, joox.find("directors").empty().find().size());
-        assertEquals(0, joox.find("director").size());
-        assertEquals(1, joox.empty().size());
-        assertEquals(0, joox.find().size());
+        assertEquals(0, $.find("directors").empty().find().size());
+        assertEquals(0, $.find("director").size());
+        assertEquals(1, $.empty().size());
+        assertEquals(0, $.find().size());
     }
 
     @Test
     public void testRemove() throws Exception {
-        assertEquals(0, joox.find("director").remove().size());
-        assertEquals(0, joox.find("director").size());
-        assertEquals(3, joox.find("book").remove(JOOX.ids("1", "2")).size());
-        assertEquals(3, joox.find("book").remove(JOOX.ids("1", "2")).size());
-        assertEquals(0, joox.remove().size());
-        assertEquals(0, joox.find().size());
-        assertEquals(0, joox.size());
+        assertEquals(0, $.find("director").remove().size());
+        assertEquals(0, $.find("director").size());
+        assertEquals(3, $.find("book").remove(JOOX.ids("1", "2")).size());
+        assertEquals(3, $.find("book").remove(JOOX.ids("1", "2")).size());
+        assertEquals(0, $.remove().size());
+        assertEquals(0, $.find().size());
+        assertEquals(0, $.size());
     }
 
     @Test
     public void testText() throws Exception {
-        assertNull(joox.find("any").text());
-        assertEquals("Sergio Leone", joox.find("director").text());
-        assertEquals("Charles Bronson", joox.find("actor").text());
+        assertNull($.find("any").text());
+        assertEquals("Sergio Leone", $.find("director").text());
+        assertEquals("Charles Bronson", $.find("actor").text());
         assertEquals(
             Arrays.asList("Charles Bronson", "Jason Robards", "Claudia Cardinale"),
-            joox.find("actor").texts());
+            $.find("actor").texts());
 
         assertEquals(
             Collections.nCopies(3, "Lukas Eder"),
-            joox.find("actor").text("Lukas Eder").texts());
+            $.find("actor").text("Lukas Eder").texts());
 
-        assertEquals("<abc/>", joox.find("actors").text("<abc/>").text());
-        assertEquals("<><aa>", joox.find("actors").text("<><aa>").text());
+        assertEquals("<abc/>", $.find("actors").text("<abc/>").text());
+        assertEquals("<><aa>", $.find("actors").text("<><aa>").text());
     }
 
     @Test
     public void testContent() throws Exception {
-        assertEquals("Sergio Leone", joox.find("director").content());
+        assertEquals("Sergio Leone", $.find("director").content());
         assertEquals(Arrays.asList(
             "Charles Bronson",
             "Jason Robards",
             "Claudia Cardinale"),
-            joox.find("actor").contents());
+            $.find("actor").contents());
 
-        assertEquals("<><aa>", joox.find("actors").content("<><aa>").text());
-        assertEquals("<><aa>", joox.find("actors").content());
-        assertEquals("<abc><x></abc>", joox.find("actors").content("<abc><x></abc>").text());
-        assertEquals("<abc><x></abc>", joox.find("actors").content());
-        assertEquals("", joox.find("actors").content("<abc><x/></abc>").text());
-        assertEquals("<abc><x/></abc>", joox.find("actors").content());
-        assertEquals(1, joox.find("abc").size());
-        assertEquals(1, joox.find("x").size());
-        assertEquals(8, joox.find("book").content("<book-content/>").size());
-        assertEquals(8, joox.find("book-content").size());
+        assertEquals("<><aa>", $.find("actors").content("<><aa>").text());
+        assertEquals("<><aa>", $.find("actors").content());
+        assertEquals("<abc><x></abc>", $.find("actors").content("<abc><x></abc>").text());
+        assertEquals("<abc><x></abc>", $.find("actors").content());
+        assertEquals("", $.find("actors").content("<abc><x/></abc>").text());
+        assertEquals("<abc><x/></abc>", $.find("actors").content());
+        assertEquals(1, $.find("abc").size());
+        assertEquals(1, $.find("x").size());
+        assertEquals(8, $.find("book").content("<book-content/>").size());
+        assertEquals(8, $.find("book-content").size());
         assertEquals(
             Collections.nCopies(8, "book"),
-            joox.find("book-content").parent().tags());
+            $.find("book-content").parent().tags());
 
-        assertEquals("<xx/><xx/>", joox.find("actors").content("<xx/><xx/>").content());
-        assertEquals(2, joox.find("xx").size());
+        assertEquals("<xx/><xx/>", $.find("actors").content("<xx/><xx/>").content());
+        assertEquals(2, $.find("xx").size());
     }
 
     @Test
     public void testAfter() throws Exception {
-        assertEquals(2, joox.find("dvds").after("<cds/>").size());
-        assertEquals(1, joox.find("cds").size());
-        assertEquals(3, joox.find("library").eq(0).children().size());
+        assertEquals(2, $.find("dvds").after("<cds/>").size());
+        assertEquals(1, $.find("cds").size());
+        assertEquals(3, $.find("library").eq(0).children().size());
         assertEquals(
             Arrays.asList("books", "dvds", "cds"),
-            joox.find("library").eq(0).children().tags());
+            $.find("library").eq(0).children().tags());
 
-        assertEquals(2, joox.find("dvds").after("<postcards/>").size());
-        assertEquals(1, joox.find("postcards").size());
-        assertEquals(4, joox.find("library").eq(0).children().size());
+        assertEquals(2, $.find("dvds").after("<postcards/>").size());
+        assertEquals(1, $.find("postcards").size());
+        assertEquals(4, $.find("library").eq(0).children().size());
         assertEquals(
             Arrays.asList("books", "dvds", "postcards", "cds"),
-            joox.find("library").eq(0).children().tags());
+            $.find("library").eq(0).children().tags());
     }
 
     @Test
     public void testBefore() throws Exception {
-        assertEquals(2, joox.find("dvds").before("<cds/>").size());
-        assertEquals(1, joox.find("cds").size());
-        assertEquals(3, joox.find("library").eq(0).children().size());
+        assertEquals(2, $.find("dvds").before("<cds/>").size());
+        assertEquals(1, $.find("cds").size());
+        assertEquals(3, $.find("library").eq(0).children().size());
         assertEquals(
             Arrays.asList("books", "cds", "dvds"),
-            joox.find("library").eq(0).children().tags());
+            $.find("library").eq(0).children().tags());
 
-        assertEquals(2, joox.find("dvds").before("<postcards/>").size());
-        assertEquals(1, joox.find("postcards").size());
-        assertEquals(4, joox.find("library").eq(0).children().size());
+        assertEquals(2, $.find("dvds").before("<postcards/>").size());
+        assertEquals(1, $.find("postcards").size());
+        assertEquals(4, $.find("library").eq(0).children().size());
         assertEquals(
             Arrays.asList("books", "cds", "postcards", "dvds"),
-            joox.find("library").eq(0).children().tags());
+            $.find("library").eq(0).children().tags());
     }
 
     @Test
     public void testAppend() throws Exception {
-        assertEquals(1, joox.find("dvds").append("<dvd id=\"6\"/>").size());
-        assertEquals(2, joox.find("dvd").size());
-        assertEquals(2, joox.find("dvds").children().size());
+        assertEquals(1, $.find("dvds").append("<dvd id=\"6\"/>").size());
+        assertEquals(2, $.find("dvd").size());
+        assertEquals(2, $.find("dvds").children().size());
         assertEquals(
             Arrays.asList("5", "6"),
-            joox.find("dvd").ids());
+            $.find("dvd").ids());
 
-        assertEquals(1, joox.find("dvds").append("<dvd id=\"7\"/><dvd id=\"8\"/>").size());
-        assertEquals(4, joox.find("dvd").size());
-        assertEquals(4, joox.find("dvds").children().size());
+        assertEquals(1, $.find("dvds").append("<dvd id=\"7\"/><dvd id=\"8\"/>").size());
+        assertEquals(4, $.find("dvd").size());
+        assertEquals(4, $.find("dvds").children().size());
         assertEquals(
             Arrays.asList("5", "6", "7", "8"),
-            joox.find("dvd").ids());
+            $.find("dvd").ids());
 
-        assertEquals(1, joox.find("director").append("<><aa>").size());
-        assertEquals(0, joox.find("director").children().size());
-        assertEquals("Sergio Leone<><aa>", joox.find("director").text());
-        assertEquals("Sergio Leone<><aa>", joox.find("director").content());
+        assertEquals(1, $.find("director").append("<><aa>").size());
+        assertEquals(0, $.find("director").children().size());
+        assertEquals("Sergio Leone<><aa>", $.find("director").text());
+        assertEquals("Sergio Leone<><aa>", $.find("director").content());
     }
 
     @Test
     public void testPrepend() throws Exception {
-        assertEquals(1, joox.find("dvds").prepend("<dvd id=\"6\"/>").size());
-        assertEquals(2, joox.find("dvd").size());
-        assertEquals(2, joox.find("dvds").children().size());
+        assertEquals(1, $.find("dvds").prepend("<dvd id=\"6\"/>").size());
+        assertEquals(2, $.find("dvd").size());
+        assertEquals(2, $.find("dvds").children().size());
         assertEquals(
             Arrays.asList("6", "5"),
-            joox.find("dvd").ids());
+            $.find("dvd").ids());
 
-        assertEquals(1, joox.find("dvds").prepend("<dvd id=\"7\"/><dvd id=\"8\"/>").size());
-        assertEquals(4, joox.find("dvd").size());
-        assertEquals(4, joox.find("dvds").children().size());
+        assertEquals(1, $.find("dvds").prepend("<dvd id=\"7\"/><dvd id=\"8\"/>").size());
+        assertEquals(4, $.find("dvd").size());
+        assertEquals(4, $.find("dvds").children().size());
         assertEquals(
             Arrays.asList("7", "8", "6", "5"),
-            joox.find("dvd").ids());
+            $.find("dvd").ids());
 
-        assertEquals(1, joox.find("director").prepend("<><aa>").size());
-        assertEquals(0, joox.find("director").children().size());
-        assertEquals("<><aa>Sergio Leone", joox.find("director").text());
-        assertEquals("<><aa>Sergio Leone", joox.find("director").content());
+        assertEquals(1, $.find("director").prepend("<><aa>").size());
+        assertEquals(0, $.find("director").children().size());
+        assertEquals("<><aa>Sergio Leone", $.find("director").text());
+        assertEquals("<><aa>Sergio Leone", $.find("director").content());
     }
 
     @Test
     public void testReplaceWith() throws Exception {
         assertEquals(
             "best-director-in-the-world",
-            joox.find("director").replaceWith("<best-director-in-the-world>Jean Claude van Damme</best-director-in-the-world>").tag());
-        assertEquals(0, joox.find("director").size());
-        assertEquals(1, joox.find("best-director-in-the-world").size());
-        assertEquals("directors", joox.find("best-director-in-the-world").parent().tag());
+            $.find("director").replaceWith("<best-director-in-the-world>Jean Claude van Damme</best-director-in-the-world>").tag());
+        assertEquals(0, $.find("director").size());
+        assertEquals(1, $.find("best-director-in-the-world").size());
+        assertEquals("directors", $.find("best-director-in-the-world").parent().tag());
 
-        assertEquals(0, joox.find("best-director-in-the-world").replaceWith("<><aa>").size());
-        assertEquals("<><aa>", joox.find("directors").text().trim());
-        assertEquals("<><aa>", joox.find("directors").content().trim());
+        assertEquals(0, $.find("best-director-in-the-world").replaceWith("<><aa>").size());
+        assertEquals("<><aa>", $.find("directors").text().trim());
+        assertEquals("<><aa>", $.find("directors").content().trim());
     }
 
     @Test
     public void testEmptyJOOX() throws Exception {
-        X x = JOOX.joox();
+        X x = JOOX.$();
         assertEquals(0, x.size());
         assertEquals(0, x.children().size());
         assertEquals(0, x.find("any").size());
