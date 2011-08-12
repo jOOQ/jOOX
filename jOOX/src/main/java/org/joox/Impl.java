@@ -35,11 +35,12 @@
  */
 package org.joox;
 
+import static org.joox.JOOX.all;
 import static org.joox.JOOX.iterable;
+import static org.joox.JOOX.none;
+import static org.joox.JOOX.selector;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,7 +49,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -62,22 +62,22 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * @author Lukas Eder
  */
 class Impl implements X {
 
+    private final Document document;
     private final List<Element> elements;
 
     // -------------------------------------------------------------------------
     // Initialisation
     // -------------------------------------------------------------------------
 
-    Impl() {
-        elements = new ArrayList<Element>();
+    Impl(Document document) {
+        this.document = document;
+        this.elements = new ArrayList<Element>();
     }
 
     final Impl addNodeLists(List<NodeList> lists) {
@@ -195,12 +195,12 @@ class Impl implements X {
 
     @Override
     public final Impl children() {
-        return children(JOOX.all());
+        return children(all());
     }
 
     @Override
     public final Impl children(String selector) {
-        return children(JOOX.selector(selector));
+        return children(selector(selector));
     }
 
     @Override
@@ -216,7 +216,7 @@ class Impl implements X {
             }
         }
 
-        return new Impl().addUniqueElements(result);
+        return new Impl(document).addUniqueElements(result);
     }
 
     @Override
@@ -230,7 +230,7 @@ class Impl implements X {
 
     @Override
     public final Impl filter(String selector) {
-        return filter(JOOX.selector(selector));
+        return filter(selector(selector));
     }
 
     @Override
@@ -243,7 +243,7 @@ class Impl implements X {
             }
         }
 
-        return new Impl().addElements(result);
+        return new Impl(document).addElements(result);
     }
 
     @Override
@@ -251,16 +251,16 @@ class Impl implements X {
         Element element = get(index);
 
         if (element != null) {
-            return new Impl().addElements(element);
+            return new Impl(document).addElements(element);
         }
         else {
-            return new Impl();
+            return new Impl(document);
         }
     }
 
     @Override
     public final Impl find() {
-        return find(JOOX.all());
+        return find(all());
     }
 
     @Override
@@ -271,7 +271,7 @@ class Impl implements X {
             result.add(element.getElementsByTagName(selector));
         }
 
-        return new Impl().addNodeLists(result);
+        return new Impl(document).addNodeLists(result);
     }
 
     @Override
@@ -287,22 +287,22 @@ class Impl implements X {
             }
         }
 
-        return new Impl().addUniqueElements(result);
+        return new Impl(document).addUniqueElements(result);
     }
 
     @Override
     public final Impl first() {
         if (size() > 0) {
-            return new Impl().addElements(get(0));
+            return new Impl(document).addElements(get(0));
         }
         else {
-            return new Impl();
+            return new Impl(document);
         }
     }
 
     @Override
     public final Impl has(String selector) {
-        return has(JOOX.selector(selector));
+        return has(selector(selector));
     }
 
     @Override
@@ -320,12 +320,12 @@ class Impl implements X {
             }
         }
 
-        return new Impl().addElements(result);
+        return new Impl(document).addElements(result);
     }
 
     @Override
     public final boolean is(String selector) {
-        return is(JOOX.selector(selector));
+        return is(selector(selector));
     }
 
     @Override
@@ -342,10 +342,10 @@ class Impl implements X {
     @Override
     public final Impl last() {
         if (size() > 0) {
-            return new Impl().addElements(get(size() - 1));
+            return new Impl(document).addElements(get(size() - 1));
         }
         else {
-            return new Impl();
+            return new Impl(document);
         }
     }
 
@@ -362,57 +362,57 @@ class Impl implements X {
 
     @Override
     public final Impl next() {
-        return next(JOOX.all());
+        return next(all());
     }
 
     @Override
     public final Impl next(String selector) {
-        return next(JOOX.selector(selector));
+        return next(selector(selector));
     }
 
     @Override
     public final Impl next(Filter filter) {
-        return next(false, JOOX.none(), filter);
+        return next(false, none(), filter);
     }
 
     @Override
     public final Impl nextAll() {
-        return nextAll(JOOX.all());
+        return nextAll(all());
     }
 
     @Override
     public final Impl nextAll(String selector) {
-        return nextAll(JOOX.selector(selector));
+        return nextAll(selector(selector));
     }
 
     @Override
     public final Impl nextAll(Filter filter) {
-        return next(true, JOOX.none(), filter);
+        return next(true, none(), filter);
     }
 
     @Override
     public final Impl nextUntil(String until) {
-        return nextUntil(JOOX.selector(until));
+        return nextUntil(selector(until));
     }
 
     @Override
     public final Impl nextUntil(Filter until) {
-        return nextUntil(until, JOOX.all());
+        return nextUntil(until, all());
     }
 
     @Override
     public final Impl nextUntil(String until, String selector) {
-        return nextUntil(JOOX.selector(until), JOOX.selector(selector));
+        return nextUntil(selector(until), selector(selector));
     }
 
     @Override
     public final Impl nextUntil(String until, Filter filter) {
-        return nextUntil(JOOX.selector(until), filter);
+        return nextUntil(selector(until), filter);
     }
 
     @Override
     public final Impl nextUntil(Filter until, String selector) {
-        return nextUntil(until, JOOX.selector(selector));
+        return nextUntil(until, selector(selector));
     }
 
     @Override
@@ -449,12 +449,12 @@ class Impl implements X {
             }
         }
 
-        return new Impl().addUniqueElements(result);
+        return new Impl(document).addUniqueElements(result);
     }
 
     @Override
     public final Impl not(String selector) {
-        return not(JOOX.selector(selector));
+        return not(selector(selector));
     }
 
     @Override
@@ -464,57 +464,57 @@ class Impl implements X {
 
     @Override
     public final Impl parent() {
-        return parent(JOOX.all());
+        return parent(all());
     }
 
     @Override
     public final Impl parent(String selector) {
-        return parent(JOOX.selector(selector));
+        return parent(selector(selector));
     }
 
     @Override
     public final Impl parent(Filter filter) {
-        return parents(false, JOOX.none(), filter);
+        return parents(false, none(), filter);
     }
 
     @Override
     public final Impl parents() {
-        return parents(JOOX.all());
+        return parents(all());
     }
 
     @Override
     public final Impl parents(String selector) {
-        return parents(JOOX.selector(selector));
+        return parents(selector(selector));
     }
 
     @Override
     public final Impl parents(Filter filter) {
-        return parents(true, JOOX.none(), filter);
+        return parents(true, none(), filter);
     }
 
     @Override
     public final Impl parentsUntil(String until) {
-        return parentsUntil(JOOX.selector(until), JOOX.all());
+        return parentsUntil(selector(until), all());
     }
 
     @Override
     public final Impl parentsUntil(Filter until) {
-        return parentsUntil(until, JOOX.all());
+        return parentsUntil(until, all());
     }
 
     @Override
     public final Impl parentsUntil(String until, String selector) {
-        return parentsUntil(JOOX.selector(until), JOOX.selector(selector));
+        return parentsUntil(selector(until), selector(selector));
     }
 
     @Override
     public final Impl parentsUntil(String until, Filter filter) {
-        return parentsUntil(JOOX.selector(until), filter);
+        return parentsUntil(selector(until), filter);
     }
 
     @Override
     public final Impl parentsUntil(Filter until, String selector) {
-        return parentsUntil(until, JOOX.selector(selector));
+        return parentsUntil(until, selector(selector));
     }
 
     @Override
@@ -552,62 +552,62 @@ class Impl implements X {
             }
         }
 
-        return new Impl().addUniqueElements(result);
+        return new Impl(document).addUniqueElements(result);
     }
 
     @Override
     public final Impl prev() {
-        return prev(JOOX.all());
+        return prev(all());
     }
 
     @Override
     public final Impl prev(String selector) {
-        return prev(JOOX.selector(selector));
+        return prev(selector(selector));
     }
 
     @Override
     public final Impl prev(Filter filter) {
-        return prev(false, JOOX.none(), filter);
+        return prev(false, none(), filter);
     }
 
     @Override
     public final Impl prevAll() {
-        return prevAll(JOOX.all());
+        return prevAll(all());
     }
 
     @Override
     public final Impl prevAll(String selector) {
-        return prevAll(JOOX.selector(selector));
+        return prevAll(selector(selector));
     }
 
     @Override
     public final Impl prevAll(Filter filter) {
-        return prev(true, JOOX.none(), filter);
+        return prev(true, none(), filter);
     }
 
     @Override
     public final Impl prevUntil(String until) {
-        return prevUntil(JOOX.selector(until));
+        return prevUntil(selector(until));
     }
 
     @Override
     public final Impl prevUntil(Filter until) {
-        return prevUntil(until, JOOX.all());
+        return prevUntil(until, all());
     }
 
     @Override
     public final Impl prevUntil(String until, String selector) {
-        return prevUntil(JOOX.selector(until), JOOX.selector(selector));
+        return prevUntil(selector(until), selector(selector));
     }
 
     @Override
     public final Impl prevUntil(String until, Filter filter) {
-        return prevUntil(JOOX.selector(until), filter);
+        return prevUntil(selector(until), filter);
     }
 
     @Override
     public final Impl prevUntil(Filter until, String selector) {
-        return prevUntil(until, JOOX.selector(selector));
+        return prevUntil(until, selector(selector));
     }
 
     @Override
@@ -645,17 +645,17 @@ class Impl implements X {
         }
 
         Collections.reverse(result);
-        return new Impl().addUniqueElements(result);
+        return new Impl(document).addUniqueElements(result);
     }
 
     @Override
     public final Impl siblings() {
-        return siblings(JOOX.all());
+        return siblings(all());
     }
 
     @Override
     public final Impl siblings(String selector) {
-        return siblings(JOOX.selector(selector));
+        return siblings(selector(selector));
     }
 
     @Override
@@ -681,13 +681,13 @@ class Impl implements X {
         end = Math.min(size(), end);
 
         if (start > end) {
-            return new Impl();
+            return new Impl(document);
         }
         if (start == 0 && end == size()) {
             return this;
         }
 
-        return new Impl().addElements(elements.subList(start, end));
+        return new Impl(document).addElements(elements.subList(start, end));
     }
 
     @Override
@@ -702,10 +702,10 @@ class Impl implements X {
         for (int i = 0; i < size(); i++) {
             Element element = get(i);
             result.add(element);
-            Document document = element.getOwnerDocument();
+            Document doc = element.getOwnerDocument();
 
             String text = content.content(i, element);
-            DocumentFragment imported = createContent(document, text);
+            DocumentFragment imported = Util.createContent(doc, text);
             Node parent = element.getParentNode();
             Node next = element.getNextSibling();
 
@@ -714,7 +714,7 @@ class Impl implements X {
                 parent.insertBefore(imported, next);
             }
             else {
-                parent.insertBefore(document.createTextNode(text), next);
+                parent.insertBefore(doc.createTextNode(text), next);
             }
         }
 
@@ -735,10 +735,10 @@ class Impl implements X {
 
         for (int i = 0; i < size(); i++) {
             Element element = get(i);
-            Document document = element.getOwnerDocument();
+            Document doc = element.getOwnerDocument();
 
             String text = content.content(i, element);
-            DocumentFragment imported = createContent(document, text);
+            DocumentFragment imported = Util.createContent(doc, text);
             Node parent = element.getParentNode();
 
             if (imported != null) {
@@ -746,7 +746,7 @@ class Impl implements X {
                 parent.insertBefore(imported, element);
             }
             else {
-                parent.insertBefore(document.createTextNode(text), element);
+                parent.insertBefore(doc.createTextNode(text), element);
             }
 
             result.add(element);
@@ -767,16 +767,16 @@ class Impl implements X {
     public final Impl append(Content content) {
         for (int i = 0; i < size(); i++) {
             Element element = get(i);
-            Document document = element.getOwnerDocument();
+            Document doc = element.getOwnerDocument();
 
             String text = content.content(i, element);
-            DocumentFragment imported = createContent(document, text);
+            DocumentFragment imported = Util.createContent(doc, text);
 
             if (imported != null) {
                 element.appendChild(imported);
             }
             else {
-                element.appendChild(document.createTextNode(text));
+                element.appendChild(doc.createTextNode(text));
             }
         }
 
@@ -792,17 +792,17 @@ class Impl implements X {
     public final Impl prepend(Content content) {
         for (int i = 0; i < size(); i++) {
             Element element = get(i);
-            Document document = element.getOwnerDocument();
+            Document doc = element.getOwnerDocument();
 
             String text = content.content(i, element);
-            DocumentFragment imported = createContent(document, text);
+            DocumentFragment imported = Util.createContent(doc, text);
             Node first = element.getFirstChild();
 
             if (imported != null) {
                 element.insertBefore(imported, first);
             }
             else {
-                element.insertBefore(document.createTextNode(text), first);
+                element.insertBefore(doc.createTextNode(text), first);
             }
         }
 
@@ -927,7 +927,7 @@ class Impl implements X {
             Element element = get(i);
             String text = content.content(i, element);
 
-            DocumentFragment imported = createContent(element.getOwnerDocument(), text);
+            DocumentFragment imported = Util.createContent(element.getOwnerDocument(), text);
             if (imported != null) {
                 element.setTextContent("");
                 element.appendChild(imported);
@@ -938,37 +938,6 @@ class Impl implements X {
         }
 
         return this;
-    }
-
-    private final DocumentFragment createContent(Document document, String text) {
-
-        // Text might hold XML content
-        if (text.contains("<")) {
-            DocumentBuilder builder = JOOX.builder();
-
-            try {
-                String wrapped = "<dummy>" + text + "</dummy>";
-                Document parsed = builder.parse(new InputSource(new StringReader(wrapped)));
-                DocumentFragment fragment = parsed.createDocumentFragment();
-                NodeList children = parsed.getDocumentElement().getChildNodes();
-
-                // appendChild removes children also from NodeList!
-                while (children.getLength() > 0) {
-                    fragment.appendChild(children.item(0));
-                }
-
-                return (DocumentFragment) document.importNode(fragment, true);
-            }
-
-            // This does not occur
-            catch (IOException ignore) {}
-
-            // The XML content is invalid
-            catch (SAXException ignore) {}
-        }
-
-        // Plain text or invalid XML
-        return null;
     }
 
     @Override
@@ -1019,12 +988,12 @@ class Impl implements X {
 
     @Override
     public final Impl remove() {
-        return remove(JOOX.all());
+        return remove(all());
     }
 
     @Override
     public final Impl remove(String selector) {
-        return remove(JOOX.selector(selector));
+        return remove(selector(selector));
     }
 
     @Override
@@ -1070,10 +1039,10 @@ class Impl implements X {
 
         for (int i = 0; i < size(); i++) {
             Element element = get(i);
-            Document document = element.getOwnerDocument();
+            Document doc = element.getOwnerDocument();
 
             String text = content.content(i, element);
-            DocumentFragment imported = createContent(document, text);
+            DocumentFragment imported = Util.createContent(doc, text);
             Node parent = element.getParentNode();
 
             if (imported != null) {
@@ -1081,7 +1050,7 @@ class Impl implements X {
                 parent.replaceChild(imported, element);
             }
             else {
-                parent.replaceChild(document.createTextNode(text), element);
+                parent.replaceChild(doc.createTextNode(text), element);
             }
         }
 
@@ -1097,7 +1066,7 @@ class Impl implements X {
 
     @Override
     public final Impl copy() {
-        Impl copy = new Impl();
+        Impl copy = new Impl(document);
         copy.elements.addAll(elements);
         return copy;
     }

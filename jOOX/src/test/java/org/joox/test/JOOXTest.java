@@ -110,27 +110,29 @@ public class JOOXTest {
 
     @Test
     public void testAdd() {
-        assertEquals(0, $().size());
-        assertEquals(1, $().add(xmlElement).size());
-        assertEquals(1, $().add(xmlElement, xmlElement).size());
+        assertEquals(1, $(xmlElement).size());
+        assertEquals(1, $(xmlElement).add(xmlElement).size());
+        assertEquals(1, $(xmlElement).add(xmlElement, xmlElement).size());
 
-        X x = $().add(
+        X x = $(xmlElement).add(
             (Element) xmlElement.getElementsByTagName("director").item(0),
             (Element) xmlElement.getElementsByTagName("actor").item(0));
-        assertEquals(2, x.size());
-        assertEquals("director", x.get(0).getTagName());
-        assertEquals("actor", x.get(1).getTagName());
+        assertEquals(3, x.size());
+        assertEquals("document", x.get(0).getTagName());
+        assertEquals("director", x.get(1).getTagName());
+        assertEquals("actor", x.get(2).getTagName());
 
         x = x.add($(xmlElement).find("dvds"));
-        assertEquals(3, x.size());
-        assertEquals("director", x.get(0).getTagName());
-        assertEquals("actor", x.get(1).getTagName());
-        assertEquals("dvds", x.get(2).getTagName());
+        assertEquals(4, x.size());
+        assertEquals("document", x.get(0).getTagName());
+        assertEquals("director", x.get(1).getTagName());
+        assertEquals("actor", x.get(2).getTagName());
+        assertEquals("dvds", x.get(3).getTagName());
 
         x = x.add(x.filter("dvds").find());
-        assertEquals(9, x.size());
+        assertEquals(10, x.size());
         assertEquals(
-            Arrays.asList("dvds", "dvd", "name", "directors", "director", "actors", "actor", "actor", "actor"),
+            Arrays.asList("document", "dvds", "dvd", "name", "directors", "director", "actors", "actor", "actor", "actor"),
             x.tags());
     }
 
@@ -704,11 +706,12 @@ public class JOOXTest {
     }
 
     @Test
-    public void testEmptyJOOX() throws Exception {
-        X x = JOOX.$();
-        assertEquals(0, x.size());
-        assertEquals(0, x.children().size());
-        assertEquals(0, x.find("any").size());
-        assertEquals(0, x.append("<hello><world/></hello>").size());
+    public void testElementCreation() throws Exception {
+        assertEquals(1, $("<hello><world/></hello>").size());
+        assertEquals(1, $("<hello><world/></hello>").children().size());
+        assertEquals(0, $("<hello><world/></hello>").find("any").size());
+        assertEquals("hello", $("<hello><world/></hello>").tag());
+        assertEquals("world", $("<hello><world/></hello>").children().eq(0).tag());
+        assertEquals(1, $("<hello><world/></hello>").find("world").size());
     }
 }

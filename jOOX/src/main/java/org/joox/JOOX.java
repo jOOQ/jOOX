@@ -46,6 +46,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -59,10 +60,27 @@ public final class JOOX {
     // ---------------------------------------------------------------------
 
     /**
-     * Create an empty jOOX {@link X} element set
+     * Create a new DOM element in an independent document
      */
-    public static X $() {
-        return new Impl();
+    public static X $(String name) {
+        Document document = builder().newDocument();
+        DocumentFragment fragment = Util.createContent(document, name);
+
+        if (fragment != null) {
+            document.appendChild(fragment);
+        }
+        else {
+            document.appendChild(document.createElement(name));
+        }
+
+        return $(document);
+    }
+
+    /**
+     * Create a new DOM element in an independent document
+     */
+    public static X $(String name, String content) {
+        return $(name).append(content);
     }
 
     /**
@@ -76,7 +94,7 @@ public final class JOOX {
      * Wrap a DOM element in a jOOX {@link X} element set
      */
     public static X $(Element element) {
-        return new Impl().addElements(element);
+        return new Impl(element.getOwnerDocument()).addElements(element);
     }
 
     // ---------------------------------------------------------------------
