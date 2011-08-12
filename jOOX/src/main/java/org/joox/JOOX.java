@@ -77,13 +77,6 @@ public final class JOOX {
     }
 
     /**
-     * Create a new DOM element in an independent document
-     */
-    public static X $(String name, String content) {
-        return $(name).append(content);
-    }
-
-    /**
      * Wrap a DOM document in a jOOX {@link X} element set
      */
     public static X $(Document document) {
