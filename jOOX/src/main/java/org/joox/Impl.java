@@ -143,7 +143,7 @@ class Impl implements Match {
     }
 
     // -------------------------------------------------------------------------
-    // X API
+    // Match API
     // -------------------------------------------------------------------------
 
     @Override
@@ -154,6 +154,17 @@ class Impl implements Match {
         catch (IndexOutOfBoundsException e) {
             return null;
         }
+    }
+
+    @Override
+    public final List<Element> get(int... indexes) {
+        List<Element> result = new ArrayList<Element>();
+
+        for (int i : indexes) {
+            result.add(get(i));
+        }
+
+        return result;
     }
 
     @Override
@@ -259,15 +270,16 @@ class Impl implements Match {
     }
 
     @Override
-    public final Impl eq(int index) {
-        Element element = get(index);
+    public final Impl eq(int... indexes) {
+        Impl result = new Impl(document);
 
-        if (element != null) {
-            return new Impl(document).addElements(element);
+        for (Element e : get(indexes)) {
+            if (e != null) {
+                result.addElements(e);
+            }
         }
-        else {
-            return new Impl(document);
-        }
+
+        return result;
     }
 
     @Override

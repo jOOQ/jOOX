@@ -213,6 +213,7 @@ public class JOOXTest {
     public void testEq() {
         assertEquals("authors", $.find().eq(4).tag(0));
         assertEquals("author", $.find().eq(5).tag(0));
+        assertEquals(Arrays.asList("authors", "author"), $.find().eq(4, 5).tags());
         assertEquals("George Orwell", $.find().eq(5).text());
     }
 

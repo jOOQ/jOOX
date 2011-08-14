@@ -66,6 +66,11 @@ public interface Match extends Iterable<Element> {
     Element get(int index);
 
     /**
+     * Get some elements from the set of matched elements at the given indexes
+     */
+    List<Element> get(int... indexes);
+
+    /**
      * Get an the set of matched elements
      */
     List<Element> get();
@@ -146,10 +151,10 @@ public interface Match extends Iterable<Element> {
     Match filter(Filter filter);
 
     /**
-     * Reduce the current set of matched elements to the element at a given
-     * index
+     * Reduce the current set of matched elements to the elements at the given
+     * indexes
      */
-    Match eq(int index);
+    Match eq(int... indexes);
 
     /**
      * Find all descendants of each element in the current set of matched
