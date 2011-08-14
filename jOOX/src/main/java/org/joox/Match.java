@@ -62,11 +62,25 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Get an element from the set of matched elements at a given index
+     * <p>
+     * Negative indexes are possible, too.
+     * <ul>
+     * <li> <code>-1</code> corresponds to the last element in the set of matched
+     * elements.</li>
+     * <li> <code>-2</code> corresponds to the second-last element, etc.</li>
+     * </ul>
      */
     Element get(int index);
 
     /**
      * Get some elements from the set of matched elements at the given indexes
+     * <p>
+     * Negative indexes are possible, too.
+     * <ul>
+     * <li> <code>-1</code> corresponds to the last element in the set of matched
+     * elements.</li>
+     * <li> <code>-2</code> corresponds to the second-last element, etc.</li>
+     * </ul>
      */
     List<Element> get(int... indexes);
 
@@ -152,7 +166,15 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Reduce the current set of matched elements to the elements at the given
-     * indexes
+     * indexes. If the given indexes are not in the range of indexes, the
+     * resulting set will be empty.
+     * <p>
+     * Negative indexes are possible, too.
+     * <ul>
+     * <li> <code>-1</code> corresponds to the last element in the set of matched
+     * elements.</li>
+     * <li> <code>-2</code> corresponds to the second-last element, etc.</li>
+     * </ul>
      */
     Match eq(int... indexes);
 

@@ -215,6 +215,11 @@ public class JOOXTest {
         assertEquals("author", $.find().eq(5).tag(0));
         assertEquals(Arrays.asList("authors", "author"), $.find().eq(4, 5).tags());
         assertEquals("George Orwell", $.find().eq(5).text());
+
+        assertEquals("author", $.find().eq(-1).tag());
+        assertEquals("George Orwell", $.find().eq(-1).text());
+        assertEquals("library", $.find().eq(-10).tag());
+        assertEquals("Orell Füssli", $.find().eq(-10).attr("name"));
     }
 
     @Test
