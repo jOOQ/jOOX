@@ -116,6 +116,12 @@ public interface X extends Iterable<Element> {
     X children(Filter filter);
 
     /**
+     * Find all children of each element at given indexes in the current set of
+     * matched elements.
+     */
+    X children(int... indexes);
+
+    /**
      * Execute a callback for every element in the current set of matched
      * elements.
      */
@@ -669,6 +675,12 @@ public interface X extends Iterable<Element> {
     List<String> contents();
 
     /**
+     * Get all XML content of the elements at given indexes in the set of
+     * matched elements.
+     */
+    List<String> contents(int... indexes);
+
+    /**
      * Get the XML content of the first element in the set of matched elements,
      * or <code>null</code> if there are no matched elements
      * <p>
@@ -704,6 +716,12 @@ public interface X extends Iterable<Element> {
     List<String> texts();
 
     /**
+     * Get all text content of the elements at given indexes in the set of
+     * matched elements.
+     */
+    List<String> texts(int... indexes);
+
+    /**
      * Get the text content of the first element in the set of matched elements,
      * or <code>null</code> if there are no matched elements.
      * <p>
@@ -730,7 +748,7 @@ public interface X extends Iterable<Element> {
     X text(Content content);
 
     // ---------------------------------------------------------------------
-    // Utility
+    // Convenience
     // ---------------------------------------------------------------------
 
     /**
@@ -741,19 +759,28 @@ public interface X extends Iterable<Element> {
     X copy();
 
     /**
-     * Get a list of tag names in the current set of matched elements.
+     * Get a list of tag names of the elements in the current set of matched
+     * elements.
      */
     List<String> tags();
 
     /**
-     * Get the first tag name in the current set of matched elements.
+     * Get a list of tag names of the elements at given indexes in the current
+     * set of matched elements.
+     */
+    List<String> tags(int... indexes);
+
+    /**
+     * Get the tag name of the first element in the current set of matched
+     * elements.
      * <p>
      * This is the same as calling <code>tag(0)</code>
      */
     String tag();
 
     /**
-     * Get a tag name at a given index in the current set of matched elements.
+     * Get a tag name of the element at a given index in the current set of
+     * matched elements.
      */
     String tag(int index);
 
@@ -763,6 +790,12 @@ public interface X extends Iterable<Element> {
      * This is the same as calling <code>attrs("id")</code>
      */
     List<String> ids();
+
+    /**
+     * Get a list of id values at given indexes in the current set of matched
+     * elements.
+     */
+    List<String> ids(int... indexes);
 
     /**
      * Get the first id value

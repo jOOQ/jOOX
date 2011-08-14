@@ -200,6 +200,11 @@ class Impl implements X {
     }
 
     @Override
+    public final Impl children(int... indexes) {
+        return children(JOOX.at(indexes));
+    }
+
+    @Override
     public final Impl children(String selector) {
         return children(selector(selector));
     }
@@ -993,6 +998,17 @@ class Impl implements X {
         return result;
     }
 
+    @Override
+    public final List<String> contents(int... indexes) {
+        List<String> result = new ArrayList<String>();
+
+        for (int index : indexes) {
+            result.add(content(index));
+        }
+
+        return result;
+    }
+
     private final String content(Element element) {
         if (element == null) {
             return "";
@@ -1064,6 +1080,17 @@ class Impl implements X {
 
         for (Element element : elements) {
             result.add(element.getTextContent());
+        }
+
+        return result;
+    }
+
+    @Override
+    public final List<String> texts(int... indexes) {
+        List<String> result = new ArrayList<String>();
+
+        for (int index : indexes) {
+            result.add(text(index));
         }
 
         return result;
@@ -1245,6 +1272,17 @@ class Impl implements X {
     }
 
     @Override
+    public final List<String> tags(int... indexes) {
+        List<String> result = new ArrayList<String>();
+
+        for (int index : indexes) {
+            result.add(tag(index));
+        }
+
+        return result;
+    }
+
+    @Override
     public final String id() {
         return id(0);
     }
@@ -1257,6 +1295,17 @@ class Impl implements X {
     @Override
     public final List<String> ids() {
         return attrs("id");
+    }
+
+    @Override
+    public final List<String> ids(int... indexes) {
+        List<String> result = new ArrayList<String>();
+
+        for (int index : indexes) {
+            result.add(id(index));
+        }
+
+        return result;
     }
 
     // -------------------------------------------------------------------------

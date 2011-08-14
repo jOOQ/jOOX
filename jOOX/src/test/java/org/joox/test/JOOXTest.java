@@ -160,6 +160,12 @@ public class JOOXTest {
         assertEquals(4, $.child(0).child().children().size());
         assertEquals(2, $.child(1).child().children().size());
         assertEquals(2, $.child(2).child().children().size());
+
+        assertEquals(4, $.find("books").children(1, 2).size());
+        assertEquals("Animal Farm", $.find("books").children(1, 2).children("name").text(0));
+        assertEquals("O Alquimista", $.find("books").children(1, 2).children("name").text(1));
+        assertEquals("O Alquimista", $.find("books").children(1, 2).children("name").text(2));
+        assertEquals("Animal Farm", $.find("books").children(1, 2).children("name").text(3));
     }
 
     @Test
@@ -815,5 +821,44 @@ public class JOOXTest {
         assertEquals("value2", x.children().text(1));
         assertEquals("5", x.children().attrs("id").get(1));
         assertEquals(Arrays.asList(null, "5"), x.children().ids());
+    }
+
+    @Test
+    public void testTagsAndIds() throws Exception {
+        // Tags
+        assertEquals("document", $.tag());
+        assertEquals("document", $.tag(0));
+        assertEquals(null, $.tag(1));
+        assertEquals(Arrays.asList("document"), $.tags());
+        assertEquals(Arrays.asList("document", null), $.tags(0, 1));
+
+        assertEquals("book", $.find("books").eq(0).children().tag());
+        assertEquals("book", $.find("books").eq(0).children().tag(0));
+        assertEquals("book", $.find("books").eq(0).children().tag(1));
+        assertEquals("book", $.find("books").eq(0).children().tag(2));
+        assertEquals("book", $.find("books").eq(0).children().tag(3));
+        assertEquals(null, $.find("books").eq(0).children().tag(4));
+        assertEquals(Arrays.asList("book", "book", "book", "book"), $.find("books").eq(0).children().tags());
+        assertEquals(Arrays.asList("book", "book", "book", "book"), $.find("books").eq(0).children().tags(0, 1, 2, 3));
+        assertEquals(Arrays.asList("book", "book", "book", "book", null), $.find("books").eq(0).children().tags(0, 1, 2, 3, 4));
+        assertEquals(Arrays.asList("book", "book"), $.find("books").eq(0).children().tags(1, 2));
+
+        // ID's
+        assertEquals(null, $.id());
+        assertEquals(null, $.id(0));
+        assertEquals(null, $.id(1));
+        assertEquals(Arrays.asList((Object) null), $.ids());
+        assertEquals(Arrays.asList(null, null), $.ids(0, 1));
+
+        assertEquals("1", $.find("books").eq(0).children().id());
+        assertEquals("1", $.find("books").eq(0).children().id(0));
+        assertEquals("2", $.find("books").eq(0).children().id(1));
+        assertEquals("3", $.find("books").eq(0).children().id(2));
+        assertEquals("4", $.find("books").eq(0).children().id(3));
+        assertEquals(null, $.find("books").eq(0).children().id(4));
+        assertEquals(Arrays.asList("1", "2", "3", "4"), $.find("books").eq(0).children().ids());
+        assertEquals(Arrays.asList("1", "2", "3", "4"), $.find("books").eq(0).children().ids(0, 1, 2, 3));
+        assertEquals(Arrays.asList("1", "2", "3", "4", null), $.find("books").eq(0).children().ids(0, 1, 2, 3, 4));
+        assertEquals(Arrays.asList("2", "3"), $.find("books").eq(0).children().ids(1, 2));
     }
 }
