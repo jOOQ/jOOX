@@ -147,12 +147,12 @@ class Util {
     }
 
     /**
-     * Transform an {@link X}[] into an {@link Element}[], removing duplicates.
+     * Transform an {@link Match}[] into an {@link Element}[], removing duplicates.
      */
-    static final Element[] elements(X... content) {
+    static final Element[] elements(Match... content) {
         Set<Element> result = new LinkedHashSet<Element>();
 
-        for (X x : content) {
+        for (Match x : content) {
             result.addAll(x.get());
         }
 

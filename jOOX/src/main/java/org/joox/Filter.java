@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
 
 /**
  * A filter indicating whether an element/index should be kept when reducing an
- * {@link X} node set
+ * {@link Match} node set
  *
  * @author Lukas Eder
  */

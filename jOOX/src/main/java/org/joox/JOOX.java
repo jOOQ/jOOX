@@ -62,7 +62,7 @@ public final class JOOX {
     /**
      * Create a new DOM element in an independent document
      */
-    public static X $(String name) {
+    public static Match $(String name) {
         Document document = builder().newDocument();
         DocumentFragment fragment = Util.createContent(document, name);
 
@@ -79,7 +79,7 @@ public final class JOOX {
     /**
      * Create a new DOM element in an independent document
      */
-    public static X $(String name, String content) {
+    public static Match $(String name, String content) {
         return $(name).append(content);
     }
 
@@ -88,7 +88,7 @@ public final class JOOX {
      * <p>
      * The added content is cloned into the new document
      */
-    public static X $(String name, Element... content) {
+    public static Match $(String name, Element... content) {
         return $(name).append(content);
     }
 
@@ -97,21 +97,21 @@ public final class JOOX {
      * <p>
      * The added content is cloned into the new document
      */
-    public static X $(String name, X... content) {
+    public static Match $(String name, Match... content) {
         return $(name).append(content);
     }
 
     /**
-     * Wrap a DOM document in a jOOX {@link X} element set
+     * Wrap a DOM document in a jOOX {@link Match} element set
      */
-    public static X $(Document document) {
+    public static Match $(Document document) {
         return $(document.getDocumentElement());
     }
 
     /**
-     * Wrap a DOM element in a jOOX {@link X} element set
+     * Wrap a DOM element in a jOOX {@link Match} element set
      */
-    public static X $(Element element) {
+    public static Match $(Element element) {
         return new Impl(element.getOwnerDocument()).addElements(element);
     }
 

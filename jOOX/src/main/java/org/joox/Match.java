@@ -44,14 +44,17 @@ import org.w3c.dom.Element;
  * <p>
  * This is the main type of the jOOX library. It wraps an ordered list of DOM
  * elements without duplicates and provides useful operations upon all of the
- * contained elements. The API has been inspired by <a
+ * contained elements. The wrapped DOM elements have been previously "matched"
+ * by a jOOX operation.
+ * <p>
+ * The API has been inspired by <a
  * href="http://jquery.com">http://jquery.com</a>, a fantastic DOM abstraction
  * library for JavaScript.
  *
  * @author Lukas Eder
  * @see <a href="http://jquery.com">http://jquery.com</a>
  */
-public interface X extends Iterable<Element> {
+public interface Match extends Iterable<Element> {
 
     // ---------------------------------------------------------------------
     // DOM access
@@ -84,12 +87,12 @@ public interface X extends Iterable<Element> {
     /**
      * Add some elements to the set of matched elements
      */
-    X add(Element... elements);
+    Match add(Element... elements);
 
     /**
      * Add some elements to the set of matched elements
      */
-    X add(X... elements);
+    Match add(Match... elements);
 
     /**
      * Find the first child of each element in the current set of matched
@@ -97,91 +100,91 @@ public interface X extends Iterable<Element> {
      * <p>
      * This is the same as calling <code>child(0)</code>.
      */
-    X child();
+    Match child();
 
     /**
      * Find the child at a given index of each element in the current set of
      * matched elements.
      */
-    X child(int index);
+    Match child(int index);
 
     /**
      * Find all children of each element in the current set of matched elements.
      */
-    X children();
+    Match children();
 
     /**
      * Find all children of each element in the current set of matched elements.
      */
-    X children(String selector);
+    Match children(String selector);
 
     /**
      * Find all children of each element in the current set of matched elements.
      */
-    X children(Filter filter);
+    Match children(Filter filter);
 
     /**
      * Find all children of each element at given indexes in the current set of
      * matched elements.
      */
-    X children(int... indexes);
+    Match children(int... indexes);
 
     /**
      * Execute a callback for every element in the current set of matched
      * elements.
      */
-    X each(Each each);
+    Match each(Each each);
 
     /**
      * Reduce the current set of matched elements.
      */
-    X filter(String selector);
+    Match filter(String selector);
 
     /**
      * Reduce the current set of matched elements.
      */
-    X filter(Filter filter);
+    Match filter(Filter filter);
 
     /**
      * Reduce the current set of matched elements to the element at a given
      * index
      */
-    X eq(int index);
+    Match eq(int index);
 
     /**
      * Find all descendants of each element in the current set of matched
      * elements.
      */
-    X find();
+    Match find();
 
     /**
      * Find all descendants of each element in the current set of matched
      * elements.
      */
-    X find(String selector);
+    Match find(String selector);
 
     /**
      * Find all descendants of each element in the current set of matched
      * elements.
      */
-    X find(Filter filter);
+    Match find(Filter filter);
 
     /**
      * Get the first in a set of matched elements.
      */
-    X first();
+    Match first();
 
     /**
      * Reduce the set of matched element to those who have a descendant that
      * matches a selector.
      */
-    X has(String selector);
+    Match has(String selector);
 
     /**
      * Reduce the set of matched element to those who have a descendant that
      * matches a filter.
      */
-    X has(Filter filter);
+    Match has(Filter filter);
 
     /**
      * Check if at least one element in the set of matched elements satisfies a
@@ -198,7 +201,7 @@ public interface X extends Iterable<Element> {
     /**
      * Get the last in a set of matched elements.
      */
-    X last();
+    Match last();
 
     /**
      * Map the set of matched elements to a list of something
@@ -209,253 +212,253 @@ public interface X extends Iterable<Element> {
      * Get the immediate next sibling of every element in set of matched
      * elements.
      */
-    X next();
+    Match next();
 
     /**
      * Get the immediate next sibling of every element in set of matched
      * elements, matching a selector
      */
-    X next(String selector);
+    Match next(String selector);
 
     /**
      * Get the immediate next sibling of every element in set of matched
      * elements, matching a filter
      */
-    X next(Filter filter);
+    Match next(Filter filter);
 
     /**
      * Get all next siblings of every element in a set of matched elements
      */
-    X nextAll();
+    Match nextAll();
 
     /**
      * Get all next siblings of every element in a set of matched elements,
      * matching a selector
      */
-    X nextAll(String selector);
+    Match nextAll(String selector);
 
     /**
      * Get all next siblings of every element in a set of matched elements,
      * matching a filter
      */
-    X nextAll(Filter filter);
+    Match nextAll(Filter filter);
 
     /**
      * Get all next siblings of every element in a set of matched elements until
      * the provided selector matches
      */
-    X nextUntil(String until);
+    Match nextUntil(String until);
 
     /**
      * Get all next siblings of every element in a set of matched elements until
      * the provided filter matches
      */
-    X nextUntil(Filter until);
+    Match nextUntil(Filter until);
 
     /**
      * Get all next siblings of every element in a set of matched elements,
      * matching a selector, until the provided selector matches
      */
-    X nextUntil(String until, String selector);
+    Match nextUntil(String until, String selector);
 
     /**
      * Get all next siblings of every element in a set of matched elements,
      * matching a filter, until the provided selector matches
      */
-    X nextUntil(String until, Filter filter);
+    Match nextUntil(String until, Filter filter);
 
     /**
      * Get all next siblings of every element in a set of matched elements,
      * matching a selector until the provided filter matches
      */
-    X nextUntil(Filter until, String selector);
+    Match nextUntil(Filter until, String selector);
 
     /**
      * Get all next siblings of every element in a set of matched elements,
      * matching a filter until the provided filter matches
      */
-    X nextUntil(Filter until, Filter filter);
+    Match nextUntil(Filter until, Filter filter);
 
     /**
      * Remove elements from the set of matched elements.
      */
-    X not(String selector);
+    Match not(String selector);
 
     /**
      * Remove elements from the set of matched elements.
      */
-    X not(Filter filter);
+    Match not(Filter filter);
 
     /**
      * Get the immediate parent elements of every element in a set of matched
      * elements
      */
-    X parent();
+    Match parent();
 
     /**
      * Get the immediate parent elements of every element in a set of matched
      * elements, matching a selector
      */
-    X parent(String selector);
+    Match parent(String selector);
 
     /**
      * Get the immediate parent elements of every element in a set of matched
      * elements, matching a filter
      */
-    X parent(Filter filter);
+    Match parent(Filter filter);
 
     /**
      * Get all ancestor elements of every element in a set of matched elements
      */
-    X parents();
+    Match parents();
 
     /**
      * Get all ancestor elements of every element in a set of matched elements,
      * matching a selector
      */
-    X parents(String selector);
+    Match parents(String selector);
 
     /**
      * Get all ancestor elements of every element in a set of matched elements,
      * matching a filter
      */
-    X parents(Filter filter);
+    Match parents(Filter filter);
 
     /**
      * Get all ancestors of every element in a set of matched elements until the
      * provided selector matches
      */
-    X parentsUntil(String until);
+    Match parentsUntil(String until);
 
     /**
      * Get all ancestors of every element in a set of matched elements until the
      * provided filter matches
      */
-    X parentsUntil(Filter until);
+    Match parentsUntil(Filter until);
 
     /**
      * Get all ancestors of every element in a set of matched elements, matching
      * a selector, until the provided selector matches
      */
-    X parentsUntil(String until, String selector);
+    Match parentsUntil(String until, String selector);
 
     /**
      * Get all ancestors of every element in a set of matched elements, matching
      * a filter, until the provided selector matches
      */
-    X parentsUntil(String until, Filter filter);
+    Match parentsUntil(String until, Filter filter);
 
     /**
      * Get all ancestors of every element in a set of matched elements, matching
      * a selector until the provided filter matches
      */
-    X parentsUntil(Filter until, String selector);
+    Match parentsUntil(Filter until, String selector);
 
     /**
      * Get all ancestors of every element in a set of matched elements, matching
      * a filter until the provided filter matches
      */
-    X parentsUntil(Filter until, Filter filter);
+    Match parentsUntil(Filter until, Filter filter);
 
     /**
      * Get the immediate previous sibling of every element in set of matched
      * elements.
      */
-    X prev();
+    Match prev();
 
     /**
      * Get the immediate previous sibling of every element in set of matched
      * elements, matching a selector
      */
-    X prev(String selector);
+    Match prev(String selector);
 
     /**
      * Get the immediate previous sibling of every element in set of matched
      * elements, matching a filter
      */
-    X prev(Filter filter);
+    Match prev(Filter filter);
 
     /**
      * Get all previous siblings of every element in a set of matched elements
      */
-    X prevAll();
+    Match prevAll();
 
     /**
      * Get all previous siblings of every element in a set of matched elements,
      * matching a selector
      */
-    X prevAll(String selector);
+    Match prevAll(String selector);
 
     /**
      * Get all previous siblings of every element in a set of matched elements,
      * matching a filter
      */
-    X prevAll(Filter filter);
+    Match prevAll(Filter filter);
 
     /**
      * Get all previous siblings of every element in a set of matched elements
      * until the provided selector matches
      */
-    X prevUntil(String until);
+    Match prevUntil(String until);
 
     /**
      * Get all previous siblings of every element in a set of matched elements
      * until the provided filter matches
      */
-    X prevUntil(Filter until);
+    Match prevUntil(Filter until);
 
     /**
      * Get all previous siblings of every element in a set of matched elements,
      * matching a selector, until the provided selector matches
      */
-    X prevUntil(String until, String selector);
+    Match prevUntil(String until, String selector);
 
     /**
      * Get all previous siblings of every element in a set of matched elements,
      * matching a filter, until the provided selector matches
      */
-    X prevUntil(String until, Filter filter);
+    Match prevUntil(String until, Filter filter);
 
     /**
      * Get all previous siblings of every element in a set of matched elements,
      * matching a selector until the provided filter matches
      */
-    X prevUntil(Filter until, String selector);
+    Match prevUntil(Filter until, String selector);
 
     /**
      * Get all previous siblings of every element in a set of matched elements,
      * matching a filter until the provided filter matches
      */
-    X prevUntil(Filter until, Filter filter);
+    Match prevUntil(Filter until, Filter filter);
 
     /**
      * Get all siblings of every element in a set of matched elements
      */
-    X siblings();
+    Match siblings();
 
     /**
      * Get all siblings of every element in a set of matched elements, matching
      * a selector
      */
-    X siblings(String selector);
+    Match siblings(String selector);
 
     /**
      * Get all siblings of every element in a set of matched elements, matching
      * a filter
      */
-    X siblings(Filter filter);
+    Match siblings(Filter filter);
 
     /**
      * Reduce the set of matched elements by specifying a range of indexes
      * <p>
      * This is the same as calling <code>slice(start, Integer.MAX_VALUE)</code>
      */
-    X slice(int start);
+    Match slice(int start);
 
     /**
      * Reduce the set of matched elements by specifying a range of indexes
      */
-    X slice(int start, int end);
+    Match slice(int start, int end);
 
     // ---------------------------------------------------------------------
     // Manipulation of elements
@@ -464,21 +467,12 @@ public interface X extends Iterable<Element> {
     /**
      * Add content before each element in the set of matched elements.
      */
-    X before(String content);
+    Match before(String content);
 
     /**
      * Add content before each element in the set of matched elements.
      */
-    X before(Content content);
-
-    /**
-     * Add content before each element in the set of matched elements.
-     * <p>
-     * If the added content is already contained in this document, then it is
-     * moved. Otherwise, it is cloned. If there are several elements in the set
-     * of matched elements, then the added content is duplicated.
-     */
-    X before(X... content);
+    Match before(Content content);
 
     /**
      * Add content before each element in the set of matched elements.
@@ -487,17 +481,26 @@ public interface X extends Iterable<Element> {
      * moved. Otherwise, it is cloned. If there are several elements in the set
      * of matched elements, then the added content is duplicated.
      */
-    X before(Element... content);
+    Match before(Match... content);
+
+    /**
+     * Add content before each element in the set of matched elements.
+     * <p>
+     * If the added content is already contained in this document, then it is
+     * moved. Otherwise, it is cloned. If there are several elements in the set
+     * of matched elements, then the added content is duplicated.
+     */
+    Match before(Element... content);
 
     /**
      * Add content after each element in the set of matched elements.
      */
-    X after(String content);
+    Match after(String content);
 
     /**
      * Add content after each element in the set of matched elements.
      */
-    X after(Content content);
+    Match after(Content content);
 
     /**
      * Add content after each element in the set of matched elements.
@@ -506,7 +509,7 @@ public interface X extends Iterable<Element> {
      * moved. Otherwise, it is cloned. If there are several elements in the set
      * of matched elements, then the added content is duplicated.
      */
-    X after(X... content);
+    Match after(Match... content);
 
     /**
      * Add content after each element in the set of matched elements.
@@ -515,29 +518,19 @@ public interface X extends Iterable<Element> {
      * moved. Otherwise, it is cloned. If there are several elements in the set
      * of matched elements, then the added content is duplicated.
      */
-    X after(Element... content);
+    Match after(Element... content);
 
     /**
      * Prepend content to the beginning of each element's content in the set of
      * matched elements.
      */
-    X prepend(String content);
+    Match prepend(String content);
 
     /**
      * Prepend content to the beginning of each element's content in the set of
      * matched elements.
      */
-    X prepend(Content content);
-
-    /**
-     * Prepend content to the beginning of each element's content in the set of
-     * matched elements.
-     * <p>
-     * If the added content is already contained in this document, then it is
-     * moved. Otherwise, it is cloned. If there are several elements in the set
-     * of matched elements, then the added content is duplicated.
-     */
-    X prepend(X... content);
+    Match prepend(Content content);
 
     /**
      * Prepend content to the beginning of each element's content in the set of
@@ -547,19 +540,29 @@ public interface X extends Iterable<Element> {
      * moved. Otherwise, it is cloned. If there are several elements in the set
      * of matched elements, then the added content is duplicated.
      */
-    X prepend(Element... content);
+    Match prepend(Match... content);
+
+    /**
+     * Prepend content to the beginning of each element's content in the set of
+     * matched elements.
+     * <p>
+     * If the added content is already contained in this document, then it is
+     * moved. Otherwise, it is cloned. If there are several elements in the set
+     * of matched elements, then the added content is duplicated.
+     */
+    Match prepend(Element... content);
 
     /**
      * Append content to the end of each element's content in the set of matched
      * elements.
      */
-    X append(String content);
+    Match append(String content);
 
     /**
      * Append content to the end of each element's content in the set of matched
      * elements.
      */
-    X append(Content content);
+    Match append(Content content);
 
     /**
      * Append content to the end of each element's content in the set of matched
@@ -569,7 +572,7 @@ public interface X extends Iterable<Element> {
      * moved. Otherwise, it is cloned. If there are several elements in the set
      * of matched elements, then the added content is duplicated.
      */
-    X append(X... content);
+    Match append(Match... content);
 
     /**
      * Append content to the end of each element's content in the set of matched
@@ -579,29 +582,19 @@ public interface X extends Iterable<Element> {
      * moved. Otherwise, it is cloned. If there are several elements in the set
      * of matched elements, then the added content is duplicated.
      */
-    X append(Element... content);
+    Match append(Element... content);
 
     /**
      * Replace all elements in the set of matched elements with some new
      * content.
      */
-    X replaceWith(String content);
+    Match replaceWith(String content);
 
     /**
      * Replace all elements in the set of matched elements with some new
      * content.
      */
-    X replaceWith(Content content);
-
-    /**
-     * Replace all elements in the set of matched elements with some new
-     * content.
-     * <p>
-     * If the added content is already contained in this document, then it is
-     * moved. Otherwise, it is cloned. If there are several elements in the set
-     * of matched elements, then the added content is duplicated.
-     */
-    X replaceWith(X... content);
+    Match replaceWith(Content content);
 
     /**
      * Replace all elements in the set of matched elements with some new
@@ -611,27 +604,37 @@ public interface X extends Iterable<Element> {
      * moved. Otherwise, it is cloned. If there are several elements in the set
      * of matched elements, then the added content is duplicated.
      */
-    X replaceWith(Element... content);
+    Match replaceWith(Match... content);
+
+    /**
+     * Replace all elements in the set of matched elements with some new
+     * content.
+     * <p>
+     * If the added content is already contained in this document, then it is
+     * moved. Otherwise, it is cloned. If there are several elements in the set
+     * of matched elements, then the added content is duplicated.
+     */
+    Match replaceWith(Element... content);
 
     /**
      * Removes all content from all elements in the set of matched elements.
      */
-    X empty();
+    Match empty();
 
     /**
      * Removes all elements in the set of matched elements.
      */
-    X remove();
+    Match remove();
 
     /**
      * Removes all elements in the set of matched elements, matching a selector
      */
-    X remove(String selector);
+    Match remove(String selector);
 
     /**
      * Removes all elements in the set of matched elements, matching a filter
      */
-    X remove(Filter filter);
+    Match remove(Filter filter);
 
     // ---------------------------------------------------------------------
     // Manipulation of attributes
@@ -655,20 +658,20 @@ public interface X extends Iterable<Element> {
      * <code>value</code> is null, then the attribute is removed. If the
      * attribute already exists, then it is replaced.
      */
-    X attr(String name, String value);
+    Match attr(String name, String value);
 
     /**
      * Set an attribute on all elements in the set of matched elements. If
      * <code>value</code> returns null, then the attribute is removed. If the
      * attribute already exists, then it is replaced.
      */
-    X attr(String name, Content value);
+    Match attr(String name, Content value);
 
     /**
      * Remove an attribute from all elements in the set of matched elements.
      * This is the same as calling <code>attr(name, null)</code>.
      */
-    X removeAttr(String name);
+    Match removeAttr(String name);
 
     // ---------------------------------------------------------------------
     // Manipulation of content
@@ -705,7 +708,7 @@ public interface X extends Iterable<Element> {
      * XML or plain text, then it will be added as text just as with
      * {@link #text(String)}
      */
-    X content(String content);
+    Match content(String content);
 
     /**
      * Add some XML content to all elements in the set of matched elements
@@ -713,7 +716,7 @@ public interface X extends Iterable<Element> {
      * XML or plain text, then it will be added as text just as with
      * {@link #text(String)}
      */
-    X content(Content content);
+    Match content(Content content);
 
     /**
      * Get all text content of the elements in the set of matched elements.
@@ -744,24 +747,24 @@ public interface X extends Iterable<Element> {
      * Set some text content to all elements in the set of matched elements
      * (possibly replacing existing content).
      */
-    X text(String content);
+    Match text(String content);
 
     /**
      * Set some text content to all elements in the set of matched elements
      * (possibly replacing existing content).
      */
-    X text(Content content);
+    Match text(Content content);
 
     // ---------------------------------------------------------------------
     // Convenience
     // ---------------------------------------------------------------------
 
     /**
-     * Get a copy of the {@link X} wrapper. This is not a deep-copy of wrapped
-     * {@link Element} objects. Both this and the copy will reference the same
-     * <code>Element</code>'s
+     * Get a copy of the {@link Match} wrapper. This is not a deep-copy of
+     * wrapped {@link Element} objects. Both this and the copy will reference
+     * the same <code>Element</code>'s
      */
-    X copy();
+    Match copy();
 
     /**
      * Get a list of XPath expressions describing the elements in the current

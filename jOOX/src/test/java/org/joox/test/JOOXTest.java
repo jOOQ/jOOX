@@ -59,7 +59,7 @@ import org.joox.Each;
 import org.joox.Filter;
 import org.joox.JOOX;
 import org.joox.Mapper;
-import org.joox.X;
+import org.joox.Match;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -75,7 +75,7 @@ public class JOOXTest {
     private Document xmlDocument;
     private Element xmlElement;
     private int totalElements;
-    private X $;
+    private Match $;
     private XPath xPath;
 
     @Before
@@ -114,7 +114,7 @@ public class JOOXTest {
         assertEquals(1, $(xmlElement).add(xmlElement).size());
         assertEquals(1, $(xmlElement).add(xmlElement, xmlElement).size());
 
-        X x = $(xmlElement).add(
+        Match x = $(xmlElement).add(
             (Element) xmlElement.getElementsByTagName("director").item(0),
             (Element) xmlElement.getElementsByTagName("actor").item(0));
         assertEquals(3, x.size());
@@ -815,7 +815,7 @@ public class JOOXTest {
         assertEquals("world", $("<hello><world/></hello>").children().eq(0).tag());
         assertEquals(1, $("<hello><world/></hello>").find("world").size());
 
-        X x = $("root",
+        Match x = $("root",
                 $("child1", "value1"),
                 $("child2", "value2").attr("id", "5"));
         assertEquals(1, x.size());

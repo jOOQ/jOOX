@@ -57,7 +57,7 @@ import org.w3c.dom.NodeList;
 /**
  * @author Lukas Eder
  */
-class Impl implements X {
+class Impl implements Match {
 
     private final Document document;
     private final List<Element> elements;
@@ -179,10 +179,10 @@ class Impl implements X {
     }
 
     @Override
-    public final Impl add(X... e) {
+    public final Impl add(Match... e) {
         Impl x = copy();
 
-        for (X element : e) {
+        for (Match element : e) {
             x.addUniqueElements(element.get());
         }
 
@@ -737,7 +737,7 @@ class Impl implements X {
     }
 
     @Override
-    public final Impl after(X... content) {
+    public final Impl after(Match... content) {
         return after(Util.elements(content));
     }
 
@@ -804,7 +804,7 @@ class Impl implements X {
     }
 
     @Override
-    public final Impl before(X... content) {
+    public final Impl before(Match... content) {
         return before(Util.elements(content));
     }
 
@@ -861,7 +861,7 @@ class Impl implements X {
     }
 
     @Override
-    public final Impl append(X... content) {
+    public final Impl append(Match... content) {
         return append(Util.elements(content));
     }
 
@@ -910,7 +910,7 @@ class Impl implements X {
     }
 
     @Override
-    public final Impl prepend(X... content) {
+    public final Impl prepend(Match... content) {
         return prepend(Util.elements(content));
     }
 
@@ -1118,7 +1118,7 @@ class Impl implements X {
     }
 
     @Override
-    public final X empty() {
+    public final Match empty() {
         for (Element element : elements) {
             empty(element);
         }
@@ -1201,7 +1201,7 @@ class Impl implements X {
     }
 
     @Override
-    public final Impl replaceWith(X... content) {
+    public final Impl replaceWith(Match... content) {
         return replaceWith(Util.elements(content));
     }
 
