@@ -2,6 +2,25 @@ jOOX Release notes
 ------------------
 For an overview, see also http://code.google.com/p/joox/issues/list
 
+Version 0.9.1
+=================================================================
+
+Features and improvements
+-------------------------
+#4   - Allow for the creation of elements
+#10  - Add index filters and access-by-index for .children(),
+       .texts(), .contents(), .tags(), .ids()
+#11  - Add access-by-index to .text(), .content(), .child()
+#13  - Add filter JOOX.at(int...) to filter for indexes
+#20  - Add Match.isEmpty()
+#21  - Add convenience method to get all XPath's of matched
+       elements
+
+API changes (backwards-incompatible)
+------------------------------------
+#3   - Rename static factory method joox() to $()
+#23  - Rename X into Match
+
 Version 0.9.0
 =================================================================
 
