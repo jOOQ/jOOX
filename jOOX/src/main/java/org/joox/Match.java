@@ -197,6 +197,27 @@ public interface Match extends Iterable<Element> {
     Match find(Filter filter);
 
     /**
+     * Match all elements given a certain XPath expression applied to each
+     * element in the current set of matched element.
+     * <p>
+     * The XPath expression is evaluated using standard
+     * {@link javax.xml.xpath.XPath}. Note that only matched elements will be
+     * considered in the results. Examples:
+     * <ul>
+     * <li>Match all elements : <code>xpath("//*")</code></li>
+     * <li>Match all books : <code>xpath("/library/books/book")</code></li>
+     * <li>Match all book ID's : <code>xpath("//book").ids()</code></li>
+     * <li>Match all book names : <code>xpath("//book/name").texts()</code></li>
+     * </ul>
+     * This doesn't work (not matching elements):
+     * <ul>
+     * <li>Match all book ID's : <code>xpath("//book/@id")</code></li>
+     * <li>Match all book names : <code>xpath("//book/name/text()")</code></li>
+     * </ul>
+     */
+    Match xpath(String expression);
+
+    /**
      * Get the first in a set of matched elements.
      */
     Match first();

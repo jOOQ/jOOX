@@ -259,6 +259,25 @@ public class JOOXTest {
     }
 
     @Test
+    public void testMatchXPath() throws Exception {
+        assertEquals(totalElements + 1, $.xpath("//*").size());
+        assertEquals(totalElements, $.xpath(".//*").size());
+        assertEquals(8, $.xpath("//book").size());
+        assertEquals(0, $.xpath("//book/@id").size());
+        assertEquals(8, $.xpath("//book/name").size());
+        assertEquals(0, $.xpath("//book/name/text()").size());
+        assertEquals(
+            Arrays.asList("1", "2", "3", "4", "1", "3", "1", "2"),
+            $.xpath("//book").ids());
+        assertEquals(
+            Arrays.asList("O Alquimista", "Brida"),
+            $.xpath("//book[../../@name = 'Amazon'][@id = 3 or @id = 4]/name").texts());
+        assertEquals(
+            Arrays.asList("O Alquimista", "Brida"),
+            $.find("book").xpath("self::node()[../../@name = 'Amazon'][@id = 3 or @id = 4]/name").texts());
+    }
+
+    @Test
     public void testFirst() throws Exception {
         assertEquals(0, $.find("document").first().size());
         assertEquals(1, $.first().size());

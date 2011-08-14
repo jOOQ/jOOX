@@ -48,6 +48,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
@@ -314,6 +319,27 @@ class Impl implements Match {
                     result.add(descendant);
                 }
             }
+        }
+
+        return new Impl(document).addUniqueElements(result);
+    }
+
+    @Override
+    public final Impl xpath(String expression) {
+        List<Element> result = new ArrayList<Element>();
+
+        try {
+            XPathFactory factory = XPathFactory.newInstance();
+            XPathExpression xpath = factory.newXPath().compile(expression);
+
+            for (Element element : get()) {
+                for (Element match : iterable((NodeList) xpath.evaluate(element, XPathConstants.NODESET))) {
+                    result.add(match);
+                }
+            }
+        }
+        catch (XPathExpressionException e) {
+            throw new RuntimeException(e);
         }
 
         return new Impl(document).addUniqueElements(result);
