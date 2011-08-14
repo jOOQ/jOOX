@@ -72,6 +72,11 @@ public interface X extends Iterable<Element> {
      */
     int size();
 
+    /**
+     * Whether there are any matched elements in the set of matched elements
+     */
+    boolean isEmpty();
+
     // ---------------------------------------------------------------------
     // Traversing
     // ---------------------------------------------------------------------

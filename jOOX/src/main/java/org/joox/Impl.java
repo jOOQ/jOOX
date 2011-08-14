@@ -167,6 +167,11 @@ class Impl implements X {
     }
 
     @Override
+    public final boolean isEmpty() {
+        return elements.isEmpty();
+    }
+
+    @Override
     public final Impl add(Element... e) {
         Impl x = copy();
         x.addUniqueElements(e);
