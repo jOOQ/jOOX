@@ -190,4 +190,27 @@ class Util {
         return false;
     }
 
+    /**
+     * Return an XPath expression describing an element
+     */
+    static String xpath(Element element) {
+        StringBuilder sb = new StringBuilder();
+
+        Node iterator = element;
+        while (iterator.getNodeType() == Node.ELEMENT_NODE) {
+            sb.insert(0, "]");
+            sb.insert(0, siblingIndex((Element) iterator) + 1);
+            sb.insert(0, "[");
+            sb.insert(0, ((Element) iterator).getTagName());
+            sb.insert(0, "/");
+
+            iterator = iterator.getParentNode();
+        }
+
+        return sb.toString();
+    }
+
+    private static int siblingIndex(Element element) {
+        return JOOX.list(element.getParentNode().getChildNodes()).indexOf(element);
+    }
 }

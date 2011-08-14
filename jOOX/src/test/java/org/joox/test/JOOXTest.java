@@ -830,8 +830,37 @@ public class JOOXTest {
     }
 
     @Test
-    public void testTagsAndIds() throws Exception {
-        // Tags
+    public void testXPath() throws Exception {
+        assertEquals("/document[1]", $.xpath());
+        assertEquals("/document[1]", $.xpath(0));
+        assertEquals(null, $.xpath(1));
+        assertEquals(Arrays.asList("/document[1]"), $.xpaths());
+        assertEquals(Arrays.asList("/document[1]", null), $.xpaths(0, 1));
+
+        assertEquals("/document[1]/library[1]/books[1]/book[1]", $.find("book").xpath());
+        assertEquals("/document[1]/library[1]/books[1]/book[1]", $.find("book").xpath(0));
+        assertEquals("/document[1]/library[1]/books[1]/book[2]", $.find("book").xpath(1));
+        assertEquals("/document[1]/library[1]/books[1]/book[3]", $.find("book").xpath(2));
+        assertEquals("/document[1]/library[1]/books[1]/book[4]", $.find("book").xpath(3));
+        assertEquals("/document[1]/library[2]/books[1]/book[1]", $.find("book").xpath(4));
+        assertEquals("/document[1]/library[2]/books[1]/book[2]", $.find("book").xpath(5));
+        assertEquals("/document[1]/library[3]/books[1]/book[1]", $.find("book").xpath(6));
+        assertEquals("/document[1]/library[3]/books[1]/book[2]", $.find("book").xpath(7));
+        assertEquals(null, $.find("book").xpath(8));
+        assertEquals(Arrays.asList(
+            "/document[1]/library[1]/books[1]/book[1]",
+            "/document[1]/library[1]/books[1]/book[2]",
+            "/document[1]/library[1]/books[1]/book[3]",
+            "/document[1]/library[1]/books[1]/book[4]",
+            "/document[1]/library[2]/books[1]/book[1]",
+            "/document[1]/library[2]/books[1]/book[2]",
+            "/document[1]/library[3]/books[1]/book[1]",
+            "/document[1]/library[3]/books[1]/book[2]"),
+            $.find("book").xpaths());
+    }
+
+    @Test
+    public void testTags() throws Exception {
         assertEquals("document", $.tag());
         assertEquals("document", $.tag(0));
         assertEquals(null, $.tag(1));
@@ -848,8 +877,10 @@ public class JOOXTest {
         assertEquals(Arrays.asList("book", "book", "book", "book"), $.find("books").eq(0).children().tags(0, 1, 2, 3));
         assertEquals(Arrays.asList("book", "book", "book", "book", null), $.find("books").eq(0).children().tags(0, 1, 2, 3, 4));
         assertEquals(Arrays.asList("book", "book"), $.find("books").eq(0).children().tags(1, 2));
+    }
 
-        // ID's
+    @Test
+    public void testIds() throws Exception {
         assertEquals(null, $.id());
         assertEquals(null, $.id(0));
         assertEquals(null, $.id(1));

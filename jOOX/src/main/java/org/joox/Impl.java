@@ -1249,6 +1249,45 @@ class Impl implements X {
     }
 
     @Override
+    public final String xpath() {
+        return xpath(0);
+    }
+
+    @Override
+    public final String xpath(int index) {
+        Element element = get(index);
+
+        if (element != null) {
+            return Util.xpath(element);
+        }
+        else {
+            return null;
+        }
+    }
+
+    @Override
+    public final List<String> xpaths() {
+        List<String> result = new ArrayList<String>();
+
+        for (Element element : elements) {
+            result.add(Util.xpath(element));
+        }
+
+        return result;
+    }
+
+    @Override
+    public final List<String> xpaths(int... indexes) {
+        List<String> result = new ArrayList<String>();
+
+        for (int index : indexes) {
+            result.add(xpath(index));
+        }
+
+        return result;
+    }
+
+    @Override
     public final String tag() {
         return tag(0);
     }

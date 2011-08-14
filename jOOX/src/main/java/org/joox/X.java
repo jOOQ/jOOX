@@ -764,6 +764,32 @@ public interface X extends Iterable<Element> {
     X copy();
 
     /**
+     * Get a list of XPath expressions describing the elements in the current
+     * set of matched elements
+     */
+    List<String> xpaths();
+
+    /**
+     * Get a list of XPath expressions describing the elements at the given
+     * indexes in the current set of matched elements
+     */
+    List<String> xpaths(int... indexes);
+
+    /**
+     * Get an XPath expression describing the first element in the current set
+     * of matched elements
+     * <p>
+     * This is the same as calling <code>xpath(0)</code>
+     */
+    String xpath();
+
+    /**
+     * Get an XPath expression describing the element at a given index in the
+     * current set of matched elements
+     */
+    String xpath(int index);
+
+    /**
      * Get a list of tag names of the elements in the current set of matched
      * elements.
      */
