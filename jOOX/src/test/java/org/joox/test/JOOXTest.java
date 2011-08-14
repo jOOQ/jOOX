@@ -155,6 +155,11 @@ public class JOOXTest {
         assertEquals("dvds", $.children().children().get().get(1).getTagName());
         assertEquals("books", $.children().children().get().get(2).getTagName());
         assertEquals("books", $.children().children().get().get(3).getTagName());
+
+        assertEquals(4, $.child().child().children().size());
+        assertEquals(4, $.child(0).child().children().size());
+        assertEquals(2, $.child(1).child().children().size());
+        assertEquals(2, $.child(2).child().children().size());
     }
 
     @Test
@@ -574,6 +579,9 @@ public class JOOXTest {
         assertNull($.find("any").text());
         assertEquals("Sergio Leone", $.find("director").text());
         assertEquals("Charles Bronson", $.find("actor").text());
+        assertEquals("Charles Bronson", $.find("actor").text(0));
+        assertEquals("Jason Robards", $.find("actor").text(1));
+        assertEquals("Claudia Cardinale", $.find("actor").text(2));
         assertEquals(
             Arrays.asList("Charles Bronson", "Jason Robards", "Claudia Cardinale"),
             $.find("actor").texts());
@@ -594,6 +602,11 @@ public class JOOXTest {
             "Jason Robards",
             "Claudia Cardinale"),
             $.find("actor").contents());
+
+        assertEquals("Charles Bronson", $.find("actor").content());
+        assertEquals("Charles Bronson", $.find("actor").content(0));
+        assertEquals("Jason Robards", $.find("actor").content(1));
+        assertEquals("Claudia Cardinale", $.find("actor").content(2));
 
         assertEquals("<><aa>", $.find("actors").content("<><aa>").text());
         assertEquals("<><aa>", $.find("actors").content());
@@ -628,6 +641,20 @@ public class JOOXTest {
         assertEquals(
             Arrays.asList("books", "dvds", "postcards", "cds"),
             $.find("library").eq(0).children().tags());
+
+        // Append a new book
+        // -----------------
+        assertEquals(16, $.find("author").after($("author", "Alfred Hitchcock")).size());
+        assertEquals(16, $.find("authors").children().size());
+        assertEquals(Arrays.asList(
+            "George Orwell", "Alfred Hitchcock",
+            "George Orwell", "Alfred Hitchcock",
+            "Paulo Coelho", "Alfred Hitchcock",
+            "Paulo Coelho", "Alfred Hitchcock",
+            "George Orwell", "Alfred Hitchcock",
+            "Paulo Coelho", "Alfred Hitchcock",
+            "George Orwell", "Alfred Hitchcock",
+            "George Orwell", "Alfred Hitchcock"), $.find("author").texts());
     }
 
     @Test
@@ -645,6 +672,20 @@ public class JOOXTest {
         assertEquals(
             Arrays.asList("books", "cds", "postcards", "dvds"),
             $.find("library").eq(0).children().tags());
+
+        // Prepend a new book
+        // ------------------
+        assertEquals(16, $.find("author").before($("author", "Alfred Hitchcock")).size());
+        assertEquals(16, $.find("authors").children().size());
+        assertEquals(Arrays.asList(
+            "Alfred Hitchcock", "George Orwell",
+            "Alfred Hitchcock", "George Orwell",
+            "Alfred Hitchcock", "Paulo Coelho",
+            "Alfred Hitchcock", "Paulo Coelho",
+            "Alfred Hitchcock", "George Orwell",
+            "Alfred Hitchcock", "Paulo Coelho",
+            "Alfred Hitchcock", "George Orwell",
+            "Alfred Hitchcock", "George Orwell"), $.find("author").texts());
     }
 
     @Test
@@ -667,6 +708,22 @@ public class JOOXTest {
         assertEquals(0, $.find("director").children().size());
         assertEquals("Sergio Leone<><aa>", $.find("director").text());
         assertEquals("Sergio Leone<><aa>", $.find("director").content());
+
+        // Append a new book
+        // -----------------
+        assertEquals(1,
+            $.find("books").eq(0).append(
+                $("book",
+                    $("name", "The Da Vinci Code"),
+                    $("authors",
+                        $("author", "Dan Brown"))).attr("id", "5")).size());
+        assertEquals(5, $.find("books").eq(0).children().size());
+        assertEquals(1, $.find("book").eq(4).children("name").size());
+        assertEquals("The Da Vinci Code", $.find("book").eq(4).children("name").text());
+        assertEquals(1, $.find("book").eq(4).children("authors").size());
+        assertEquals(1, $.find("book").eq(4).children("authors").children("author").size());
+        assertEquals("Dan Brown", $.find("book").eq(4).children("authors").children("author").text());
+        assertEquals(Arrays.asList("1", "2", "3", "4", "5"), $.find("books").eq(0).children("book").ids());
     }
 
     @Test
@@ -689,6 +746,22 @@ public class JOOXTest {
         assertEquals(0, $.find("director").children().size());
         assertEquals("<><aa>Sergio Leone", $.find("director").text());
         assertEquals("<><aa>Sergio Leone", $.find("director").content());
+
+        // Prepend a new book
+        // ------------------
+        assertEquals(1,
+            $.find("books").eq(0).prepend(
+                $("book",
+                    $("name", "The Da Vinci Code"),
+                    $("authors",
+                        $("author", "Dan Brown"))).attr("id", "5")).size());
+        assertEquals(5, $.find("books").eq(0).children().size());
+        assertEquals(1, $.find("book").eq(0).children("name").size());
+        assertEquals("The Da Vinci Code", $.find("book").eq(0).children("name").text());
+        assertEquals(1, $.find("book").eq(0).children("authors").size());
+        assertEquals(1, $.find("book").eq(0).children("authors").children("author").size());
+        assertEquals("Dan Brown", $.find("book").eq(0).children("authors").children("author").text());
+        assertEquals(Arrays.asList("5", "1", "2", "3", "4"), $.find("books").eq(0).children("book").ids());
     }
 
     @Test
@@ -703,6 +776,22 @@ public class JOOXTest {
         assertEquals(0, $.find("best-director-in-the-world").replaceWith("<><aa>").size());
         assertEquals("<><aa>", $.find("directors").text().trim());
         assertEquals("<><aa>", $.find("directors").content().trim());
+
+        // Replace a new book
+        // ------------------
+        assertEquals(1,
+            $.find("book").eq(1).replaceWith(
+                $("book",
+                    $("name", "The Da Vinci Code"),
+                    $("authors",
+                        $("author", "Dan Brown"))).attr("id", "5")).size());
+        assertEquals(4, $.find("books").eq(0).children().size());
+        assertEquals(1, $.find("book").eq(1).children("name").size());
+        assertEquals("The Da Vinci Code", $.find("book").eq(1).children("name").text());
+        assertEquals(1, $.find("book").eq(1).children("authors").size());
+        assertEquals(1, $.find("book").eq(1).children("authors").children("author").size());
+        assertEquals("Dan Brown", $.find("book").eq(1).children("authors").children("author").text());
+        assertEquals(Arrays.asList("1", "5", "3", "4"), $.find("books").eq(0).children("book").ids());
     }
 
     @Test
@@ -713,5 +802,18 @@ public class JOOXTest {
         assertEquals("hello", $("<hello><world/></hello>").tag());
         assertEquals("world", $("<hello><world/></hello>").children().eq(0).tag());
         assertEquals(1, $("<hello><world/></hello>").find("world").size());
+
+        X x = $("root",
+                $("child1", "value1"),
+                $("child2", "value2").attr("id", "5"));
+        assertEquals(1, x.size());
+        assertEquals("root", x.tag());
+        assertEquals(2, x.children().size());
+        assertEquals("child1", x.children().tag(0));
+        assertEquals("child2", x.children().tag(1));
+        assertEquals("value1", x.children().text(0));
+        assertEquals("value2", x.children().text(1));
+        assertEquals("5", x.children().attrs("id").get(1));
+        assertEquals(Arrays.asList(null, "5"), x.children().ids());
     }
 }

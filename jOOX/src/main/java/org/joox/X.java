@@ -87,6 +87,20 @@ public interface X extends Iterable<Element> {
     X add(X... elements);
 
     /**
+     * Find the first child of each element in the current set of matched
+     * elements.
+     * <p>
+     * This is the same as calling <code>child(0)</code>.
+     */
+    X child();
+
+    /**
+     * Find the child at a given index of each element in the current set of
+     * matched elements.
+     */
+    X child(int index);
+
+    /**
      * Find all children of each element in the current set of matched elements.
      */
     X children();
@@ -447,6 +461,24 @@ public interface X extends Iterable<Element> {
     X before(Content content);
 
     /**
+     * Add content before each element in the set of matched elements.
+     * <p>
+     * If the added content is already contained in this document, then it is
+     * moved. Otherwise, it is cloned. If there are several elements in the set
+     * of matched elements, then the added content is duplicated.
+     */
+    X before(X... content);
+
+    /**
+     * Add content before each element in the set of matched elements.
+     * <p>
+     * If the added content is already contained in this document, then it is
+     * moved. Otherwise, it is cloned. If there are several elements in the set
+     * of matched elements, then the added content is duplicated.
+     */
+    X before(Element... content);
+
+    /**
      * Add content after each element in the set of matched elements.
      */
     X after(String content);
@@ -455,6 +487,24 @@ public interface X extends Iterable<Element> {
      * Add content after each element in the set of matched elements.
      */
     X after(Content content);
+
+    /**
+     * Add content after each element in the set of matched elements.
+     * <p>
+     * If the added content is already contained in this document, then it is
+     * moved. Otherwise, it is cloned. If there are several elements in the set
+     * of matched elements, then the added content is duplicated.
+     */
+    X after(X... content);
+
+    /**
+     * Add content after each element in the set of matched elements.
+     * <p>
+     * If the added content is already contained in this document, then it is
+     * moved. Otherwise, it is cloned. If there are several elements in the set
+     * of matched elements, then the added content is duplicated.
+     */
+    X after(Element... content);
 
     /**
      * Prepend content to the beginning of each element's content in the set of
@@ -469,6 +519,26 @@ public interface X extends Iterable<Element> {
     X prepend(Content content);
 
     /**
+     * Prepend content to the beginning of each element's content in the set of
+     * matched elements.
+     * <p>
+     * If the added content is already contained in this document, then it is
+     * moved. Otherwise, it is cloned. If there are several elements in the set
+     * of matched elements, then the added content is duplicated.
+     */
+    X prepend(X... content);
+
+    /**
+     * Prepend content to the beginning of each element's content in the set of
+     * matched elements.
+     * <p>
+     * If the added content is already contained in this document, then it is
+     * moved. Otherwise, it is cloned. If there are several elements in the set
+     * of matched elements, then the added content is duplicated.
+     */
+    X prepend(Element... content);
+
+    /**
      * Append content to the end of each element's content in the set of matched
      * elements.
      */
@@ -481,6 +551,26 @@ public interface X extends Iterable<Element> {
     X append(Content content);
 
     /**
+     * Append content to the end of each element's content in the set of matched
+     * elements.
+     * <p>
+     * If the added content is already contained in this document, then it is
+     * moved. Otherwise, it is cloned. If there are several elements in the set
+     * of matched elements, then the added content is duplicated.
+     */
+    X append(X... content);
+
+    /**
+     * Append content to the end of each element's content in the set of matched
+     * elements.
+     * <p>
+     * If the added content is already contained in this document, then it is
+     * moved. Otherwise, it is cloned. If there are several elements in the set
+     * of matched elements, then the added content is duplicated.
+     */
+    X append(Element... content);
+
+    /**
      * Replace all elements in the set of matched elements with some new
      * content.
      */
@@ -491,6 +581,26 @@ public interface X extends Iterable<Element> {
      * content.
      */
     X replaceWith(Content content);
+
+    /**
+     * Replace all elements in the set of matched elements with some new
+     * content.
+     * <p>
+     * If the added content is already contained in this document, then it is
+     * moved. Otherwise, it is cloned. If there are several elements in the set
+     * of matched elements, then the added content is duplicated.
+     */
+    X replaceWith(X... content);
+
+    /**
+     * Replace all elements in the set of matched elements with some new
+     * content.
+     * <p>
+     * If the added content is already contained in this document, then it is
+     * moved. Otherwise, it is cloned. If there are several elements in the set
+     * of matched elements, then the added content is duplicated.
+     */
+    X replaceWith(Element... content);
 
     /**
      * Removes all content from all elements in the set of matched elements.
@@ -554,15 +664,23 @@ public interface X extends Iterable<Element> {
     // ---------------------------------------------------------------------
 
     /**
+     * Get all XML content of the elements in the set of matched elements.
+     */
+    List<String> contents();
+
+    /**
      * Get the XML content of the first element in the set of matched elements,
      * or <code>null</code> if there are no matched elements
+     * <p>
+     * This is the same as calling <code>content(0)</code>
      */
     String content();
 
     /**
-     * Get all XML content of the elements in the set of matched elements.
+     * Get the XML content at a given index in the current set of matched
+     * elements.
      */
-    List<String> contents();
+    String content(int index);
 
     /**
      * Add some XML content to all elements in the set of matched elements
@@ -581,15 +699,23 @@ public interface X extends Iterable<Element> {
     X content(Content content);
 
     /**
+     * Get all text content of the elements in the set of matched elements.
+     */
+    List<String> texts();
+
+    /**
      * Get the text content of the first element in the set of matched elements,
      * or <code>null</code> if there are no matched elements.
+     * <p>
+     * This is the same as calling <code>text(0)</code>
      */
     String text();
 
     /**
-     * Get all text content of the elements in the set of matched elements.
+     * Get the text content at a given index in the current set of matched
+     * elements.
      */
-    List<String> texts();
+    String text(int index);
 
     /**
      * Set some text content to all elements in the set of matched elements
@@ -615,6 +741,11 @@ public interface X extends Iterable<Element> {
     X copy();
 
     /**
+     * Get a list of tag names in the current set of matched elements.
+     */
+    List<String> tags();
+
+    /**
      * Get the first tag name in the current set of matched elements.
      * <p>
      * This is the same as calling <code>tag(0)</code>
@@ -622,14 +753,16 @@ public interface X extends Iterable<Element> {
     String tag();
 
     /**
-     * Get a list of tag names in the current set of matched elements.
+     * Get a tag name at a given index in the current set of matched elements.
      */
     String tag(int index);
 
     /**
-     * Get a list of tag names in the current set of matched elements.
+     * Get a list of id values in the current set of matched elements.
+     * <p>
+     * This is the same as calling <code>attrs("id")</code>
      */
-    List<String> tags();
+    List<String> ids();
 
     /**
      * Get the first id value
@@ -644,11 +777,4 @@ public interface X extends Iterable<Element> {
      * This is the same as calling <code>eq(index).attr("id")</code>
      */
     String id(int index);
-
-    /**
-     * Get a list of id values in the current set of matched elements.
-     * <p>
-     * This is the same as calling <code>attrs("id")</code>
-     */
-    List<String> ids();
 }

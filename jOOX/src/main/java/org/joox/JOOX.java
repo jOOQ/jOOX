@@ -77,6 +77,31 @@ public final class JOOX {
     }
 
     /**
+     * Create a new DOM element in an independent document
+     */
+    public static X $(String name, String content) {
+        return $(name).append(content);
+    }
+
+    /**
+     * Create a new DOM element in an independent document
+     * <p>
+     * The added content is cloned into the new document
+     */
+    public static X $(String name, Element... content) {
+        return $(name).append(content);
+    }
+
+    /**
+     * Create a new DOM element in an independent document
+     * <p>
+     * The added content is cloned into the new document
+     */
+    public static X $(String name, X... content) {
+        return $(name).append(content);
+    }
+
+    /**
      * Wrap a DOM document in a jOOX {@link X} element set
      */
     public static X $(Document document) {
@@ -138,6 +163,24 @@ public final class JOOX {
             @Override
             public boolean filter(int index, Element element) {
                 return index % 2 == 1;
+            }
+        };
+    }
+
+    /**
+     * A filter that returns true on elements at given indexes
+     */
+    public static Filter at(final int... indexes) {
+        return new Filter() {
+            @Override
+            public boolean filter(int index, Element element) {
+                for (int i : indexes) {
+                    if (i == index) {
+                        return true;
+                    }
+                }
+
+                return false;
             }
         };
     }

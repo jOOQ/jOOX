@@ -40,7 +40,6 @@ import static org.joox.JOOX.iterable;
 import static org.joox.JOOX.none;
 import static org.joox.JOOX.selector;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,14 +47,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
@@ -194,6 +185,16 @@ class Impl implements X {
     }
 
     @Override
+    public final Impl child() {
+        return child(0);
+    }
+
+    @Override
+    public final Impl child(int index) {
+        return children(JOOX.at(index));
+    }
+
+    @Override
     public final Impl children() {
         return children(all());
     }
@@ -207,8 +208,9 @@ class Impl implements X {
     public final Impl children(Filter filter) {
         List<Element> result = new ArrayList<Element>();
 
-        int index = 0;
         for (Element element : elements) {
+            int index = 0;
+
             for (Element child : iterable(element.getChildNodes())) {
                 if (filter.filter(index++, child)) {
                     result.add(child);
@@ -725,6 +727,39 @@ class Impl implements X {
     }
 
     @Override
+    public final Impl after(X... content) {
+        return after(Util.elements(content));
+    }
+
+    @Override
+    public final Impl after(Element... content) {
+        List<Element> result = new ArrayList<Element>();
+        List<Element> detached = Util.importOrDetach(document, content);
+
+        for (int i = 0; i < size(); i++) {
+            Element element = get(i);
+            result.add(element);
+
+            Node parent = element.getParentNode();
+            Node next = element.getNextSibling();
+
+            for (Element e : detached) {
+                if (i == 0) {
+                    result.add((Element) parent.insertBefore(e, next));
+                }
+                else {
+                    result.add((Element) parent.insertBefore(e.cloneNode(true), next));
+                }
+            }
+        }
+
+        elements.clear();
+        elements.addAll(result);
+
+        return this;
+    }
+
+    @Override
     public final Impl before(String content) {
         return before(JOOX.content(content));
     }
@@ -747,6 +782,38 @@ class Impl implements X {
             }
             else {
                 parent.insertBefore(doc.createTextNode(text), element);
+            }
+
+            result.add(element);
+        }
+
+        elements.clear();
+        elements.addAll(result);
+
+        return this;
+    }
+
+    @Override
+    public final Impl before(X... content) {
+        return before(Util.elements(content));
+    }
+
+    @Override
+    public final Impl before(Element... content) {
+        List<Element> result = new ArrayList<Element>();
+        List<Element> detached = Util.importOrDetach(document, content);
+
+        for (int i = 0; i < size(); i++) {
+            Element element = get(i);
+            Node parent = element.getParentNode();
+
+            for (Element e : detached) {
+                if (i == 0) {
+                    result.add((Element) parent.insertBefore(e, element));
+                }
+                else {
+                    result.add((Element) parent.insertBefore(e.cloneNode(true), element));
+                }
             }
 
             result.add(element);
@@ -784,6 +851,29 @@ class Impl implements X {
     }
 
     @Override
+    public final Impl append(X... content) {
+        return append(Util.elements(content));
+    }
+
+    @Override
+    public final Impl append(Element... content) {
+        List<Element> detached = Util.importOrDetach(document, content);
+
+        for (int i = 0; i < size(); i++) {
+            for (Element e : detached) {
+                if (i == 0) {
+                    get(i).appendChild(e);
+                }
+                else {
+                    get(i).appendChild(e.cloneNode(true));
+                }
+            }
+        }
+
+        return this;
+    }
+
+    @Override
     public final Impl prepend(String content) {
         return prepend(JOOX.content(content));
     }
@@ -810,9 +900,35 @@ class Impl implements X {
     }
 
     @Override
+    public final Impl prepend(X... content) {
+        return prepend(Util.elements(content));
+    }
+
+    @Override
+    public final Impl prepend(Element... content) {
+        List<Element> detached = Util.importOrDetach(document, content);
+
+        for (int i = 0; i < size(); i++) {
+            for (Element e : detached) {
+                Element element = get(i);
+                Node first = element.getFirstChild();
+
+                if (i == 0) {
+                    element.insertBefore(e, first);
+                }
+                else {
+                    element.insertBefore(e.cloneNode(true), first);
+                }
+            }
+        }
+
+        return this;
+    }
+
+    @Override
     public final String attr(String name) {
         if (size() > 0) {
-            return attr(get(0), name);
+            return Util.attr(get(0), name);
         }
 
         return null;
@@ -823,18 +939,10 @@ class Impl implements X {
         List<String> result = new ArrayList<String>();
 
         for (Element element : elements) {
-            result.add(attr(element, name));
+            result.add(Util.attr(element, name));
         }
 
         return result;
-    }
-
-    private final String attr(Element element, String name) {
-        if (element.hasAttribute(name)) {
-            return element.getAttribute(name);
-        }
-
-        return null;
     }
 
     @Override
@@ -866,12 +974,12 @@ class Impl implements X {
 
     @Override
     public final String content() {
-        if (size() > 0) {
-            return content(get(0));
-        }
-        else {
-            return null;
-        }
+        return content(0);
+    }
+
+    @Override
+    public final String content(int index) {
+        return content(get(index));
     }
 
     @Override
@@ -886,6 +994,10 @@ class Impl implements X {
     }
 
     private final String content(Element element) {
+        if (element == null) {
+            return "";
+        }
+
         NodeList children = element.getChildNodes();
 
         // The element is empty
@@ -894,7 +1006,7 @@ class Impl implements X {
         }
 
         // The element contains only text
-        else if (!hasElementNodes(children)) {
+        else if (!Util.hasElementNodes(children)) {
             return element.getTextContent();
         }
 
@@ -902,18 +1014,8 @@ class Impl implements X {
         else {
             // TODO: Check this code's efficiency
             String name = element.getTagName();
-            return toString(element).replaceAll("^<" + name + "(?:[^>]*)>(.*)</" + name + ">$", "$1");
+            return Util.toString(element).replaceAll("^<" + name + "(?:[^>]*)>(.*)</" + name + ">$", "$1");
         }
-    }
-
-    private final boolean hasElementNodes(NodeList list) {
-        for (int i = 0; i < list.getLength(); i++) {
-            if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     @Override
@@ -942,12 +1044,18 @@ class Impl implements X {
 
     @Override
     public final String text() {
-        if (size() > 0) {
-            return get(0).getTextContent();
+        return text(0);
+    }
+
+    @Override
+    public final String text(int index) {
+        Element element = get(index);
+
+        if (element != null) {
+            return element.getTextContent();
         }
-        else {
-            return null;
-        }
+
+        return null;
     }
 
     @Override
@@ -1060,6 +1168,43 @@ class Impl implements X {
         return this;
     }
 
+    @Override
+    public final Impl replaceWith(X... content) {
+        return replaceWith(Util.elements(content));
+    }
+
+    @Override
+    public final Impl replaceWith(Element... content) {
+        List<Element> result = new ArrayList<Element>();
+        List<Element> detached = Util.importOrDetach(document, content);
+
+        for (int i = 0; i < size(); i++) {
+            Element element = get(i);
+            Node parent = element.getParentNode();
+
+            for (Element e : detached) {
+                Element replacement;
+
+                if (i == 0) {
+                    replacement = e;
+                }
+                else {
+                    replacement = (Element) e.cloneNode(true);
+                }
+
+                parent.insertBefore(replacement, element);
+                result.add(replacement);
+            }
+
+            parent.removeChild(element);
+        }
+
+        elements.clear();
+        elements.addAll(result);
+
+        return this;
+    }
+
     // -------------------------------------------------------------------------
     // Utility API
     // -------------------------------------------------------------------------
@@ -1124,7 +1269,7 @@ class Impl implements X {
             return "[]";
         }
         else if (elements.size() == 1) {
-            return toString(get(0));
+            return Util.toString(get(0));
         }
         else {
             StringBuilder sb = new StringBuilder();
@@ -1134,27 +1279,12 @@ class Impl implements X {
 
             for (Element element : elements) {
                 sb.append(separator);
-                sb.append(toString(element));
+                sb.append(Util.toString(element));
                 separator = ",\n";
             }
 
             sb.append("]");
             return sb.toString();
-        }
-    }
-
-    private final String toString(Element element) {
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            Source source = new DOMSource(element);
-            Result target = new StreamResult(out);
-            transformer.transform(source, target);
-            return out.toString();
-        }
-        catch (Exception e) {
-            return "[ ERROR IN toString() : " + e.getMessage() + " ]";
         }
     }
 }
