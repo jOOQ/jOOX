@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011, Lukas Eder, lukas.eder@gmail.com
+ * Copyright (c) 2009-2011, Lukas Eder, lukas.eder@gmail.com
  * All rights reserved.
  *
  * This software is licensed to you under the Apache License, Version 2.0
@@ -17,7 +17,7 @@
  *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * . Neither the name "jOOX" nor the names of its contributors may be
+ * . Neither the name "jOOQ" nor the names of its contributors may be
  *   used to endorse or promote products derived from this software without
  *   specific prior written permission.
  *
@@ -35,20 +35,35 @@
  */
 package org.joox;
 
+import org.w3c.dom.Element;
 
 /**
- * A filter indicating whether an element/index should be kept when reducing an
- * {@link Match} node set
+ * The context object passed to callback methods in {@link Content},
+ * {@link Each}, {@link Filter}, and {@link Mapper}
  *
  * @author Lukas Eder
  */
-public interface Filter {
+public interface Context {
 
     /**
-     * The callback method invoked for every matched element.
-     *
-     * @param context The context for the current callback call.
-     * @return Whether this filter includes the element
+     * The element in the set of matched elements from which this callback is
+     * made.
      */
-    boolean filter(Context context);
+    Element match();
+
+    /**
+     * The index of the element in the set of matched elements from which this
+     * callback is made.
+     */
+    int matchIndex();
+
+    /**
+     * The element currently being iterated on.
+     */
+    Element element();
+
+    /**
+     * The index of the element currently being iterated on.
+     */
+    int elementIndex();
 }

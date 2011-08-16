@@ -162,7 +162,7 @@ public final class JOOX {
     public static Filter none() {
         return new Filter() {
             @Override
-            public boolean filter(int index, Element element) {
+            public boolean filter(Context context) {
                 return false;
             }
         };
@@ -174,45 +174,47 @@ public final class JOOX {
     public static Filter all() {
         return new Filter() {
             @Override
-            public boolean filter(int index, Element element) {
+            public boolean filter(Context context) {
                 return true;
             }
         };
     }
 
     /**
-     * A filter that returns true on all even indexes (starting with 0!)
+     * A filter that returns true on all even iteration indexes (starting with
+     * 0!)
      */
     public static Filter even() {
         return new Filter() {
             @Override
-            public boolean filter(int index, Element element) {
-                return index % 2 == 0;
+            public boolean filter(Context context) {
+                return context.elementIndex() % 2 == 0;
             }
         };
     }
 
     /**
-     * A filter that returns true on all odd indexes (starting with 0!)
+     * A filter that returns true on all odd iteration indexes (starting with
+     * 0!)
      */
     public static Filter odd() {
         return new Filter() {
             @Override
-            public boolean filter(int index, Element element) {
-                return index % 2 == 1;
+            public boolean filter(Context context) {
+                return context.elementIndex() % 2 == 1;
             }
         };
     }
 
     /**
-     * A filter that returns true on elements at given indexes
+     * A filter that returns true on elements at given iteration indexes
      */
     public static Filter at(final int... indexes) {
         return new Filter() {
             @Override
-            public boolean filter(int index, Element element) {
+            public boolean filter(Context context) {
                 for (int i : indexes) {
-                    if (i == index) {
+                    if (i == context.elementIndex()) {
                         return true;
                     }
                 }
@@ -242,8 +244,8 @@ public final class JOOX {
         else {
             return new Filter() {
                 @Override
-                public boolean filter(int index, Element element) {
-                    return tagName.equals(element.getTagName());
+                public boolean filter(Context context) {
+                    return tagName.equals(context.element().getTagName());
                 }
             };
         }
@@ -255,9 +257,9 @@ public final class JOOX {
     public static Filter and(final Filter... filters) {
         return new Filter() {
             @Override
-            public boolean filter(int index, Element element) {
+            public boolean filter(Context context) {
                 for (Filter filter : filters) {
-                    if (!filter.filter(index, element)) {
+                    if (!filter.filter(context)) {
                         return false;
                     }
                 }
@@ -273,9 +275,9 @@ public final class JOOX {
     public static Filter or(final Filter... filters) {
         return new Filter() {
             @Override
-            public boolean filter(int index, Element element) {
+            public boolean filter(Context context) {
                 for (Filter filter : filters) {
-                    if (filter.filter(index, element)) {
+                    if (filter.filter(context)) {
                         return true;
                     }
                 }
@@ -291,8 +293,8 @@ public final class JOOX {
     public static Filter not(final Filter filter) {
         return new Filter() {
             @Override
-            public boolean filter(int index, Element element) {
-                return !filter.filter(index, element);
+            public boolean filter(Context context) {
+                return !filter.filter(context);
             }
         };
     }
@@ -305,8 +307,8 @@ public final class JOOX {
 
         return new Filter() {
             @Override
-            public boolean filter(int index, Element element) {
-                return set.contains(element.getAttribute("id"));
+            public boolean filter(Context context) {
+                return set.contains(context.element().getAttribute("id"));
             }
         };
     }
@@ -322,7 +324,7 @@ public final class JOOX {
     public static Content content(final String value) {
         return new Content() {
             @Override
-            public String content(int index, Element element) {
+            public String content(Context context) {
                 return value;
             }
         };
@@ -345,8 +347,8 @@ public final class JOOX {
     public static Mapper<String> attrs(final String attributeName) {
         return new Mapper<String>() {
             @Override
-            public String map(int index, Element element) {
-                return element.getAttribute(attributeName);
+            public String map(Context context) {
+                return $(context.element()).attr(attributeName);
             }
         };
     }

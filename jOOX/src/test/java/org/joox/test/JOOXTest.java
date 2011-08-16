@@ -57,6 +57,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.IOUtil;
+import org.joox.Context;
 import org.joox.Each;
 import org.joox.Filter;
 import org.joox.JOOX;
@@ -191,9 +192,11 @@ public class JOOXTest {
         queue.addAll(Arrays.asList(0));
         $.each(new Each() {
             @Override
-            public void each(int index, Element element) {
-                assertEquals((int) queue.poll(), index);
-                assertEquals("document", element.getTagName());
+            public void each(Context context) {
+                assertEquals(context.element(), context.match());
+                assertEquals(context.elementIndex(), context.matchIndex());
+                assertEquals((int) queue.poll(), context.matchIndex());
+                assertEquals("document", context.element().getTagName());
             }
         });
 
@@ -202,9 +205,11 @@ public class JOOXTest {
 
         $.children().each(new Each() {
             @Override
-            public void each(int index, Element element) {
-                assertEquals((int) queue.poll(), index);
-                assertEquals("library", element.getTagName());
+            public void each(Context context) {
+                assertEquals(context.element(), context.match());
+                assertEquals(context.elementIndex(), context.matchIndex());
+                assertEquals((int) queue.poll(), context.matchIndex());
+                assertEquals("library", context.element().getTagName());
             }
         });
 
@@ -360,8 +365,11 @@ public class JOOXTest {
 
         assertEquals(Arrays.asList(0, 1, 2, 3), $.children().first().find("book").map(new Mapper<Integer>() {
             @Override
-            public Integer map(int index, Element element) {
-                return index;
+            public Integer map(Context context) {
+                assertEquals(context.element(), context.match());
+                assertEquals(context.elementIndex(), context.matchIndex());
+
+                return context.matchIndex();
             }
         }));
     }
@@ -379,14 +387,26 @@ public class JOOXTest {
         assertEquals(0, $.find("book").eq(0).next(JOOX.none()).size());
         assertEquals(0, $.find("book").eq(0).next(new Filter() {
             @Override
-            public boolean filter(int index, Element element) {
-                return "Paulo Coelho".equals($(element).find("author").text());
+            public boolean filter(Context context) {
+                assertEquals(0, context.matchIndex());
+                assertEquals(1, context.elementIndex());
+                assertEquals(context.match(), $(context.element()).prev().get(0));
+                assertEquals("1", $(context.match()).id());
+                assertEquals("2", $(context.element()).id());
+
+                return "Paulo Coelho".equals($(context.element()).find("author").text());
             }
         }).size());
         assertEquals(1, $.find("book").eq(1).next(new Filter() {
             @Override
-            public boolean filter(int index, Element element) {
-                return "Paulo Coelho".equals($(element).find("author").text());
+            public boolean filter(Context context) {
+                assertEquals(0, context.matchIndex());
+                assertEquals(1, context.elementIndex());
+                assertEquals(context.match(), $(context.element()).prev().get(0));
+                assertEquals("2", $(context.match()).id());
+                assertEquals("3", $(context.element()).id());
+
+                return "Paulo Coelho".equals($(context.element()).find("author").text());
             }
         }).size());
     }
@@ -459,14 +479,26 @@ public class JOOXTest {
         assertEquals(0, $.find("book").eq(7).prev(JOOX.none()).size());
         assertEquals(0, $.find("book").eq(7).prev(new Filter() {
             @Override
-            public boolean filter(int index, Element element) {
-                return "Paulo Coelho".equals($(element).find("author").text());
+            public boolean filter(Context context) {
+                assertEquals(0, context.matchIndex());
+                assertEquals(1, context.elementIndex());
+                assertEquals(context.match(), $(context.element()).next().get(0));
+                assertEquals("2", $(context.match()).id());
+                assertEquals("1", $(context.element()).id());
+
+                return "Paulo Coelho".equals($(context.element()).find("author").text());
             }
         }).size());
         assertEquals(1, $.find("book").eq(3).prev(new Filter() {
             @Override
-            public boolean filter(int index, Element element) {
-                return "Paulo Coelho".equals($(element).find("author").text());
+            public boolean filter(Context context) {
+                assertEquals(0, context.matchIndex());
+                assertEquals(1, context.elementIndex());
+                assertEquals(context.match(), $(context.element()).next().get(0));
+                assertEquals("4", $(context.match()).id());
+                assertEquals("3", $(context.element()).id());
+
+                return "Paulo Coelho".equals($(context.element()).find("author").text());
             }
         }).size());
     }

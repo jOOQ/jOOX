@@ -35,8 +35,6 @@
  */
 package org.joox;
 
-import org.w3c.dom.Element;
-
 /**
  * A Callback providing (mostly new) content for each element
  *
@@ -47,9 +45,8 @@ public interface Content {
     /**
      * The callback method invoked for every matched element.
      *
-     * @param index The index of the matched element
-     * @param element The matched element
+     * @param context The context for the current callback call.
      * @return The new content
      */
-    String content(int index, Element element);
+    String content(Context context);
 }

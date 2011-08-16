@@ -193,7 +193,7 @@ class Util {
     /**
      * Return an XPath expression describing an element
      */
-    static String xpath(Element element) {
+    static final String xpath(Element element) {
         StringBuilder sb = new StringBuilder();
 
         Node iterator = element;
@@ -210,7 +210,21 @@ class Util {
         return sb.toString();
     }
 
-    private static int siblingIndex(Element element) {
+    private static final int siblingIndex(Element element) {
         return JOOX.list(element.getParentNode().getChildNodes()).indexOf(element);
+    }
+
+    /**
+     * Create a context object
+     */
+    static final Context context(Element match, int matchIndex) {
+        return new DefaultContext(match, matchIndex);
+    }
+
+    /**
+     * Create a context object
+     */
+    static final Context context(Element match, int matchIndex, Element element, int elementIndex) {
+        return new DefaultContext(match, matchIndex, element, elementIndex);
     }
 }

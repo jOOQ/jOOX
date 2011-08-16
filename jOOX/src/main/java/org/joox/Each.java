@@ -35,8 +35,6 @@
  */
 package org.joox;
 
-import org.w3c.dom.Element;
-
 /**
  * A callback to be executed for a set of matched elements.
  *
@@ -47,8 +45,7 @@ public interface Each {
     /**
      * The callback method invoked for every matched element.
      *
-     * @param index The index of the matched element
-     * @param element The matched element
+     * @param context The context for the current callback call.
      */
-    void each(int index, Element element);
+    void each(Context context);
 }

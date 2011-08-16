@@ -38,8 +38,10 @@ package org.joox;
 import static org.joox.JOOX.all;
 import static org.joox.JOOX.convert;
 import static org.joox.JOOX.iterable;
+import static org.joox.JOOX.list;
 import static org.joox.JOOX.none;
 import static org.joox.JOOX.selector;
+import static org.joox.Util.context;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -240,12 +242,15 @@ class Impl implements Match {
     public final Impl children(Filter filter) {
         List<Element> result = new ArrayList<Element>();
 
-        for (Element element : elements) {
-            int index = 0;
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
+            List<Element> list = list(match.getChildNodes());
 
-            for (Element child : iterable(element.getChildNodes())) {
-                if (filter.filter(index++, child)) {
-                    result.add(child);
+            for (int elementIndex = 0; elementIndex < list.size(); elementIndex++) {
+                Element e = list.get(elementIndex);
+
+                if (filter.filter(context(match, matchIndex, e, elementIndex))) {
+                    result.add(e);
                 }
             }
         }
@@ -255,8 +260,8 @@ class Impl implements Match {
 
     @Override
     public final Impl each(Each each) {
-        for (int i = 0; i < size(); i++) {
-            each.each(i, get(i));
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            each.each(context(get(matchIndex), matchIndex));
         }
 
         return this;
@@ -271,9 +276,11 @@ class Impl implements Match {
     public final Impl filter(Filter filter) {
         List<Element> result = new ArrayList<Element>();
 
-        for (int i = 0; i < size(); i++) {
-            if (filter.filter(i, get(i))) {
-                result.add(get(i));
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
+
+            if (filter.filter(context(match, matchIndex))) {
+                result.add(match);
             }
         }
 
@@ -313,11 +320,15 @@ class Impl implements Match {
     public final Impl find(Filter filter) {
         List<Element> result = new ArrayList<Element>();
 
-        int index = 0;
-        for (int i = 0; i < size(); i++) {
-            for (Element descendant : iterable(get(i).getElementsByTagName("*"))) {
-                if (filter.filter(index++, descendant)) {
-                    result.add(descendant);
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
+            List<Element> list = list(match.getElementsByTagName("*"));
+
+            for (int elementIndex = 0; elementIndex < list.size(); elementIndex++) {
+                Element e = list.get(elementIndex);
+
+                if (filter.filter(context(match, matchIndex, e, elementIndex))) {
+                    result.add(e);
                 }
             }
         }
@@ -365,12 +376,15 @@ class Impl implements Match {
     public final Impl has(Filter filter) {
         List<Element> result = new ArrayList<Element>();
 
-        for (int i = 0; i < size(); i++) {
-            Element element = elements.get(i);
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
+            List<Element> list = list(match.getElementsByTagName("*"));
 
-            inner: for (Element child : iterable(element.getElementsByTagName("*"))) {
-                if (filter.filter(i, child)) {
-                    result.add(element);
+            inner: for (int elementIndex = 0; elementIndex < list.size(); elementIndex++) {
+                Element e = list.get(elementIndex);
+
+                if (filter.filter(context(match, matchIndex, e, elementIndex))) {
+                    result.add(match);
                     break inner;
                 }
             }
@@ -386,8 +400,10 @@ class Impl implements Match {
 
     @Override
     public final boolean is(Filter filter) {
-        for (int i = 0; i < size(); i++) {
-            if (filter.filter(i, elements.get(i))) {
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
+
+            if (filter.filter(context(match, matchIndex))) {
                 return true;
             }
         }
@@ -409,8 +425,8 @@ class Impl implements Match {
     public final <E> List<E> map(Mapper<E> map) {
         final List<E> result = new ArrayList<E>();
 
-        for (int i = 0; i < size(); i++) {
-            result.add(map.map(i, elements.get(i)));
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            result.add(map.map(context(get(matchIndex), matchIndex)));
         }
 
         return result;
@@ -479,23 +495,24 @@ class Impl implements Match {
     private final Impl next(boolean all, Filter until, Filter filter) {
         List<Element> result = new ArrayList<Element>();
 
-        for (Element element : elements) {
-            Node node = element;
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
+            Node node = match;
 
-            for (int i = 0;;) {
+            for (int elementIndex = 1;;) {
                 node = node.getNextSibling();
 
                 if (node == null) {
                     break;
                 }
                 else if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element next = (Element) node;
-                    if (until.filter(i, next)) {
+                    Element e = (Element) node;
+                    if (until.filter(context(match, matchIndex, e, elementIndex))) {
                         break;
                     }
 
-                    if (filter.filter(i++, next)) {
-                        result.add(next);
+                    if (filter.filter(context(match, matchIndex, e, elementIndex++))) {
+                        result.add(e);
                     }
 
                     if (!all) {
@@ -582,23 +599,24 @@ class Impl implements Match {
         List<Element> result = new ArrayList<Element>();
 
         // Maybe reverse iteration and reverse result?
-        for (Element element : elements) {
-            Node node = element;
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
+            Node node = match;
 
-            for (int i = 0;;) {
+            for (int elementIndex = 1;;) {
                 node = node.getParentNode();
 
                 if (node == null) {
                     break;
                 }
                 else if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element next = (Element) node;
-                    if (until.filter(i, next)) {
+                    Element e = (Element) node;
+                    if (until.filter(context(match, matchIndex, e, elementIndex))) {
                         break;
                     }
 
-                    if (filter.filter(i++, next)) {
-                        result.add(next);
+                    if (filter.filter(context(match, matchIndex, e, elementIndex++))) {
+                        result.add(e);
                     }
 
                     if (!all) {
@@ -674,23 +692,24 @@ class Impl implements Match {
     private final Impl prev(boolean all, Filter until, Filter filter) {
         List<Element> result = new ArrayList<Element>();
 
-        for (Element element : elements) {
-            Node node = element;
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
+            Node node = match;
 
-            for (int i = 0;;) {
+            for (int elementIndex = 1;;) {
                 node = node.getPreviousSibling();
 
                 if (node == null) {
                     break;
                 }
                 else if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element prev = (Element) node;
-                    if (until.filter(i, prev)) {
+                    Element e = (Element) node;
+                    if (until.filter(context(match, matchIndex, e, elementIndex))) {
                         break;
                     }
 
-                    if (filter.filter(i++, prev)) {
-                        result.add(prev);
+                    if (filter.filter(context(match, matchIndex, e, elementIndex++))) {
+                        result.add(e);
                     }
 
                     if (!all) {
@@ -755,15 +774,15 @@ class Impl implements Match {
     public final Impl after(Content content) {
         List<Element> result = new ArrayList<Element>();
 
-        for (int i = 0; i < size(); i++) {
-            Element element = get(i);
-            result.add(element);
-            Document doc = element.getOwnerDocument();
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
+            result.add(match);
+            Document doc = match.getOwnerDocument();
 
-            String text = content.content(i, element);
+            String text = content.content(context(match, matchIndex));
             DocumentFragment imported = Util.createContent(doc, text);
-            Node parent = element.getParentNode();
-            Node next = element.getNextSibling();
+            Node parent = match.getParentNode();
+            Node next = match.getNextSibling();
 
             if (imported != null) {
                 result.addAll(JOOX.list(imported.getChildNodes()));
@@ -822,23 +841,23 @@ class Impl implements Match {
     public final Impl before(Content content) {
         List<Element> result = new ArrayList<Element>();
 
-        for (int i = 0; i < size(); i++) {
-            Element element = get(i);
-            Document doc = element.getOwnerDocument();
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
+            Document doc = match.getOwnerDocument();
 
-            String text = content.content(i, element);
+            String text = content.content(context(match, matchIndex));
             DocumentFragment imported = Util.createContent(doc, text);
-            Node parent = element.getParentNode();
+            Node parent = match.getParentNode();
 
             if (imported != null) {
                 result.addAll(JOOX.list(imported.getChildNodes()));
-                parent.insertBefore(imported, element);
+                parent.insertBefore(imported, match);
             }
             else {
-                parent.insertBefore(doc.createTextNode(text), element);
+                parent.insertBefore(doc.createTextNode(text), match);
             }
 
-            result.add(element);
+            result.add(match);
         }
 
         elements.clear();
@@ -886,18 +905,18 @@ class Impl implements Match {
 
     @Override
     public final Impl append(Content content) {
-        for (int i = 0; i < size(); i++) {
-            Element element = get(i);
-            Document doc = element.getOwnerDocument();
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
+            Document doc = match.getOwnerDocument();
 
-            String text = content.content(i, element);
+            String text = content.content(context(match, matchIndex));
             DocumentFragment imported = Util.createContent(doc, text);
 
             if (imported != null) {
-                element.appendChild(imported);
+                match.appendChild(imported);
             }
             else {
-                element.appendChild(doc.createTextNode(text));
+                match.appendChild(doc.createTextNode(text));
             }
         }
 
@@ -934,19 +953,19 @@ class Impl implements Match {
 
     @Override
     public final Impl prepend(Content content) {
-        for (int i = 0; i < size(); i++) {
-            Element element = get(i);
-            Document doc = element.getOwnerDocument();
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
+            Document doc = match.getOwnerDocument();
 
-            String text = content.content(i, element);
+            String text = content.content(context(match, matchIndex));
             DocumentFragment imported = Util.createContent(doc, text);
-            Node first = element.getFirstChild();
+            Node first = match.getFirstChild();
 
             if (imported != null) {
-                element.insertBefore(imported, first);
+                match.insertBefore(imported, first);
             }
             else {
-                element.insertBefore(doc.createTextNode(text), first);
+                match.insertBefore(doc.createTextNode(text), first);
             }
         }
 
@@ -1016,15 +1035,15 @@ class Impl implements Match {
 
     @Override
     public final Impl attr(String name, Content content) {
-        for (int i = 0; i < size(); i++) {
-            Element element = get(i);
-            String value = content.content(i, element);
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
+            String value = content.content(context(match, matchIndex));
 
             if (value == null) {
-                element.removeAttribute(name);
+                match.removeAttribute(name);
             }
             else {
-                element.setAttribute(name, value);
+                match.setAttribute(name, value);
             }
         }
 
@@ -1100,17 +1119,17 @@ class Impl implements Match {
 
     @Override
     public final Impl content(Content content) {
-        for (int i = 0; i < size(); i++) {
-            Element element = get(i);
-            String text = content.content(i, element);
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
+            String text = content.content(context(match, matchIndex));
 
-            DocumentFragment imported = Util.createContent(element.getOwnerDocument(), text);
+            DocumentFragment imported = Util.createContent(match.getOwnerDocument(), text);
             if (imported != null) {
-                element.setTextContent("");
-                element.appendChild(imported);
+                match.setTextContent("");
+                match.appendChild(imported);
             }
             else {
-                element.setTextContent(text);
+                match.setTextContent(text);
             }
         }
 
@@ -1172,10 +1191,10 @@ class Impl implements Match {
 
     @Override
     public final Impl text(Content content) {
-        for (int i = 0; i < size(); i++) {
-            Element element = get(i);
-            String text = content.content(i, element);
-            element.setTextContent(text);
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
+            String text = content.content(context(match, matchIndex));
+            match.setTextContent(text);
         }
 
         return this;
@@ -1204,11 +1223,11 @@ class Impl implements Match {
     public final Impl remove(Filter filter) {
         List<Element> remove = new ArrayList<Element>();
 
-        for (int i = 0; i < size(); i++) {
-            Element element = get(i);
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
 
-            if (filter.filter(i, element)) {
-                remove.add(element);
+            if (filter.filter(context(match, matchIndex))) {
+                remove.add(match);
             }
         }
 
@@ -1241,20 +1260,20 @@ class Impl implements Match {
     public final Impl replaceWith(Content content) {
         List<Element> result = new ArrayList<Element>();
 
-        for (int i = 0; i < size(); i++) {
-            Element element = get(i);
-            Document doc = element.getOwnerDocument();
+        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+            Element match = get(matchIndex);
+            Document doc = match.getOwnerDocument();
 
-            String text = content.content(i, element);
+            String text = content.content(context(match, matchIndex));
             DocumentFragment imported = Util.createContent(doc, text);
-            Node parent = element.getParentNode();
+            Node parent = match.getParentNode();
 
             if (imported != null) {
                 result.addAll(JOOX.list(imported.getChildNodes()));
-                parent.replaceChild(imported, element);
+                parent.replaceChild(imported, match);
             }
             else {
-                parent.replaceChild(doc.createTextNode(text), element);
+                parent.replaceChild(doc.createTextNode(text), match);
             }
         }
 

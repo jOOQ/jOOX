@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011, Lukas Eder, lukas.eder@gmail.com
+ * Copyright (c) 2009-2011, Lukas Eder, lukas.eder@gmail.com
  * All rights reserved.
  *
  * This software is licensed to you under the Apache License, Version 2.0
@@ -17,7 +17,7 @@
  *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * . Neither the name "jOOX" nor the names of its contributors may be
+ * . Neither the name "jOOQ" nor the names of its contributors may be
  *   used to endorse or promote products derived from this software without
  *   specific prior written permission.
  *
@@ -35,20 +35,46 @@
  */
 package org.joox;
 
+import org.w3c.dom.Element;
 
 /**
- * A filter indicating whether an element/index should be kept when reducing an
- * {@link Match} node set
- *
  * @author Lukas Eder
  */
-public interface Filter {
+class DefaultContext implements Context {
 
-    /**
-     * The callback method invoked for every matched element.
-     *
-     * @param context The context for the current callback call.
-     * @return Whether this filter includes the element
-     */
-    boolean filter(Context context);
+    private final Element match;
+    private final Element element;
+    private final int matchIndex;
+    private final int elementIndex;
+
+    DefaultContext(Element match, int matchIndex, Element element, int elementIndex) {
+        this.match = match;
+        this.matchIndex = matchIndex;
+        this.element = element;
+        this.elementIndex = elementIndex;
+    }
+
+    DefaultContext(Element match, int matchIndex) {
+        this(match, matchIndex, match, matchIndex);
+    }
+
+    @Override
+    public final Element element() {
+        return element;
+    }
+
+    @Override
+    public int elementIndex() {
+        return elementIndex;
+    }
+
+    @Override
+    public Element match() {
+        return match;
+    }
+
+    @Override
+    public int matchIndex() {
+        return matchIndex;
+    }
 }
