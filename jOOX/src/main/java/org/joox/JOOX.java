@@ -35,6 +35,9 @@
  */
 package org.joox;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -51,6 +54,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * @author Lukas Eder
@@ -115,6 +120,36 @@ public final class JOOX {
      */
     public static Match $(Element element) {
         return new Impl(element.getOwnerDocument()).addElements(element);
+    }
+
+    /**
+     * Read a DOM document from a file into a {@link Match} element set
+     *
+     * @throws IOException
+     * @throws SAXException
+     */
+    public static Match $(File file) throws SAXException, IOException {
+        return $(builder().parse(file));
+    }
+
+    /**
+     * Read a DOM document from a stream into a {@link Match} element set
+     *
+     * @throws IOException
+     * @throws SAXException
+     */
+    public static Match $(InputStream stream) throws SAXException, IOException {
+        return $(builder().parse(stream));
+    }
+
+    /**
+     * Read a DOM document from a file into a {@link Match} element set
+     *
+     * @throws IOException
+     * @throws SAXException
+     */
+    public static Match $(InputSource source) throws SAXException, IOException {
+        return $(builder().parse(source));
     }
 
     // ---------------------------------------------------------------------
