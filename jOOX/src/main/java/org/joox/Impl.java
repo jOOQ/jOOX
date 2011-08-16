@@ -65,7 +65,7 @@ import org.w3c.dom.NodeList;
  */
 class Impl implements Match {
 
-    private final Document document;
+    private final Document      document;
     private final List<Element> elements;
 
     // -------------------------------------------------------------------------
@@ -1453,5 +1453,52 @@ class Impl implements Match {
             sb.append("]");
             return sb.toString();
         }
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((document == null) ? 0 : document.hashCode());
+        result = prime * result + ((elements == null) ? 0 : elements.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        // Compare types
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        // Compare documents
+        Impl other = (Impl) obj;
+        if (document == null) {
+            if (other.document != null) {
+                return false;
+            }
+        }
+        else if (!document.equals(other.document)) {
+            return false;
+        }
+
+        // Compare elements
+        if (elements == null) {
+            if (other.elements != null) {
+                return false;
+            }
+        }
+        else if (!elements.equals(other.elements)) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -304,6 +304,18 @@ public class JOOXTest {
     }
 
     @Test
+    public void testEquals() throws Exception {
+        assertEquals($, $);
+        assertEquals($, $.add(new Element[0]));
+        assertEquals($.find(), $.find());
+        assertEquals($.find("book"), $.find("book"));
+        assertEquals($.find().filter("book").eq(0, 2, 4),
+            $.xpath("/document/library[1]//book[1] | " +
+            		"/document/library[1]//book[3] | " +
+            		"/document/library[2]//book[1]"));
+    }
+
+    @Test
     public void testFirst() throws Exception {
         assertEquals(0, $.find("document").first().size());
         assertEquals(1, $.first().size());
