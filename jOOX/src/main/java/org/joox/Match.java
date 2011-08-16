@@ -689,17 +689,32 @@ public interface Match extends Iterable<Element> {
     // ---------------------------------------------------------------------
 
     /**
-     * Get the attribute <code>name</code> from the first element in the set of
-     * matched elements, or <code>null</code> if the first element does not have
-     * that attribute.
+     * Get an attribute from the first element in the set of matched elements,
+     * or <code>null</code> if the first element does not have that attribute.
      */
     String attr(String name);
 
     /**
-     * Get the attribute <code>name</code> from all elements in the set of
-     * matched elements
+     * Get a converted attribute from the first element in the set of matched
+     * elements, or <code>null</code> if the first element does not have that
+     * attribute.
+     *
+     * @see JOOX#convert(String, Class)
+     */
+    <T> T attr(String name, Class<T> type);
+
+    /**
+     * Get an attribute from all elements in the set of matched elements
      */
     List<String> attrs(String name);
+
+    /**
+     * Get a converted attribute from all elements in the set of matched
+     * elements
+     *
+     * @see JOOX#convert(String, Class)
+     */
+    <T> List<T> attrs(String name, Class<T> type);
 
     /**
      * Set an attribute on all elements in the set of matched elements. If
@@ -772,6 +787,14 @@ public interface Match extends Iterable<Element> {
     List<String> texts();
 
     /**
+     * Get all converted text content of the elements in the set of matched
+     * elements.
+     *
+     * @see JOOX#convert(String, Class)
+     */
+    <T> List<T> texts(Class<T> type);
+
+    /**
      * Get all text content of the elements at given indexes in the set of
      * matched elements.
      */
@@ -784,6 +807,14 @@ public interface Match extends Iterable<Element> {
      * This is the same as calling <code>text(0)</code>
      */
     String text();
+
+    /**
+     * Get the converted text content of the first element in the set of matched
+     * elements, or <code>null</code> if there are no matched elements.
+     *
+     * @see JOOX#convert(String, Class)
+     */
+    <T> T text(Class<T> type);
 
     /**
      * Get the text content at a given index in the current set of matched
@@ -880,6 +911,13 @@ public interface Match extends Iterable<Element> {
     List<String> ids(int... indexes);
 
     /**
+     * Get a list of converted id values in the current set of matched elements.
+     *
+     * @see JOOX#convert(String, Class)
+     */
+    <T> List<T> ids(Class<T> type);
+
+    /**
      * Get the first id value
      * <p>
      * This is the same as calling <code>id(0)</code>
@@ -887,9 +925,16 @@ public interface Match extends Iterable<Element> {
     String id();
 
     /**
-     * Get a list of id values in the current set of matched elements.
+     * Get an id value at a given index in the current set of matched elements.
      * <p>
      * This is the same as calling <code>eq(index).attr("id")</code>
      */
     String id(int index);
+
+    /**
+     * Get the first converted id value
+     *
+     * @see JOOX#convert(String, Class)
+     */
+    <T> T id(Class<T> type);
 }

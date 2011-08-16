@@ -43,6 +43,8 @@ import static junit.framework.Assert.assertTrue;
 import static org.joox.JOOX.$;
 
 import java.io.ByteArrayInputStream;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -275,6 +277,30 @@ public class JOOXTest {
         assertEquals(
             Arrays.asList("O Alquimista", "Brida"),
             $.find("book").xpath("self::node()[../../@name = 'Amazon'][@id = 3 or @id = 4]/name").texts());
+    }
+
+    @Test
+    public void testConvertNumeric() throws Exception {
+        assertEquals(
+            Arrays.asList(1, 2, 3, 4, 1, 3, 1, 2),
+            $.find("book").attrs("id", Integer.class));
+        assertEquals(
+            Arrays.asList(1, 2, 3, 4, 1, 3, 1, 2),
+            $.find("book").ids(Integer.class));
+
+        assertEquals(1, (int) $.find("book").eq(0).id(Integer.class));
+        assertEquals(2L, (long) $.find("book").eq(1).id(Long.class));
+        assertEquals((short) 3, (short) $.find("book").eq(2).id(Short.class));
+        assertEquals((byte) 4, (byte) $.find("book").eq(3).id(Byte.class));
+
+        assertEquals(1984, (int) $.find("name").text(Integer.class));
+        assertEquals(1984, (long) $.find("name").text(Long.class));
+        assertEquals((short) 1984, (short) $.find("name").text(Short.class));
+        assertEquals((byte) 1984, (byte) $.find("name").text(Byte.class));
+        assertEquals(1984.0f, (float) $.find("name").text(Float.class));
+        assertEquals(1984.0, (double) $.find("name").text(Double.class));
+        assertEquals(new BigInteger("1984"), $.find("name").text(BigInteger.class));
+        assertEquals(new BigDecimal("1984"), $.find("name").text(BigDecimal.class));
     }
 
     @Test

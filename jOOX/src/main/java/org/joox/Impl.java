@@ -36,6 +36,7 @@
 package org.joox;
 
 import static org.joox.JOOX.all;
+import static org.joox.JOOX.convert;
 import static org.joox.JOOX.iterable;
 import static org.joox.JOOX.none;
 import static org.joox.JOOX.selector;
@@ -988,6 +989,11 @@ class Impl implements Match {
     }
 
     @Override
+    public final <T> T attr(String name, Class<T> type) {
+        return convert(attr(name), type);
+    }
+
+    @Override
     public final List<String> attrs(String name) {
         List<String> result = new ArrayList<String>();
 
@@ -996,6 +1002,11 @@ class Impl implements Match {
         }
 
         return result;
+    }
+
+    @Override
+    public final <T> List<T> attrs(String name, Class<T> type) {
+        return convert(attrs(name), type);
     }
 
     @Override
@@ -1123,6 +1134,11 @@ class Impl implements Match {
     }
 
     @Override
+    public final <T> T text(Class<T> type) {
+        return convert(text(), type);
+    }
+
+    @Override
     public final List<String> texts() {
         List<String> result = new ArrayList<String>();
 
@@ -1142,6 +1158,11 @@ class Impl implements Match {
         }
 
         return result;
+    }
+
+    @Override
+    public final <T> List<T> texts(Class<T> type) {
+        return convert(texts(), type);
     }
 
     @Override
@@ -1380,6 +1401,11 @@ class Impl implements Match {
     }
 
     @Override
+    public final <T> T id(Class<T> type) {
+        return JOOX.convert(id(), type);
+    }
+
+    @Override
     public final List<String> ids() {
         return attrs("id");
     }
@@ -1393,6 +1419,11 @@ class Impl implements Match {
         }
 
         return result;
+    }
+
+    @Override
+    public final <T> List<T> ids(Class<T> type) {
+        return JOOX.convert(ids(), type);
     }
 
     // -------------------------------------------------------------------------

@@ -35,6 +35,8 @@
  */
 package org.joox;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -358,5 +360,211 @@ public final class JOOX {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // ---------------------------------------------------------------------
+    // Other utilities
+    // ---------------------------------------------------------------------
+
+    private static final Set<String> TRUE_VALUES;
+    private static final Set<String> FALSE_VALUES;
+
+    static {
+        TRUE_VALUES = new HashSet<String>();
+        FALSE_VALUES = new HashSet<String>();
+
+        TRUE_VALUES.add("1");
+        TRUE_VALUES.add("y");
+        TRUE_VALUES.add("yes");
+        TRUE_VALUES.add("true");
+        TRUE_VALUES.add("on");
+        TRUE_VALUES.add("enabled");
+
+        FALSE_VALUES.add("0");
+        FALSE_VALUES.add("n");
+        FALSE_VALUES.add("no");
+        FALSE_VALUES.add("false");
+        FALSE_VALUES.add("off");
+        FALSE_VALUES.add("disabled");
+    }
+
+    /**
+     * Convert a string value to any of these types:
+     * <ul>
+     * <li> {@link String}: The conversion has no effect</li>
+     * <li> {@link Byte}: Numeric conversion</li>
+     * <li> {@link Short}: Numeric conversion</li>
+     * <li> {@link Integer}: Numeric conversion</li>
+     * <li> {@link Long}: Numeric conversion</li>
+     * <li> {@link Float}: Numeric conversion</li>
+     * <li> {@link Double}: Numeric conversion</li>
+     * <li> {@link BigDecimal}: Numeric conversion</li>
+     * <li> {@link BigInteger}: Numeric conversion</li>
+     * <li> {@link Boolean}: Boolean conversion. Boolean values for
+     * <code>true</code> are any of these case-insensitive strings:
+     * <ul>
+     * <li><code>1</code></li>
+     * <li><code>y</code></li>
+     * <li><code>yes</code></li>
+     * <li><code>true</code></li>
+     * <li><code>on</code></li>
+     * <li><code>enabled</code></li>
+     * </ul>
+     * Boolean values for <code>false</code> are any of these case-insensitive
+     * strings:
+     * <ul>
+     * <li><code>0</code></li>
+     * <li><code>n</code></li>
+     * <li><code>no</code></li>
+     * <li><code>false</code></li>
+     * <li><code>off</code></li>
+     * <li><code>disabled</code></li>
+     * </ul>
+     * </li>
+     * <li> {@link java.util.Date}: Datetime conversion.</li>
+     * <li> {@link java.util.Calendar}: Datetime conversion.</li>
+     * <li> {@link java.sql.Timestamp}: Datetime conversion. Possible patterns
+     * for datetime conversion are
+     * <ul>
+     * <li><code>yyyy</code>: Only the year is parsed</li>
+     * <li><code>yyyy[-/]MM</code>: Year and month are parsed. Separator
+     * characters are optional</li>
+     * <li><code>yyyy[-/]MM[-/]dd</code>: Date is parsed. Separator characters
+     * are optional</li>
+     * <li><code>dd[-/.]MM[-/.]yyyy</code>: Date is parsed. Separator characters
+     * are mandatory</li>
+     * <li><code>yyyy[-/]MM[-/]dd[T ]HH</code>: Date and hour are parsed.
+     * Separator characters are optional</li>
+     * <li><code>yyyy[-/]MM[-/]dd[T ]HH[:]mm</code>: Date and time are parsed.
+     * Separator characters are optional</li>
+     * <li><code>yyyy[-/]MM[-/]dd[T ]HH[:]mm[:]ss</code>: Date and time are
+     * parsed. Separator characters are optional</li>
+     * <li><code>yyyy[-/]MM[-/]dd[T ]HH[:]mm[:]ss.SSS</code>: Date and time are
+     * parsed. Separator characters are optional</li>
+     * </ul>
+     * </li>
+     * <li> {@link java.sql.Date}: Date conversion. Possible patterns for date
+     * conversion are
+     * <ul>
+     * <li><code>yyyy</code>: Only the year is parsed</li>
+     * <li><code>yyyy[-/]MM</code>: Year and month are parsed. Separator
+     * characters are optional</li>
+     * <li><code>yyyy[-/]MM[-/]dd</code>: Date is parsed. Separator characters
+     * are optional</li>
+     * <li><code>dd[-/.]MM[-/.]yyyy</code>: Date is parsed. Separator characters
+     * are mandatory</li>
+     * </ul>
+     * </li>
+     * <li> {@link java.sql.Time}: Time conversion. Possible patterns for time
+     * conversion are
+     * <ul>
+     * <li><code>HH</code>: Hour is parsed. Separator characters are optional</li>
+     * <li><code>HH[:]mm</code>: Hour and minute are parsed. Separator
+     * characters are optional</li>
+     * <li><code>HH[:]mm[:]ss</code>: Time is parsed. Separator characters are
+     * optional</li>
+     * </ul>
+     * </li>
+     * <li>Any of the above as array. Arrays of any type are split by any
+     * whitespace character, comma or semi-colon. String literals may be
+     * delimited by quotes as well.</li>
+     * </ul>
+     * <p>
+     * All other values evaluate to <code>null</code>
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T convert(String value, Class<T> type) {
+        if (value == null) {
+            return null;
+        }
+
+        // [#24] TODO: base64-decode binary data
+        // else if (type == byte[].class) {
+        // }
+
+        // [#28] TODO: Array conversion will recurse for split values
+        // else if (type.isArray()) {
+        // }
+
+        // Strings are not converted
+        else if (type == String.class) {
+            return (T) value;
+        }
+
+        // All type can be converted to Object
+        else if (type == Object.class) {
+            return (T) value;
+        }
+
+        // Various number types
+        else if (type == Byte.class) {
+            return (T) Byte.valueOf(new BigDecimal(value).byteValue());
+        }
+        else if (type == Short.class) {
+            return (T) Short.valueOf(new BigDecimal(value).shortValue());
+        }
+        else if (type == Integer.class) {
+            return (T) Integer.valueOf(new BigDecimal(value).intValue());
+        }
+        else if (type == Long.class) {
+            return (T) Long.valueOf(new BigDecimal(value).longValue());
+        }
+        else if (type == Float.class) {
+            return (T) Float.valueOf(value);
+        }
+        else if (type == Double.class) {
+            return (T) Double.valueOf(value);
+        }
+        else if (type == BigDecimal.class) {
+            return (T) new BigDecimal(value);
+        }
+        else if (type == BigInteger.class) {
+            return (T) new BigDecimal(value).toBigInteger();
+        }
+
+        // Booleans have a set of allowed values
+        else if (type == Boolean.class) {
+            String s = value.toLowerCase();
+
+            if (TRUE_VALUES.contains(s)) {
+                return (T) Boolean.TRUE;
+            }
+            else if (FALSE_VALUES.contains(s)) {
+                return (T) Boolean.FALSE;
+            }
+            else {
+                return null;
+            }
+        }
+
+        // [#29] TODO: Date-time types
+        // else if (type == java.util.Date.class) {
+        // }
+        // else if (type == java.util.Calendar.class) {
+        // }
+        // else if (type == java.sql.Timestamp.class) {
+        // }
+        // else if (type == java.sql.Date.class) {
+        // }
+        // else if (type == java.sql.Time.class) {
+        // }
+
+        // All other types are ignored
+        return null;
+    }
+
+    /**
+     * Convert several values
+     *
+     * @see #convert(String, Class)
+     */
+    public static <T> List<T> convert(List<String> values, Class<T> type) {
+        List<T> result = new ArrayList<T>();
+
+        for (String value : values) {
+            result.add(convert(value, type));
+        }
+
+        return result;
     }
 }
