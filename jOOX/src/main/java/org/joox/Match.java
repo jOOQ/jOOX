@@ -37,6 +37,7 @@ package org.joox;
 
 import java.util.List;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -71,6 +72,16 @@ public interface Match extends Iterable<Element> {
      * </ul>
      */
     Element get(int index);
+
+    /**
+     * Get the underlying document of the set of matched elements.
+     * <p>
+     * This will also return a document if there are no elements in the set of
+     * matched elements, either because a new document has been created
+     * previously, or the set of matched elements has been reduced to an empty
+     * set.
+     */
+    Document document();
 
     /**
      * Get some elements from the set of matched elements at the given indexes

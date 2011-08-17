@@ -155,6 +155,11 @@ class Impl implements Match {
     // -------------------------------------------------------------------------
 
     @Override
+    public final Document document() {
+        return document;
+    }
+
+    @Override
     public final Element get(int index) {
         try {
             if (index >= 0) {

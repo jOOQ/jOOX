@@ -604,6 +604,8 @@ public class JOOXTest {
 
     @Test
     public void testDOMAccess() throws Exception {
+        assertEquals(xmlDocument, $.document());
+        assertEquals(xmlDocument, $.get(0).getOwnerDocument());
         assertEquals(xmlElement, $.get(0));
         assertEquals(xmlElement, $.get().get(0));
         assertNull($.get(1));
