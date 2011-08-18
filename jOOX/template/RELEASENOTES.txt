@@ -2,6 +2,32 @@ jOOX Release notes
 ------------------
 For an overview, see also http://code.google.com/p/joox/issues/list
 
+Version 0.9.2
+=================================================================
+
+Features and improvements
+-------------------------
+#1   - Add XPath support
+#5   - Use jOOQ's type conversion methods to add more convenience
+       in .text(), .texts(), .attr(), .attrs() - for numeric
+       and boolean types
+#14  - Document index behaviour for call-backs
+#19  - Allow for negative indexes in .eq()
+#22  - Enhance .eq(int...) to accept several indexes
+#25  - Implement Match.equals() and Match.hashCode()
+#27  - Add $(InputStream), $(InputSource), $(File), and others
+       to load XML from resources
+#30  - Add Match.document() to retrieve the underlying document
+       from a Match object
+#33  - Add $(Reader)
+#34  - Add Context.matchSize() and Context.elementSize()
+
+API changes (backwards-incompatible)
+------------------------------------
+#26  - Change API for callback types Each, Content, Filter,
+       Mapper to receive a general Context type, instead of
+       index and Element
+
 Version 0.9.1
 =================================================================
 
