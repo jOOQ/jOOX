@@ -195,7 +195,10 @@ public class JOOXTest {
             public void each(Context context) {
                 assertEquals(context.element(), context.match());
                 assertEquals(context.elementIndex(), context.matchIndex());
+                assertEquals(context.elementSize(), context.matchSize());
+
                 assertEquals((int) queue.poll(), context.matchIndex());
+                assertEquals(1, context.matchSize());
                 assertEquals("document", context.element().getTagName());
             }
         });
@@ -208,7 +211,10 @@ public class JOOXTest {
             public void each(Context context) {
                 assertEquals(context.element(), context.match());
                 assertEquals(context.elementIndex(), context.matchIndex());
+                assertEquals(context.elementSize(), context.matchSize());
+
                 assertEquals((int) queue.poll(), context.matchIndex());
+                assertEquals(3, context.matchSize());
                 assertEquals("library", context.element().getTagName());
             }
         });
@@ -368,6 +374,9 @@ public class JOOXTest {
             public Integer map(Context context) {
                 assertEquals(context.element(), context.match());
                 assertEquals(context.elementIndex(), context.matchIndex());
+                assertEquals(context.elementSize(), context.matchSize());
+
+                assertEquals(4, context.matchSize());
 
                 return context.matchIndex();
             }
@@ -389,6 +398,8 @@ public class JOOXTest {
             @Override
             public boolean filter(Context context) {
                 assertEquals(0, context.matchIndex());
+                assertEquals(1, context.matchSize());
+
                 assertEquals(1, context.elementIndex());
                 assertEquals(context.match(), $(context.element()).prev().get(0));
                 assertEquals("1", $(context.match()).id());
@@ -401,6 +412,8 @@ public class JOOXTest {
             @Override
             public boolean filter(Context context) {
                 assertEquals(0, context.matchIndex());
+                assertEquals(1, context.matchSize());
+
                 assertEquals(1, context.elementIndex());
                 assertEquals(context.match(), $(context.element()).prev().get(0));
                 assertEquals("2", $(context.match()).id());
@@ -481,6 +494,8 @@ public class JOOXTest {
             @Override
             public boolean filter(Context context) {
                 assertEquals(0, context.matchIndex());
+                assertEquals(1, context.matchSize());
+
                 assertEquals(1, context.elementIndex());
                 assertEquals(context.match(), $(context.element()).next().get(0));
                 assertEquals("2", $(context.match()).id());
@@ -493,6 +508,8 @@ public class JOOXTest {
             @Override
             public boolean filter(Context context) {
                 assertEquals(0, context.matchIndex());
+                assertEquals(1, context.matchSize());
+
                 assertEquals(1, context.elementIndex());
                 assertEquals(context.match(), $(context.element()).next().get(0));
                 assertEquals("4", $(context.match()).id());

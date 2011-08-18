@@ -58,6 +58,12 @@ public interface Context {
     int matchIndex();
 
     /**
+     * The number of elements in the set of matched elements from which this
+     * callback is made.
+     */
+    int matchSize();
+
+    /**
      * The element currently being iterated on.
      * <p>
      * If not further specified, this is the same as {@link #match()}
@@ -70,4 +76,11 @@ public interface Context {
      * If not further specified, this is the same as {@link #matchIndex()}
      */
     int elementIndex();
+
+    /**
+     * The number of elements currently being iterated on.
+     * <p>
+     * If not further specified, this is the same as {@link #matchSize()}
+     */
+    int elementSize();
 }

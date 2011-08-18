@@ -254,7 +254,7 @@ class Impl implements Match {
             for (int elementIndex = 0; elementIndex < list.size(); elementIndex++) {
                 Element e = list.get(elementIndex);
 
-                if (filter.filter(context(match, matchIndex, e, elementIndex))) {
+                if (filter.filter(context(match, matchIndex, size(), e, elementIndex, list.size()))) {
                     result.add(e);
                 }
             }
@@ -266,7 +266,7 @@ class Impl implements Match {
     @Override
     public final Impl each(Each each) {
         for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
-            each.each(context(get(matchIndex), matchIndex));
+            each.each(context(get(matchIndex), matchIndex, size()));
         }
 
         return this;
@@ -284,7 +284,7 @@ class Impl implements Match {
         for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
             Element match = get(matchIndex);
 
-            if (filter.filter(context(match, matchIndex))) {
+            if (filter.filter(context(match, matchIndex, size()))) {
                 result.add(match);
             }
         }
@@ -332,7 +332,7 @@ class Impl implements Match {
             for (int elementIndex = 0; elementIndex < list.size(); elementIndex++) {
                 Element e = list.get(elementIndex);
 
-                if (filter.filter(context(match, matchIndex, e, elementIndex))) {
+                if (filter.filter(context(match, matchIndex, size(), e, elementIndex, list.size()))) {
                     result.add(e);
                 }
             }
@@ -388,7 +388,7 @@ class Impl implements Match {
             inner: for (int elementIndex = 0; elementIndex < list.size(); elementIndex++) {
                 Element e = list.get(elementIndex);
 
-                if (filter.filter(context(match, matchIndex, e, elementIndex))) {
+                if (filter.filter(context(match, matchIndex, size(), e, elementIndex, list.size()))) {
                     result.add(match);
                     break inner;
                 }
@@ -408,7 +408,7 @@ class Impl implements Match {
         for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
             Element match = get(matchIndex);
 
-            if (filter.filter(context(match, matchIndex))) {
+            if (filter.filter(context(match, matchIndex, size()))) {
                 return true;
             }
         }
@@ -431,7 +431,7 @@ class Impl implements Match {
         final List<E> result = new ArrayList<E>();
 
         for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
-            result.add(map.map(context(get(matchIndex), matchIndex)));
+            result.add(map.map(context(get(matchIndex), matchIndex, size())));
         }
 
         return result;
@@ -512,11 +512,13 @@ class Impl implements Match {
                 }
                 else if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element e = (Element) node;
-                    if (until.filter(context(match, matchIndex, e, elementIndex))) {
+                    // TODO: [#34] Calculate elementSize()
+                    if (until.filter(context(match, matchIndex, size(), e, elementIndex, -1))) {
                         break;
                     }
 
-                    if (filter.filter(context(match, matchIndex, e, elementIndex++))) {
+                    // TODO: [#34] Calculate elementSize()
+                    if (filter.filter(context(match, matchIndex, size(), e, elementIndex++, -1))) {
                         result.add(e);
                     }
 
@@ -616,11 +618,13 @@ class Impl implements Match {
                 }
                 else if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element e = (Element) node;
-                    if (until.filter(context(match, matchIndex, e, elementIndex))) {
+                    // TODO: [#34] Calculate elementSize()
+                    if (until.filter(context(match, matchIndex, size(), e, elementIndex, -1))) {
                         break;
                     }
 
-                    if (filter.filter(context(match, matchIndex, e, elementIndex++))) {
+                    // TODO: [#34] Calculate elementSize()
+                    if (filter.filter(context(match, matchIndex, size(), e, elementIndex++, -1))) {
                         result.add(e);
                     }
 
@@ -709,11 +713,13 @@ class Impl implements Match {
                 }
                 else if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element e = (Element) node;
-                    if (until.filter(context(match, matchIndex, e, elementIndex))) {
+                    // TODO: [#34] Calculate elementSize()
+                    if (until.filter(context(match, matchIndex, size(), e, elementIndex, -1))) {
                         break;
                     }
 
-                    if (filter.filter(context(match, matchIndex, e, elementIndex++))) {
+                    // TODO: [#34] Calculate elementSize()
+                    if (filter.filter(context(match, matchIndex, size(), e, elementIndex++, -1))) {
                         result.add(e);
                     }
 
@@ -784,7 +790,7 @@ class Impl implements Match {
             result.add(match);
             Document doc = match.getOwnerDocument();
 
-            String text = content.content(context(match, matchIndex));
+            String text = content.content(context(match, matchIndex, size()));
             DocumentFragment imported = Util.createContent(doc, text);
             Node parent = match.getParentNode();
             Node next = match.getNextSibling();
@@ -850,7 +856,7 @@ class Impl implements Match {
             Element match = get(matchIndex);
             Document doc = match.getOwnerDocument();
 
-            String text = content.content(context(match, matchIndex));
+            String text = content.content(context(match, matchIndex, size()));
             DocumentFragment imported = Util.createContent(doc, text);
             Node parent = match.getParentNode();
 
@@ -914,7 +920,7 @@ class Impl implements Match {
             Element match = get(matchIndex);
             Document doc = match.getOwnerDocument();
 
-            String text = content.content(context(match, matchIndex));
+            String text = content.content(context(match, matchIndex, size()));
             DocumentFragment imported = Util.createContent(doc, text);
 
             if (imported != null) {
@@ -962,7 +968,7 @@ class Impl implements Match {
             Element match = get(matchIndex);
             Document doc = match.getOwnerDocument();
 
-            String text = content.content(context(match, matchIndex));
+            String text = content.content(context(match, matchIndex, size()));
             DocumentFragment imported = Util.createContent(doc, text);
             Node first = match.getFirstChild();
 
@@ -1042,7 +1048,7 @@ class Impl implements Match {
     public final Impl attr(String name, Content content) {
         for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
             Element match = get(matchIndex);
-            String value = content.content(context(match, matchIndex));
+            String value = content.content(context(match, matchIndex, size()));
 
             if (value == null) {
                 match.removeAttribute(name);
@@ -1126,7 +1132,7 @@ class Impl implements Match {
     public final Impl content(Content content) {
         for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
             Element match = get(matchIndex);
-            String text = content.content(context(match, matchIndex));
+            String text = content.content(context(match, matchIndex, size()));
 
             DocumentFragment imported = Util.createContent(match.getOwnerDocument(), text);
             if (imported != null) {
@@ -1198,7 +1204,7 @@ class Impl implements Match {
     public final Impl text(Content content) {
         for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
             Element match = get(matchIndex);
-            String text = content.content(context(match, matchIndex));
+            String text = content.content(context(match, matchIndex, size()));
             match.setTextContent(text);
         }
 
@@ -1231,7 +1237,7 @@ class Impl implements Match {
         for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
             Element match = get(matchIndex);
 
-            if (filter.filter(context(match, matchIndex))) {
+            if (filter.filter(context(match, matchIndex, size()))) {
                 remove.add(match);
             }
         }
@@ -1269,7 +1275,7 @@ class Impl implements Match {
             Element match = get(matchIndex);
             Document doc = match.getOwnerDocument();
 
-            String text = content.content(context(match, matchIndex));
+            String text = content.content(context(match, matchIndex, size()));
             DocumentFragment imported = Util.createContent(doc, text);
             Node parent = match.getParentNode();
 

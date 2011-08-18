@@ -217,14 +217,14 @@ class Util {
     /**
      * Create a context object
      */
-    static final Context context(Element match, int matchIndex) {
-        return new DefaultContext(match, matchIndex);
+    static final Context context(Element match, int matchIndex, int matchSize) {
+        return new DefaultContext(match, matchIndex, matchSize);
     }
 
     /**
      * Create a context object
      */
-    static final Context context(Element match, int matchIndex, Element element, int elementIndex) {
-        return new DefaultContext(match, matchIndex, element, elementIndex);
+    static final Context context(Element match, int matchIndex, int matchSize, Element element, int elementIndex, int elementSize) {
+        return new DefaultContext(match, matchIndex, matchSize, element, elementIndex, elementSize);
     }
 }
