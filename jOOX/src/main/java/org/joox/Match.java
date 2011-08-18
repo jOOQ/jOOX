@@ -150,6 +150,18 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Find all children of each element in the current set of matched elements.
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose children are
+     * searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * children are searched</li>
+     * <li> {@link Context#element()} - the child candidate that is being
+     * filtered</li>
+     * <li> {@link Context#elementIndex()} - the index within its parent of the
+     * child candidate that is being filtered</li>
+     * </ul>
      */
     Match children(Filter filter);
 
@@ -172,6 +184,13 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Reduce the current set of matched elements.
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element being filtered</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element being
+     * filtered</li>
+     * </ul>
      */
     Match filter(Filter filter);
 
@@ -204,6 +223,18 @@ public interface Match extends Iterable<Element> {
     /**
      * Find all descendants of each element in the current set of matched
      * elements.
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose descendants are
+     * searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * descendants are searched</li>
+     * <li> {@link Context#element()} - the descendant candidate that is being
+     * filtered</li>
+     * <li> {@link Context#elementIndex()} - the iteration index of the
+     * descendant candidate that is being filtered</li>
+     * </ul>
      */
     Match find(Filter filter);
 
@@ -242,6 +273,18 @@ public interface Match extends Iterable<Element> {
     /**
      * Reduce the set of matched element to those who have a descendant that
      * matches a filter.
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose descendants are
+     * searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * descendants are searched</li>
+     * <li> {@link Context#element()} - the descendant candidate that is being
+     * filtered</li>
+     * <li> {@link Context#elementIndex()} - the iteration index of the
+     * descendant candidate that is being filtered</li>
+     * </ul>
      */
     Match has(Filter filter);
 
@@ -254,6 +297,13 @@ public interface Match extends Iterable<Element> {
     /**
      * Check if at least one element in the set of matched elements satisfies a
      * filter.
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element being checked</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element being
+     * checked</li>
+     * </ul>
      */
     boolean is(Filter filter);
 
@@ -282,6 +332,16 @@ public interface Match extends Iterable<Element> {
     /**
      * Get the immediate next sibling of every element in set of matched
      * elements, matching a filter
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose next sibling is
+     * searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * next sibling is searched</li>
+     * <li> {@link Context#element()} - the next sibling that is being filtered</li>
+     * <li> {@link Context#elementIndex()} - 1</li>
+     * </ul>
      */
     Match next(Filter filter);
 
@@ -299,6 +359,17 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all next siblings of every element in a set of matched elements,
      * matching a filter
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose next siblings are
+     * searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * next siblings are searched</li>
+     * <li> {@link Context#element()} - the next siblings that is being filtered</li>
+     * <li> {@link Context#elementIndex()} - the relative index of the next
+     * siblings that are being filtered</li>
+     * </ul>
      */
     Match nextAll(Filter filter);
 
@@ -311,6 +382,17 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all next siblings of every element in a set of matched elements until
      * the provided filter matches
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose next siblings are
+     * searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * next siblings are searched</li>
+     * <li> {@link Context#element()} - the next siblings that is being filtered</li>
+     * <li> {@link Context#elementIndex()} - the relative index of the next
+     * siblings that are being filtered</li>
+     * </ul>
      */
     Match nextUntil(Filter until);
 
@@ -323,18 +405,51 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all next siblings of every element in a set of matched elements,
      * matching a filter, until the provided selector matches
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose next siblings are
+     * searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * next siblings are searched</li>
+     * <li> {@link Context#element()} - the next siblings that is being filtered</li>
+     * <li> {@link Context#elementIndex()} - the relative index of the next
+     * siblings that are being filtered</li>
+     * </ul>
      */
     Match nextUntil(String until, Filter filter);
 
     /**
      * Get all next siblings of every element in a set of matched elements,
      * matching a selector until the provided filter matches
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose next siblings are
+     * searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * next siblings are searched</li>
+     * <li> {@link Context#element()} - the next siblings that is being filtered</li>
+     * <li> {@link Context#elementIndex()} - the relative index of the next
+     * siblings that are being filtered</li>
+     * </ul>
      */
     Match nextUntil(Filter until, String selector);
 
     /**
      * Get all next siblings of every element in a set of matched elements,
      * matching a filter until the provided filter matches
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose next siblings are
+     * searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * next siblings are searched</li>
+     * <li> {@link Context#element()} - the next siblings that is being filtered</li>
+     * <li> {@link Context#elementIndex()} - the relative index of the next
+     * siblings that are being filtered</li>
+     * </ul>
      */
     Match nextUntil(Filter until, Filter filter);
 
@@ -345,6 +460,13 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Remove elements from the set of matched elements.
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element being checked</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element being
+     * checked</li>
+     * </ul>
      */
     Match not(Filter filter);
 
@@ -363,6 +485,16 @@ public interface Match extends Iterable<Element> {
     /**
      * Get the immediate parent elements of every element in a set of matched
      * elements, matching a filter
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose parent is
+     * searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * parent is searched</li>
+     * <li> {@link Context#element()} - the parent that is being filtered</li>
+     * <li> {@link Context#elementIndex()} - 1</li>
+     * </ul>
      */
     Match parent(Filter filter);
 
@@ -380,6 +512,17 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all ancestor elements of every element in a set of matched elements,
      * matching a filter
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose parents are
+     * searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * parents are searched</li>
+     * <li> {@link Context#element()} - the parent that is being filtered</li>
+     * <li> {@link Context#elementIndex()} - the relative index of the parent
+     * that is being filtered</li>
+     * </ul>
      */
     Match parents(Filter filter);
 
@@ -392,6 +535,17 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all ancestors of every element in a set of matched elements until the
      * provided filter matches
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose parents are
+     * searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * parents are searched</li>
+     * <li> {@link Context#element()} - the parent that is being filtered</li>
+     * <li> {@link Context#elementIndex()} - the relative index of the parent
+     * that is being filtered</li>
+     * </ul>
      */
     Match parentsUntil(Filter until);
 
@@ -404,18 +558,51 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all ancestors of every element in a set of matched elements, matching
      * a filter, until the provided selector matches
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose parents are
+     * searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * parents are searched</li>
+     * <li> {@link Context#element()} - the parent that is being filtered</li>
+     * <li> {@link Context#elementIndex()} - the relative index of the parent
+     * that is being filtered</li>
+     * </ul>
      */
     Match parentsUntil(String until, Filter filter);
 
     /**
      * Get all ancestors of every element in a set of matched elements, matching
      * a selector until the provided filter matches
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose parents are
+     * searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * parents are searched</li>
+     * <li> {@link Context#element()} - the parent that is being filtered</li>
+     * <li> {@link Context#elementIndex()} - the relative index of the parent
+     * that is being filtered</li>
+     * </ul>
      */
     Match parentsUntil(Filter until, String selector);
 
     /**
      * Get all ancestors of every element in a set of matched elements, matching
      * a filter until the provided filter matches
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose parents are
+     * searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * parents are searched</li>
+     * <li> {@link Context#element()} - the parent that is being filtered</li>
+     * <li> {@link Context#elementIndex()} - the relative index of the parent
+     * that is being filtered</li>
+     * </ul>
      */
     Match parentsUntil(Filter until, Filter filter);
 
@@ -434,6 +621,17 @@ public interface Match extends Iterable<Element> {
     /**
      * Get the immediate previous sibling of every element in set of matched
      * elements, matching a filter
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose previous sibling
+     * is searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * previous sibling is searched</li>
+     * <li> {@link Context#element()} - the previous sibling that is being
+     * filtered</li>
+     * <li> {@link Context#elementIndex()} - 1</li>
+     * </ul>
      */
     Match prev(Filter filter);
 
@@ -451,6 +649,18 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all previous siblings of every element in a set of matched elements,
      * matching a filter
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose previous siblings
+     * are searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * previous siblings are searched</li>
+     * <li> {@link Context#element()} - the previous siblings that is being
+     * filtered</li>
+     * <li> {@link Context#elementIndex()} - the relative index of the previous
+     * siblings that are being filtered</li>
+     * </ul>
      */
     Match prevAll(Filter filter);
 
@@ -463,6 +673,18 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all previous siblings of every element in a set of matched elements
      * until the provided filter matches
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose previous siblings
+     * are searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * previous siblings are searched</li>
+     * <li> {@link Context#element()} - the previous siblings that is being
+     * filtered</li>
+     * <li> {@link Context#elementIndex()} - the relative index of the previous
+     * siblings that are being filtered</li>
+     * </ul>
      */
     Match prevUntil(Filter until);
 
@@ -475,18 +697,54 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all previous siblings of every element in a set of matched elements,
      * matching a filter, until the provided selector matches
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose previous siblings
+     * are searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * previous siblings are searched</li>
+     * <li> {@link Context#element()} - the previous siblings that is being
+     * filtered</li>
+     * <li> {@link Context#elementIndex()} - the relative index of the previous
+     * siblings that are being filtered</li>
+     * </ul>
      */
     Match prevUntil(String until, Filter filter);
 
     /**
      * Get all previous siblings of every element in a set of matched elements,
      * matching a selector until the provided filter matches
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose previous siblings
+     * are searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * previous siblings are searched</li>
+     * <li> {@link Context#element()} - the previous siblings that is being
+     * filtered</li>
+     * <li> {@link Context#elementIndex()} - the relative index of the previous
+     * siblings that are being filtered</li>
+     * </ul>
      */
     Match prevUntil(Filter until, String selector);
 
     /**
      * Get all previous siblings of every element in a set of matched elements,
      * matching a filter until the provided filter matches
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose previous siblings
+     * are searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * previous siblings are searched</li>
+     * <li> {@link Context#element()} - the previous siblings that is being
+     * filtered</li>
+     * <li> {@link Context#elementIndex()} - the relative index of the previous
+     * siblings that are being filtered</li>
+     * </ul>
      */
     Match prevUntil(Filter until, Filter filter);
 
@@ -504,6 +762,19 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all siblings of every element in a set of matched elements, matching
      * a filter
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element whose siblings are
+     * searched</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element whose
+     * siblings are searched</li>
+     * <li> {@link Context#element()} - the sibling that is being filtered</li>
+     * <li> {@link Context#elementIndex()} - the relative index of the sibling
+     * that is being filtered. This is less than zero if it is a previous
+     * sibling or more than zero if it is a subsequent sibling, compared to the
+     * element in {@link Context#match()}</li>
+     * </ul>
      */
     Match siblings(Filter filter);
 
@@ -530,6 +801,13 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Add content before each element in the set of matched elements.
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element being prepended before</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element being
+     * prepended before</li>
+     * </ul>
      */
     Match before(Content content);
 
@@ -558,6 +836,13 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Add content after each element in the set of matched elements.
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element being appended after</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element being
+     * appended after</li>
+     * </ul>
      */
     Match after(Content content);
 
@@ -588,6 +873,13 @@ public interface Match extends Iterable<Element> {
     /**
      * Prepend content to the beginning of each element's content in the set of
      * matched elements.
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element being prepended to</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element being
+     * prepended to</li>
+     * </ul>
      */
     Match prepend(Content content);
 
@@ -620,6 +912,13 @@ public interface Match extends Iterable<Element> {
     /**
      * Append content to the end of each element's content in the set of matched
      * elements.
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element being appended to</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element being
+     * appended to</li>
+     * </ul>
      */
     Match append(Content content);
 
@@ -692,6 +991,13 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Removes all elements in the set of matched elements, matching a filter
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element being removed</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element being
+     * removed</li>
+     * </ul>
      */
     Match remove(Filter filter);
 
@@ -738,6 +1044,13 @@ public interface Match extends Iterable<Element> {
      * Set an attribute on all elements in the set of matched elements. If
      * <code>value</code> returns null, then the attribute is removed. If the
      * attribute already exists, then it is replaced.
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element being attributed</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element being
+     * attributed</li>
+     * </ul>
      */
     Match attr(String name, Content value);
 
@@ -789,6 +1102,13 @@ public interface Match extends Iterable<Element> {
      * (possibly replacing existing content). If the supplied content is invalid
      * XML or plain text, then it will be added as text just as with
      * {@link #text(String)}
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element being added to</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element being
+     * added to</li>
+     * </ul>
      */
     Match content(Content content);
 
@@ -842,6 +1162,13 @@ public interface Match extends Iterable<Element> {
     /**
      * Set some text content to all elements in the set of matched elements
      * (possibly replacing existing content).
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li> {@link Context#match()} - the matched element being added to</li>
+     * <li> {@link Context#matchIndex()} - the index of the matched element being
+     * added to</li>
+     * </ul>
      */
     Match text(Content content);
 

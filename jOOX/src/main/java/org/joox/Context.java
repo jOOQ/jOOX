@@ -59,11 +59,15 @@ public interface Context {
 
     /**
      * The element currently being iterated on.
+     * <p>
+     * If not further specified, this is the same as {@link #match()}
      */
     Element element();
 
     /**
      * The index of the element currently being iterated on.
+     * <p>
+     * If not further specified, this is the same as {@link #matchIndex()}
      */
     int elementIndex();
 }
