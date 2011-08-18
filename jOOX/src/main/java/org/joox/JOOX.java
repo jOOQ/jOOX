@@ -38,6 +38,7 @@ package org.joox;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -140,6 +141,16 @@ public final class JOOX {
      */
     public static Match $(InputStream stream) throws SAXException, IOException {
         return $(builder().parse(stream));
+    }
+
+    /**
+     * Read a DOM document from a reader into a {@link Match} element set
+     *
+     * @throws IOException
+     * @throws SAXException
+     */
+    public static Match $(Reader reader) throws SAXException, IOException {
+        return $(builder().parse(new InputSource(reader)));
     }
 
     /**
