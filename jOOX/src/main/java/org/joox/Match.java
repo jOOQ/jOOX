@@ -172,6 +172,12 @@ public interface Match extends Iterable<Element> {
     Match children(int... indexes);
 
     /**
+     * Get all elements in the set of matched elements in a list of matches,
+     * every match representing one element
+     */
+    List<Match> each();
+
+    /**
      * Execute a callback for every element in the current set of matched
      * elements.
      */

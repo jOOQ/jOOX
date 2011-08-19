@@ -48,6 +48,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -186,7 +187,19 @@ public class JOOXTest {
     }
 
     @Test
-    public void testEach() {
+    public void testEachLoop() {
+        assertEquals(1, $.each().size());
+        assertEquals("document", $.each().get(0).tag());
+
+        List<Match> each = $.find("book").each();
+        assertEquals(8, each.size());
+        for (int i = 0; i < each.size(); i++) {
+            assertEquals($.find("book").eq(i), each.get(i));
+        }
+    }
+
+    @Test
+    public void testEachCallback() {
         final Queue<Integer> queue = new LinkedList<Integer>();
 
         queue.addAll(Arrays.asList(0));

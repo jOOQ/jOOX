@@ -264,6 +264,17 @@ class Impl implements Match {
     }
 
     @Override
+    public final List<Match> each() {
+        List<Match> result = new ArrayList<Match>();
+
+        for (Element element : elements) {
+            result.add(new Impl(document).addElements(element));
+        }
+
+        return result;
+    }
+
+    @Override
     public final Impl each(Each each) {
         for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
             each.each(context(get(matchIndex), matchIndex, size()));
