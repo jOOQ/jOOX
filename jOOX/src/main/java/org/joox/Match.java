@@ -125,6 +125,31 @@ public interface Match extends Iterable<Element> {
     Match add(Match... elements);
 
     /**
+     * Add the previous set of matched elements to the current one. This works
+     * after any of these methods (including all overloaded variants):
+     * <ul>
+     * <li>{@link #child()}</li>
+     * <li>{@link #children()}</li>
+     * <li>{@link #find()}</li>
+     * <li>{@link #next()}</li>
+     * <li>{@link #nextAll()}</li>
+     * <li>{@link #nextUntil()}</li>
+     * <li>{@link #parent()}</li>
+     * <li>{@link #parents()}</li>
+     * <li>{@link #parentsUntil()}</li>
+     * <li>{@link #prev()}</li>
+     * <li>{@link #prevAll()}</li>
+     * <li>{@link #prevUntil()}</li>
+     * <li>{@link #siblings()}</li>
+     * </ul>
+     * In all other cases, this just returns the same match this was called
+     * upon. For instance, it does not make sense to first reduce a set of
+     * matched elements using {@link #eq(int...)}, and then add the removed
+     * elements again, using {@link #andSelf()}.
+     */
+    Match andSelf();
+
+    /**
      * Find the first child of each element in the current set of matched
      * elements.
      * <p>

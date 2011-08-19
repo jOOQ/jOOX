@@ -69,14 +69,20 @@ class Impl implements Match {
 
     private final Document      document;
     private final List<Element> elements;
+    private final Impl          previousMatch;
 
     // -------------------------------------------------------------------------
     // Initialisation
     // -------------------------------------------------------------------------
 
     Impl(Document document) {
+        this(document, null);
+    }
+
+    Impl(Document document, Impl previousMatch) {
         this.document = document;
         this.elements = new ArrayList<Element>();
+        this.previousMatch = previousMatch;
     }
 
     final Impl addNodeLists(List<NodeList> lists) {
@@ -219,6 +225,15 @@ class Impl implements Match {
     }
 
     @Override
+    public final Impl andSelf() {
+        if (previousMatch != null) {
+            addUniqueElements(previousMatch.get());
+        }
+
+        return this;
+    }
+
+    @Override
     public final Impl child() {
         return child(0);
     }
@@ -260,7 +275,7 @@ class Impl implements Match {
             }
         }
 
-        return new Impl(document).addUniqueElements(result);
+        return new Impl(document, this).addUniqueElements(result);
     }
 
     @Override
@@ -329,7 +344,7 @@ class Impl implements Match {
             result.add(element.getElementsByTagName(selector));
         }
 
-        return new Impl(document).addNodeLists(result);
+        return new Impl(document, this).addNodeLists(result);
     }
 
     @Override
@@ -349,7 +364,7 @@ class Impl implements Match {
             }
         }
 
-        return new Impl(document).addUniqueElements(result);
+        return new Impl(document, this).addUniqueElements(result);
     }
 
     @Override
@@ -540,7 +555,7 @@ class Impl implements Match {
             }
         }
 
-        return new Impl(document).addUniqueElements(result);
+        return new Impl(document, this).addUniqueElements(result);
     }
 
     @Override
@@ -646,7 +661,7 @@ class Impl implements Match {
             }
         }
 
-        return new Impl(document).addUniqueElements(result);
+        return new Impl(document, this).addUniqueElements(result);
     }
 
     @Override
@@ -742,7 +757,7 @@ class Impl implements Match {
         }
 
         Collections.reverse(result);
-        return new Impl(document).addUniqueElements(result);
+        return new Impl(document, this).addUniqueElements(result);
     }
 
     @Override
@@ -1348,7 +1363,7 @@ class Impl implements Match {
 
     @Override
     public final Impl copy() {
-        Impl copy = new Impl(document);
+        Impl copy = new Impl(document, previousMatch);
         copy.elements.addAll(elements);
         return copy;
     }

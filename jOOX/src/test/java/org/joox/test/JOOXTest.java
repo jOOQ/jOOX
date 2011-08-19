@@ -187,6 +187,82 @@ public class JOOXTest {
     }
 
     @Test
+    public void testAndSelf() {
+        assertEquals(1, $.andSelf().size());
+        assertEquals("document", $.andSelf().tag());
+        assertEquals(9, $.find("book").andSelf().size());
+        assertEquals(
+            Arrays.asList("book", "book", "book", "book", "book", "book", "book", "book", "document"),
+            $.find("book").andSelf().tags());
+        assertEquals(9, $.find("book").andSelf().andSelf().size());
+        assertEquals(1, $.find("any").andSelf().size());
+        assertEquals(1, $.find("any").andSelf().andSelf().size());
+        assertEquals("document", $.find("any").andSelf().tag());
+        assertEquals(0, $.find("any").find("any-other").andSelf().size());
+        assertEquals(0, $.find("any").find("any-other").andSelf().andSelf().size());
+
+
+        assertEquals(2, $.child().andSelf().size());
+        assertEquals(2, $.child().andSelf().andSelf().size());
+        assertEquals(
+            Arrays.asList("library", "document"),
+            $.child().andSelf().tags());
+
+
+        assertEquals(2, $.child().andSelf().child().size());
+        assertEquals(
+            Arrays.asList("books", "library"),
+            $.child().andSelf().child().tags());
+        assertEquals(3, $.child().andSelf().child().andSelf().size());
+        assertEquals(
+            Arrays.asList("books", "library", "document"),
+            $.child().andSelf().child().andSelf().tags());
+
+
+        assertEquals(4, $.children().andSelf().size());
+        assertEquals(
+            Arrays.asList("library", "library", "library", "document"),
+            $.children().andSelf().tags());
+
+
+        assertEquals(2, $.find("book").eq(1).next().andSelf().size());
+        assertEquals(
+            Arrays.asList("book", "book"),
+            $.find("book").eq(1).next().andSelf().tags());
+        assertEquals(
+            Arrays.asList("3", "2"),
+            $.find("book").eq(1).next().andSelf().ids());
+
+        assertEquals(3, $.find("book").eq(1).nextAll().andSelf().size());
+        assertEquals(
+            Arrays.asList("book", "book", "book"),
+            $.find("book").eq(1).nextAll().andSelf().tags());
+        assertEquals(
+            Arrays.asList("3", "4", "2"),
+            $.find("book").eq(1).nextAll().andSelf().ids());
+
+
+        assertEquals(2, $.find("book").eq(2).prev().andSelf().size());
+        assertEquals(
+            Arrays.asList("book", "book"),
+            $.find("book").eq(2).prev().andSelf().tags());
+        assertEquals(
+            Arrays.asList("2", "3"),
+            $.find("book").eq(2).prev().andSelf().ids());
+
+        assertEquals(3, $.find("book").eq(2).prevAll().andSelf().size());
+        assertEquals(
+            Arrays.asList("book", "book", "book"),
+            $.find("book").eq(2).prevAll().andSelf().tags());
+        assertEquals(
+            Arrays.asList("1", "2", "3"),
+            $.find("book").eq(2).prevAll().andSelf().ids());
+
+
+        // TODO: Test also siblings and parents
+    }
+
+    @Test
     public void testEachLoop() {
         assertEquals(1, $.each().size());
         assertEquals("document", $.each().get(0).tag());
