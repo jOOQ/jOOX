@@ -225,6 +225,13 @@ class Impl implements Match {
     }
 
     @Override
+    public final Impl reverse() {
+        List<Element> reversed = new ArrayList<Element>(elements);
+        Collections.reverse(reversed);
+        return new Impl(document).addElements(reversed);
+    }
+
+    @Override
     public final Impl andSelf() {
         if (previousMatch != null) {
             addUniqueElements(previousMatch.get());

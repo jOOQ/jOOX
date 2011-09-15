@@ -125,6 +125,11 @@ public interface Match extends Iterable<Element> {
     Match add(Match... elements);
 
     /**
+     * Reverse the order of the set of matched elements
+     */
+    Match reverse();
+
+    /**
      * Add the previous set of matched elements to the current one. This works
      * after any of these methods (including all overloaded variants):
      * <ul>

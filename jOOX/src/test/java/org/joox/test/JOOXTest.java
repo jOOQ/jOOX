@@ -141,6 +141,17 @@ public class JOOXTest {
     }
 
     @Test
+    public void testReverse() {
+        assertEquals(
+            Arrays.asList("2", "1", "3", "1", "4", "3", "2", "1"),
+            $.find("book").reverse().ids());
+
+        assertEquals(
+            Arrays.asList("document", "library", "books", "book", "authors"),
+            $.find("author").eq(0).parents().reverse().tags());
+    }
+
+    @Test
     public void testChildren() {
         assertEquals("library", $.children().get().get(0).getTagName());
         assertEquals("library", $.children().get().get(1).getTagName());
