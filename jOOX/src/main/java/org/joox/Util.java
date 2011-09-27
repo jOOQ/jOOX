@@ -181,7 +181,9 @@ class Util {
      * Check whether there are any element nodes in a {@link NodeList}
      */
     static final boolean hasElementNodes(NodeList list) {
-        for (int i = 0; i < list.getLength(); i++) {
+        final int length = list.getLength();
+
+        for (int i = 0; i < length; i++) {
             if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 return true;
             }

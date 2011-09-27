@@ -94,7 +94,9 @@ class Impl implements Match {
     }
 
     final Impl addNodeList(NodeList list) {
-        for (int i = 0; i < list.getLength(); i++) {
+        final int length = list.getLength();
+
+        for (int i = 0; i < length; i++) {
             elements.add((Element) list.item(i));
         }
 
@@ -292,11 +294,12 @@ class Impl implements Match {
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
             List<Element> list = list(match.getChildNodes());
+            int elementSize = list.size();
 
-            for (int elementIndex = 0; elementIndex < list.size(); elementIndex++) {
+            for (int elementIndex = 0; elementIndex < elementSize; elementIndex++) {
                 Element e = list.get(elementIndex);
 
-                if (filter.filter(context(match, matchIndex, size, e, elementIndex, list.size()))) {
+                if (filter.filter(context(match, matchIndex, size, e, elementIndex, elementSize))) {
                     result.add(e);
                 }
             }
@@ -900,10 +903,12 @@ class Impl implements Match {
 
     @Override
     public final Impl after(Element... content) {
+        final int size = size();
+
         List<Element> result = new ArrayList<Element>();
         List<Element> detached = Util.importOrDetach(document, content);
 
-        for (int i = 0; i < size(); i++) {
+        for (int i = 0; i < size; i++) {
             Element element = get(i);
             result.add(element);
 
@@ -968,10 +973,12 @@ class Impl implements Match {
 
     @Override
     public final Impl before(Element... content) {
+        final int size = size();
+
         List<Element> result = new ArrayList<Element>();
         List<Element> detached = Util.importOrDetach(document, content);
 
-        for (int i = 0; i < size(); i++) {
+        for (int i = 0; i < size; i++) {
             Element element = get(i);
             Node parent = element.getParentNode();
 
@@ -1027,9 +1034,11 @@ class Impl implements Match {
 
     @Override
     public final Impl append(Element... content) {
+        final int size = size();
+        
         List<Element> detached = Util.importOrDetach(document, content);
 
-        for (int i = 0; i < size(); i++) {
+        for (int i = 0; i < size; i++) {
             for (Element e : detached) {
                 if (i == 0) {
                     get(i).appendChild(e);
@@ -1078,9 +1087,11 @@ class Impl implements Match {
 
     @Override
     public final Impl prepend(Element... content) {
+        final int size = size();
+        
         List<Element> detached = Util.importOrDetach(document, content);
 
-        for (int i = 0; i < size(); i++) {
+        for (int i = 0; i < size; i++) {
             for (Element e : detached) {
                 Element element = get(i);
                 Node first = element.getFirstChild();
@@ -1397,10 +1408,12 @@ class Impl implements Match {
 
     @Override
     public final Impl replaceWith(Element... content) {
+        final int size = size();
+
         List<Element> result = new ArrayList<Element>();
         List<Element> detached = Util.importOrDetach(document, content);
 
-        for (int i = 0; i < size(); i++) {
+        for (int i = 0; i < size; i++) {
             Element element = get(i);
             Node parent = element.getParentNode();
 
