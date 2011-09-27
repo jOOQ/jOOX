@@ -193,7 +193,7 @@ class Impl implements Match {
 
     @Override
     public final List<Element> get() {
-        return Collections.unmodifiableList(elements);
+        return elements;
     }
 
     @Override
