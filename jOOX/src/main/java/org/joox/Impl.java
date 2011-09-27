@@ -379,17 +379,24 @@ class Impl implements Match {
 
     @Override
     public final Impl find(Filter filter) {
-        final int size = size();
-
         List<Element> result = new ArrayList<Element>();
+
+        final int size = size();
+        final boolean fast = isFast(filter);
+
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
-            List<Element> list = list(match.getElementsByTagName("*"));
 
-            for (int elementIndex = 0; elementIndex < list.size(); elementIndex++) {
-                Element e = list.get(elementIndex);
+            final NodeList nodes = match.getElementsByTagName("*");
+            final int elementSize = fast ? -1 : nodes.getLength();
 
-                if (filter.filter(context(match, matchIndex, size, e, elementIndex, list.size()))) {
+            inner: for (int elementIndex = 0;; elementIndex++) {
+                Element e = (Element) nodes.item(elementIndex);
+
+                if (e == null) {
+                    break inner;
+                }
+                else if (filter.filter(context(match, matchIndex, size, e, elementIndex, elementSize))) {
                     result.add(e);
                 }
             }
