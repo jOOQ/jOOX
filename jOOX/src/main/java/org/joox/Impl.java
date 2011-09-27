@@ -424,14 +424,22 @@ class Impl implements Match {
     public final Impl has(Filter filter) {
         List<Element> result = new ArrayList<Element>();
 
-        for (int matchIndex = 0; matchIndex < size(); matchIndex++) {
+        final int size = size();
+        final boolean fast = isFast(filter);
+
+        for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
-            List<Element> list = list(match.getElementsByTagName("*"));
 
-            inner: for (int elementIndex = 0; elementIndex < list.size(); elementIndex++) {
-                Element e = list.get(elementIndex);
+            final NodeList nodes = match.getElementsByTagName("*");
+            final int elementSize = fast ? -1 : nodes.getLength();
 
-                if (filter.filter(context(match, matchIndex, size(), e, elementIndex, list.size()))) {
+            inner: for (int elementIndex = 0;; elementIndex++) {
+                Element e = (Element) nodes.item(elementIndex);
+
+                if (e == null) {
+                    break inner;
+                }
+                else if (filter.filter(context(match, matchIndex, size, e, elementIndex, elementSize))) {
                     result.add(match);
                     break inner;
                 }
@@ -1377,6 +1385,10 @@ class Impl implements Match {
     // -------------------------------------------------------------------------
     // Utility API
     // -------------------------------------------------------------------------
+
+    private final boolean isFast(Filter filter) {
+        return filter instanceof FastFilter;
+    }
 
     @Override
     public final Impl copy() {

@@ -170,14 +170,14 @@ public final class JOOX {
     /**
      * A filter that always returns false
      */
-    public static Filter none() {
+    public static FastFilter none() {
         return NONE;
     }
 
     /**
      * A filter that always returns true
      */
-    public static Filter all() {
+    public static FastFilter all() {
         return ALL;
     }
 
@@ -185,7 +185,7 @@ public final class JOOX {
      * A filter that returns true on all even iteration indexes (starting with
      * 0!)
      */
-    public static Filter even() {
+    public static FastFilter even() {
         return EVEN;
     }
 
@@ -193,15 +193,15 @@ public final class JOOX {
      * A filter that returns true on all odd iteration indexes (starting with
      * 0!)
      */
-    public static Filter odd() {
+    public static FastFilter odd() {
         return ODD;
     }
 
     /**
      * A filter that returns true on elements at given iteration indexes
      */
-    public static Filter at(final int... indexes) {
-        return new Filter() {
+    public static FastFilter at(final int... indexes) {
+        return new FastFilter() {
             @Override
             public boolean filter(Context context) {
                 for (int i : indexes) {
@@ -228,12 +228,12 @@ public final class JOOX {
     /**
      * A filter that returns all elements with a given tag name
      */
-    public static Filter tag(final String tagName) {
+    public static FastFilter tag(final String tagName) {
         if (tagName == null || tagName.equals("")) {
             return none();
         }
         else {
-            return new Filter() {
+            return new FastFilter() {
                 @Override
                 public boolean filter(Context context) {
                     return tagName.equals(context.element().getTagName());
@@ -293,10 +293,10 @@ public final class JOOX {
     /**
      * Create a filter matching id attributes
      */
-    public static Filter ids(String... ids) {
+    public static FastFilter ids(String... ids) {
         final Set<String> set = new HashSet<String>(Arrays.asList(ids));
 
-        return new Filter() {
+        return new FastFilter() {
             @Override
             public boolean filter(Context context) {
                 return set.contains(context.element().getAttribute("id"));
@@ -600,28 +600,28 @@ public final class JOOX {
     // Static utilities
     // ---------------------------------------------------------------------
 
-    private static final Filter NONE = new Filter() {
+    private static final FastFilter NONE = new FastFilter() {
         @Override
         public boolean filter(Context context) {
             return false;
         }
     };
 
-    private static final Filter ALL = new Filter() {
+    private static final FastFilter ALL = new FastFilter() {
         @Override
         public boolean filter(Context context) {
             return true;
         }
     };
 
-    private static final Filter EVEN = new Filter() {
+    private static final FastFilter EVEN = new FastFilter() {
         @Override
         public boolean filter(Context context) {
             return context.elementIndex() % 2 == 0;
         }
     };
 
-    private static final Filter ODD = new Filter() {
+    private static final FastFilter ODD = new FastFilter() {
         @Override
         public boolean filter(Context context) {
             return context.elementIndex() % 2 == 1;
