@@ -171,24 +171,14 @@ public final class JOOX {
      * A filter that always returns false
      */
     public static Filter none() {
-        return new Filter() {
-            @Override
-            public boolean filter(Context context) {
-                return false;
-            }
-        };
+        return NONE;
     }
 
     /**
      * A filter that always returns true
      */
     public static Filter all() {
-        return new Filter() {
-            @Override
-            public boolean filter(Context context) {
-                return true;
-            }
-        };
+        return ALL;
     }
 
     /**
@@ -196,12 +186,7 @@ public final class JOOX {
      * 0!)
      */
     public static Filter even() {
-        return new Filter() {
-            @Override
-            public boolean filter(Context context) {
-                return context.elementIndex() % 2 == 0;
-            }
-        };
+        return EVEN;
     }
 
     /**
@@ -209,12 +194,7 @@ public final class JOOX {
      * 0!)
      */
     public static Filter odd() {
-        return new Filter() {
-            @Override
-            public boolean filter(Context context) {
-                return context.elementIndex() % 2 == 1;
-            }
-        };
+        return ODD;
     }
 
     /**
@@ -615,4 +595,36 @@ public final class JOOX {
 
         return result;
     }
+
+    // ---------------------------------------------------------------------
+    // Static utilities
+    // ---------------------------------------------------------------------
+
+    private static final Filter NONE = new Filter() {
+        @Override
+        public boolean filter(Context context) {
+            return false;
+        }
+    };
+
+    private static final Filter ALL = new Filter() {
+        @Override
+        public boolean filter(Context context) {
+            return true;
+        }
+    };
+
+    private static final Filter EVEN = new Filter() {
+        @Override
+        public boolean filter(Context context) {
+            return context.elementIndex() % 2 == 0;
+        }
+    };
+
+    private static final Filter ODD = new Filter() {
+        @Override
+        public boolean filter(Context context) {
+            return context.elementIndex() % 2 == 1;
+        }
+    };
 }
