@@ -167,16 +167,25 @@ class Impl implements Match {
 
     @Override
     public final Element get(int index) {
-        try {
-            if (index >= 0) {
+        final int size = elements.size();
+
+        if (index >= 0) {
+            if (index < size) {
                 return elements.get(index);
             }
             else {
-                return elements.get(elements.size() + index);
+                return null;
             }
         }
-        catch (IndexOutOfBoundsException e) {
-            return null;
+        else {
+            final int calculated = size + index;
+
+            if (calculated >= 0 && calculated < size) {
+                return elements.get(calculated);
+            }
+            else {
+                return null;
+            }
         }
     }
 
