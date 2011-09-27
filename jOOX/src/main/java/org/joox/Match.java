@@ -163,6 +163,18 @@ public interface Match extends Iterable<Element> {
     Match child();
 
     /**
+     * Find the first matching child of each element in the current set of
+     * matched elements
+     */
+    Match child(String selector);
+
+    /**
+     * Find the first matching child of each element in the current set of
+     * matched elements
+     */
+    Match child(Filter filter);
+
+    /**
      * Find the child at a given index of each element in the current set of
      * matched elements.
      */

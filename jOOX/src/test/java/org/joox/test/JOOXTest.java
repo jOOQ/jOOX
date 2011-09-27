@@ -171,10 +171,18 @@ public class JOOXTest {
         assertEquals("books", $.children().children().get().get(2).getTagName());
         assertEquals("books", $.children().children().get().get(3).getTagName());
 
+        assertEquals(1, $.child().size());
         assertEquals(4, $.child().child().children().size());
         assertEquals(4, $.child(0).child().children().size());
         assertEquals(2, $.child(1).child().children().size());
         assertEquals(2, $.child(2).child().children().size());
+
+        assertEquals(1, $.child("library").size());
+        assertEquals("Amazon", $.child("library").attr("name"));
+        assertEquals(1, $.child("library").child("dvds").size());
+        assertEquals(1, $.child("library").child("dvds").child("dvd").size());
+        assertEquals("5", $.child("library").child("dvds").child("dvd").id());
+        assertEquals("Sergio Leone", $.child("library").child("dvds").child("dvd").child("directors").child("director").text());
 
         assertEquals(4, $.find("books").children(1, 2).size());
         assertEquals("Animal Farm", $.find("books").children(1, 2).children("name").text(0));

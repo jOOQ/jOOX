@@ -246,6 +246,16 @@ class Impl implements Match {
     }
 
     @Override
+    public final Impl child(String selector) {
+        return child(selector(selector));
+    }
+
+    @Override
+    public final Impl child(Filter filter) {
+        return children(filter).eq(0);
+    }
+
+    @Override
     public final Impl child(int index) {
         return children(JOOX.at(index));
     }
