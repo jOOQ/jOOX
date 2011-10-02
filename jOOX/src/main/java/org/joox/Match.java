@@ -138,13 +138,13 @@ public interface Match extends Iterable<Element> {
      * <li>{@link #find()}</li>
      * <li>{@link #next()}</li>
      * <li>{@link #nextAll()}</li>
-     * <li>{@link #nextUntil()}</li>
+     * <li>{@link #nextUntil(Filter)}</li>
      * <li>{@link #parent()}</li>
      * <li>{@link #parents()}</li>
-     * <li>{@link #parentsUntil()}</li>
+     * <li>{@link #parentsUntil(Filter)}</li>
      * <li>{@link #prev()}</li>
      * <li>{@link #prevAll()}</li>
-     * <li>{@link #prevUntil()}</li>
+     * <li>{@link #prevUntil(Filter)}</li>
      * <li>{@link #siblings()}</li>
      * </ul>
      * In all other cases, this just returns the same match this was called
