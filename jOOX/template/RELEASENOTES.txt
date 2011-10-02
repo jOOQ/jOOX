@@ -2,6 +2,35 @@ jOOX Release notes
 ------------------
 For an overview, see also http://code.google.com/p/joox/issues/list
 
+Version 0.9.3
+=================================================================
+
+Features and improvements
+-------------------------
+#32  - Add Match.andSelf() to add the previous Match to the new 
+       Match 
+#37  - Add Match.each() to return a List<Match> containing every 
+       matched element as its own Match 
+#38  - Add Match.reverse() to reverse the order of matched 
+       elements 
+#39  - Add Match.child(String) to find the first child matching 
+       a tag name 
+
+Performance improvements
+------------------------
+#40  - Avoid constructing new Filter objects in all(), none(), 
+       even(), etc.
+#41  - Bad performance on Match.has(...) methods
+#42  - Avoid calling size() several times during iterations
+#44  - Don't return Collections.unmodifiableList() from 
+       Match.get()
+#45  - Match.get(int) should not try { } catch (
+       IndexOutOfBoundsException e) to access elements. Do the 
+       calculations instead  
+#46  - Bad performance on Match.find(...) methods 
+#47  - Avoid calling methods in for loops, especially 
+       NodeList.getLength()
+
 Version 0.9.2
 =================================================================
 
