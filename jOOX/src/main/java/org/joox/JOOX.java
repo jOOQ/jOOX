@@ -54,6 +54,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -121,6 +122,23 @@ public final class JOOX {
      */
     public static Match $(Element element) {
         return new Impl(element.getOwnerDocument()).addElements(element);
+    }
+
+    /**
+     * Wrap a DOM element or document in a jOOX {@link Match} element set
+     * <p>
+     * If the supplied Node is neither an element nor a document, then an empty
+     * Match is created
+     */
+    public static Match $(Node node) {
+        if (node instanceof Document) {
+            return $((Document) node);
+        }
+        else if (node instanceof Element) {
+            return $((Element) node);
+        }
+
+        return $(builder().newDocument());
     }
 
     /**
