@@ -142,6 +142,13 @@ public final class JOOX {
     }
 
     /**
+     * Convenience method for calling <code>$(context.match())</code>
+     */
+    public static Match $(Context context) {
+        return $(context.match());
+    }
+
+    /**
      * Read a DOM document from a file into a {@link Match} element set
      *
      * @throws IOException
