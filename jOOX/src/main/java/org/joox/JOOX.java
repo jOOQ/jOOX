@@ -445,14 +445,14 @@ public final class JOOX {
      * Convert a string value to any of these types:
      * <ul>
      * <li> {@link String}: The conversion has no effect</li>
-     * <li> {@link Byte}: Numeric conversion</li>
-     * <li> {@link Short}: Numeric conversion</li>
-     * <li> {@link Integer}: Numeric conversion</li>
-     * <li> {@link Long}: Numeric conversion</li>
-     * <li> {@link Float}: Numeric conversion</li>
-     * <li> {@link Double}: Numeric conversion</li>
-     * <li> {@link BigDecimal}: Numeric conversion</li>
-     * <li> {@link BigInteger}: Numeric conversion</li>
+     * <li> {@link Byte}: Numeric conversion. NaN will return null</li>
+     * <li> {@link Short}: Numeric conversion. NaN will return null</li>
+     * <li> {@link Integer}: Numeric conversion. NaN will return null</li>
+     * <li> {@link Long}: Numeric conversion. NaN will return null</li>
+     * <li> {@link Float}: Numeric conversion. NaN will return null</li>
+     * <li> {@link Double}: Numeric conversion. NaN will return null</li>
+     * <li> {@link BigDecimal}: Numeric conversion. NaN will return null</li>
+     * <li> {@link BigInteger}: Numeric conversion. NaN will return null</li>
      * <li> {@link Boolean}: Boolean conversion. Boolean values for
      * <code>true</code> are any of these case-insensitive strings:
      * <ul>
@@ -551,28 +551,68 @@ public final class JOOX {
 
         // Various number types
         else if (type == Byte.class) {
-            return (T) Byte.valueOf(new BigDecimal(value).byteValue());
+            try {
+                return (T) Byte.valueOf(new BigDecimal(value).byteValue());
+            }
+            catch (Exception e) {
+                return null;
+            }
         }
         else if (type == Short.class) {
-            return (T) Short.valueOf(new BigDecimal(value).shortValue());
+            try {
+                return (T) Short.valueOf(new BigDecimal(value).shortValue());
+            }
+            catch (Exception e) {
+                return null;
+            }
         }
         else if (type == Integer.class) {
-            return (T) Integer.valueOf(new BigDecimal(value).intValue());
+            try {
+                return (T) Integer.valueOf(new BigDecimal(value).intValue());
+            }
+            catch (Exception e) {
+                return null;
+            }
         }
         else if (type == Long.class) {
-            return (T) Long.valueOf(new BigDecimal(value).longValue());
+            try {
+                return (T) Long.valueOf(new BigDecimal(value).longValue());
+            }
+            catch (Exception e) {
+                return null;
+            }
         }
         else if (type == Float.class) {
-            return (T) Float.valueOf(value);
+            try {
+                return (T) Float.valueOf(value);
+            }
+            catch (Exception e) {
+                return null;
+            }
         }
         else if (type == Double.class) {
-            return (T) Double.valueOf(value);
+            try {
+                return (T) Double.valueOf(value);
+            }
+            catch (Exception e) {
+                return null;
+            }
         }
         else if (type == BigDecimal.class) {
-            return (T) new BigDecimal(value);
+            try {
+                return (T) new BigDecimal(value);
+            }
+            catch (Exception e) {
+                return null;
+            }
         }
         else if (type == BigInteger.class) {
-            return (T) new BigDecimal(value).toBigInteger();
+            try {
+                return (T) new BigDecimal(value).toBigInteger();
+            }
+            catch (Exception e) {
+                return null;
+            }
         }
 
         // Booleans have a set of allowed values

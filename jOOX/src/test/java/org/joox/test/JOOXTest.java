@@ -420,6 +420,15 @@ public class JOOXTest {
         assertEquals(1984.0, (double) $.find("name").text(Double.class));
         assertEquals(new BigInteger("1984"), $.find("name").text(BigInteger.class));
         assertEquals(new BigDecimal("1984"), $.find("name").text(BigDecimal.class));
+
+        assertNull($.find("name").eq(1).text(Integer.class));
+        assertNull($.find("name").eq(1).text(Long.class));
+        assertNull($.find("name").eq(1).text(Short.class));
+        assertNull($.find("name").eq(1).text(Byte.class));
+        assertNull($.find("name").eq(1).text(Float.class));
+        assertNull($.find("name").eq(1).text(Double.class));
+        assertNull($.find("name").eq(1).text(BigInteger.class));
+        assertNull($.find("name").eq(1).text(BigDecimal.class));
     }
 
     @Test
