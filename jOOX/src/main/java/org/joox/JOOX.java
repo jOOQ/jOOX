@@ -114,7 +114,12 @@ public final class JOOX {
      * Wrap a DOM document in a jOOX {@link Match} element set
      */
     public static Match $(Document document) {
-        return $(document.getDocumentElement());
+        if (document.getDocumentElement() == null) {
+            return new Impl(document);
+        }
+        else {
+            return $(document.getDocumentElement());
+        }
     }
 
     /**
@@ -136,6 +141,19 @@ public final class JOOX {
         }
         else if (node instanceof Element) {
             return $((Element) node);
+        }
+
+        return $(builder().newDocument());
+    }
+
+    /**
+     * Wrap a DOM {@link NodeList} in a jOOX {@link Match} element set
+     * <p>
+     * If the supplied NodeList is empty or null, then an empty Match is created
+     */
+    public static Match $(NodeList list) {
+        if (list != null && list.getLength() > 0) {
+            return new Impl(list.item(0).getOwnerDocument()).addNodeList(list);
         }
 
         return $(builder().newDocument());

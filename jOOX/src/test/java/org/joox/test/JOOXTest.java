@@ -68,6 +68,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 /**
@@ -1128,5 +1130,22 @@ public class JOOXTest {
         assertEquals(Arrays.asList("1", "2", "3", "4"), $.find("books").eq(0).children().ids(0, 1, 2, 3));
         assertEquals(Arrays.asList("1", "2", "3", "4", null), $.find("books").eq(0).children().ids(0, 1, 2, 3, 4));
         assertEquals(Arrays.asList("2", "3"), $.find("books").eq(0).children().ids(1, 2));
+    }
+
+    @Test
+    public void test$Node() throws Exception {
+        assertEquals(0, $((Node) null).find("book").size());
+        assertEquals(8, $((Node) xmlDocument).find("book").size());
+        assertEquals(8, $((Node) xmlElement).find("book").size());
+    }
+
+    @Test
+    public void test$NodeList() throws Exception {
+        assertEquals(0, $((NodeList) null).size());
+        assertEquals(0, $(xmlDocument.getElementsByTagName("xxx")).size());
+        assertEquals(8, $(xmlDocument.getElementsByTagName("book")).size());
+        assertEquals(
+            Arrays.asList("1", "2", "3", "4", "1", "3", "1", "2"),
+            $(xmlDocument.getElementsByTagName("book")).ids());
     }
 }
