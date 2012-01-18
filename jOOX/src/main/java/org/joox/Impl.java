@@ -51,6 +51,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.bind.JAXB;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
@@ -1035,7 +1037,7 @@ class Impl implements Match {
     @Override
     public final Impl append(Element... content) {
         final int size = size();
-        
+
         List<Element> detached = Util.importOrDetach(document, content);
 
         for (int i = 0; i < size; i++) {
@@ -1088,7 +1090,7 @@ class Impl implements Match {
     @Override
     public final Impl prepend(Element... content) {
         final int size = size();
-        
+
         List<Element> detached = Util.importOrDetach(document, content);
 
         for (int i = 0; i < size; i++) {
@@ -1567,6 +1569,42 @@ class Impl implements Match {
     @Override
     public final <T> List<T> ids(Class<T> type) {
         return JOOX.convert(ids(), type);
+    }
+
+    // ---------------------------------------------------------------------
+    // Transformation
+    // ---------------------------------------------------------------------
+
+    @Override
+    public final <T> List<T> unmarshal(Class<T> type) {
+        List<T> result = new ArrayList<T>();
+
+        for (Element element : elements) {
+            result.add(JAXB.unmarshal(new DOMSource(element), type));
+        }
+
+        return result;
+    }
+
+    @Override
+    public final <T> List<T> unmarshal(Class<T> type, int... indexes) {
+        return eq(indexes).unmarshal(type);
+    }
+
+    @Override
+    public final <T> T unmarshalOne(Class<T> type) {
+        List<T> list = unmarshal(type);
+
+        if (list.size() > 0) {
+            return list.get(0);
+        }
+
+        return null;
+    }
+
+    @Override
+    public final <T> T unmarshalOne(Class<T> type, int index) {
+        return eq(index).unmarshalOne(type);
     }
 
     // -------------------------------------------------------------------------

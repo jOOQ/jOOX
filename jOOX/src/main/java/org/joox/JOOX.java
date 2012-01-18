@@ -48,8 +48,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.bind.JAXB;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Result;
+import javax.xml.transform.dom.DOMResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
@@ -67,6 +70,20 @@ public final class JOOX {
     // ---------------------------------------------------------------------
     // $ wrapper methods
     // ---------------------------------------------------------------------
+
+    /**
+     * Wrap a JAXB-marshallable element in a jOOX {@link Match} element set
+     */
+    public static Match $(Object object) {
+        Document document = builder().newDocument();
+
+        if (object != null) {
+            Result result = new DOMResult(document);
+            JAXB.marshal(object, result);
+        }
+
+        return $(document);
+    }
 
     /**
      * Create a new DOM element in an independent document

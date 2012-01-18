@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2009-2011, Lukas Eder, lukas.eder@gmail.com
+ * Copyright (c) 2009-2012, Lukas Eder, lukas.eder@gmail.com
  * All rights reserved.
  *
  * This software is licensed to you under the Apache License, Version 2.0
@@ -33,73 +33,82 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package org.joox;
+package org.joox.test;
 
-import java.util.Iterator;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Lukas Eder
  */
-class Elements implements Iterable<Element> {
+@XmlRootElement
+public class Customer {
 
-    private final NodeList elements;
-    private final int      length;
+    String name;
+    int age;
+    int id;
 
-    Elements(NodeList elements) {
-        this.elements = elements;
-        this.length = elements.getLength();
+    public String getName() {
+        return name;
+    }
+
+    @XmlElement
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    @XmlElement
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    @XmlAttribute
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    // ------------------------------------------------------------------------
+    // Eclipse-generated hashCode() and equals() methods
+    // ------------------------------------------------------------------------
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + age;
+        result = prime * result + id;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
     }
 
     @Override
-    public Iterator<Element> iterator() {
-        return new ElementIterator();
-    }
-
-    private class ElementIterator implements Iterator<Element> {
-
-        private int     i    = 0;
-        private Element next = null;
-
-        @Override
-        public boolean hasNext() {
-            return (next != null) || ((next = findNext()) != null);
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Customer other = (Customer) obj;
+        if (age != other.age)
+            return false;
+        if (id != other.id)
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
         }
-
-        @Override
-        public Element next() {
-            try {
-                return findNext();
-            }
-            finally {
-                next = null;
-            }
-        }
-
-        /**
-         * Find next element, skipping all non-element nodes
-         */
-        private Element findNext() {
-            if (next == null) {
-                while (i < length) {
-                    Node node = elements.item(i++);
-
-                    if (node.getNodeType() == Node.ELEMENT_NODE) {
-                        next = (Element) node;
-                        break;
-                    }
-                }
-            }
-
-            return next;
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
+        else if (!name.equals(other.name))
+            return false;
+        return true;
     }
 }

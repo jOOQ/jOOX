@@ -1148,4 +1148,49 @@ public class JOOXTest {
             Arrays.asList("1", "2", "3", "4", "1", "3", "1", "2"),
             $(xmlDocument.getElementsByTagName("book")).ids());
     }
+
+    @Test
+    public void test$Object() throws Exception {
+        Customer c = new Customer();
+
+        assertEquals(0, $((Object) null).size());
+        assertEquals(1, $(c).size());
+        assertEquals("customer", $(c).tag());
+        assertEquals(null, $(c).find("name").text());
+        assertEquals(0, (int) $(c).attr("id", Integer.class));
+        assertEquals(0, (int) $(c).find("age").text(Integer.class));
+
+        assertEquals(1, $(getCustomer()).size());
+        assertEquals("customer", $(getCustomer()).tag());
+        assertEquals("Lukas", $(getCustomer()).find("name").text());
+        assertEquals(13, (int) $(getCustomer()).attr("id", Integer.class));
+        assertEquals(30, (int) $(getCustomer()).find("age").text(Integer.class));
+    }
+
+    @Test
+    public void testUnmarshal() throws Exception {
+        Match match = $("customer",
+            $("age", "30"),
+            $("name", "Lukas")).attr("id", "13");
+
+        assertEquals(getCustomer(), match.unmarshalOne(Customer.class));
+        assertEquals(getCustomer(), match.unmarshalOne(Customer.class, 0));
+        assertEquals(null, match.unmarshalOne(Customer.class, 1));
+
+        assertEquals(1, match.unmarshal(Customer.class).size());
+        assertEquals(1, match.unmarshal(Customer.class, 0, 1, 2).size());
+        assertEquals(0, match.unmarshal(Customer.class, 1, 2, 3).size());
+        assertEquals(getCustomer(), match.unmarshal(Customer.class).get(0));
+        assertEquals(getCustomer(), match.unmarshal(Customer.class, 0).get(0));
+    }
+
+    private Customer getCustomer() {
+        Customer c = new Customer();
+
+        c.age = 30;
+        c.name = "Lukas";
+        c.id = 13;
+
+        return c;
+    }
 }

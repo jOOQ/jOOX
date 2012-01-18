@@ -1323,4 +1323,36 @@ public interface Match extends Iterable<Element> {
      * @see JOOX#convert(String, Class)
      */
     <T> T id(Class<T> type);
+
+    // ---------------------------------------------------------------------
+    // Transformation
+    // ---------------------------------------------------------------------
+
+    /**
+     * Unmarshal the current set of matched elements into a JAXB-annotated type.
+     */
+    <T> List<T> unmarshal(Class<T> type);
+
+    /**
+     * Unmarshal the current set of matched elements at given indexes into a
+     * JAXB-annotated type.
+     */
+    <T> List<T> unmarshal(Class<T> type, int... indexes);
+
+    /**
+     * Unmarshal the first element in the current set of matched elements into a
+     * JAXB-annotated type.
+     * <p>
+     * This is the same as calling <code>unmarshalOne(type, 0)</code>
+     */
+    <T> T unmarshalOne(Class<T> type);
+
+    /**
+     * Unmarshal the element at a given index in the current set of matched
+     * elements into a JAXB-annotated type.
+     * <p>
+     * This is the same as calling <code>unmarshalOne(type, 0)</code>
+     */
+    <T> T unmarshalOne(Class<T> type, int index);
+
 }
