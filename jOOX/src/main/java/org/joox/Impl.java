@@ -878,7 +878,7 @@ class Impl implements Match {
             result.add(match);
             Document doc = match.getOwnerDocument();
 
-            String text = content.content(context(match, matchIndex, size));
+            String text = nonNull(content.content(context(match, matchIndex, size)));
             DocumentFragment imported = Util.createContent(doc, text);
             Node parent = match.getParentNode();
             Node next = match.getNextSibling();
@@ -947,7 +947,7 @@ class Impl implements Match {
             Element match = get(matchIndex);
             Document doc = match.getOwnerDocument();
 
-            String text = content.content(context(match, matchIndex, size));
+            String text = nonNull(content.content(context(match, matchIndex, size)));
             DocumentFragment imported = Util.createContent(doc, text);
             Node parent = match.getParentNode();
 
@@ -1015,7 +1015,7 @@ class Impl implements Match {
             Element match = get(matchIndex);
             Document doc = match.getOwnerDocument();
 
-            String text = content.content(context(match, matchIndex, size));
+            String text = nonNull(content.content(context(match, matchIndex, size)));
             DocumentFragment imported = Util.createContent(doc, text);
 
             if (imported != null) {
@@ -1067,7 +1067,7 @@ class Impl implements Match {
             Element match = get(matchIndex);
             Document doc = match.getOwnerDocument();
 
-            String text = content.content(context(match, matchIndex, size));
+            String text = nonNull(content.content(context(match, matchIndex, size)));
             DocumentFragment imported = Util.createContent(doc, text);
             Node first = match.getFirstChild();
 
@@ -1370,6 +1370,10 @@ class Impl implements Match {
         }
     }
 
+    private final String nonNull(String string) {
+        return string == null ? "" : string;
+    }
+
     @Override
     public final Impl replaceWith(String content) {
         return replaceWith(JOOX.content(content));
@@ -1384,7 +1388,7 @@ class Impl implements Match {
             Element match = get(matchIndex);
             Document doc = match.getOwnerDocument();
 
-            String text = content.content(context(match, matchIndex, size));
+            String text = nonNull(content.content(context(match, matchIndex, size)));
             DocumentFragment imported = Util.createContent(doc, text);
             Node parent = match.getParentNode();
 
