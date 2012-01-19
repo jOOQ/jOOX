@@ -478,7 +478,7 @@ public class JOOXTest {
             $("child", ";a;b;c;d"),
             $("child", "\"a b\" \"c d\"\" e\";f\" g;\"h\""),
             $("child", "1,2,3 4;5;6 \"7.8\" \"9.0\";11")
-        );
+        ).attr("class", "a b c,d;e \"f g\"");
 
         assertEquals(4, m.find("child").texts(String[].class).size());
         assertEquals(
@@ -502,6 +502,9 @@ public class JOOXTest {
         assertEquals(
             asList(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.8, 9.0, 11.0),
             asList(m.find("child").eq(3).text(Double[].class)));
+        assertEquals(
+            asList("a", "b", "c", "d", "e", "f g"),
+            asList(m.attr("class", String[].class)));
     }
 
     @Test
