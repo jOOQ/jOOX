@@ -80,7 +80,7 @@ class Util {
     static final DocumentFragment createContent(Document doc, String text) {
 
         // Text might hold XML content
-        if (text.contains("<")) {
+        if (text != null && text.contains("<")) {
             DocumentBuilder builder = JOOX.builder();
 
             try {
