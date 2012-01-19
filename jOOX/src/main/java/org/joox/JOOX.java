@@ -509,6 +509,9 @@ public final class JOOX {
      * <li><code>disabled</code></li>
      * </ul>
      * </li>
+     * <li>Primitive types: Numeric or boolean conversion, except that
+     * <code>null</code> and illegal values will result in <code>0</code> or
+     * <code>false</code></li>
      * <li> {@link java.util.Date}: Datetime conversion.</li>
      * <li> {@link java.util.Calendar}: Datetime conversion.</li>
      * <li> {@link java.sql.Timestamp}: Datetime conversion. Possible patterns
@@ -562,6 +565,10 @@ public final class JOOX {
      */
     @SuppressWarnings("unchecked")
     public static <T> T convert(String value, Class<T> type) {
+        if (value == null && type.isPrimitive()) {
+            value = "0";
+        }
+
         if (value == null) {
             return null;
         }
@@ -585,52 +592,52 @@ public final class JOOX {
         }
 
         // Various number types
-        else if (type == Byte.class) {
+        else if (type == Byte.class || type == byte.class) {
             try {
                 return (T) Byte.valueOf(new BigDecimal(value).byteValue());
             }
             catch (Exception e) {
-                return null;
+                return (T) ((type == Byte.class) ? null : (byte) 0);
             }
         }
-        else if (type == Short.class) {
+        else if (type == Short.class || type == short.class) {
             try {
                 return (T) Short.valueOf(new BigDecimal(value).shortValue());
             }
             catch (Exception e) {
-                return null;
+                return (T) ((type == Short.class) ? null : (short) 0);
             }
         }
-        else if (type == Integer.class) {
+        else if (type == Integer.class || type == int.class) {
             try {
                 return (T) Integer.valueOf(new BigDecimal(value).intValue());
             }
             catch (Exception e) {
-                return null;
+                return (T) ((type == Integer.class) ? null : 0);
             }
         }
-        else if (type == Long.class) {
+        else if (type == Long.class || type == long.class) {
             try {
                 return (T) Long.valueOf(new BigDecimal(value).longValue());
             }
             catch (Exception e) {
-                return null;
+                return (T) ((type == Long.class) ? null : 0L);
             }
         }
-        else if (type == Float.class) {
+        else if (type == Float.class || type == float.class) {
             try {
                 return (T) Float.valueOf(value);
             }
             catch (Exception e) {
-                return null;
+                return (T) ((type == Float.class) ? null : 0.0f);
             }
         }
-        else if (type == Double.class) {
+        else if (type == Double.class || type == double.class) {
             try {
                 return (T) Double.valueOf(value);
             }
             catch (Exception e) {
-                return null;
+                return (T) ((type == Double.class) ? null : 0.0);
             }
         }
         else if (type == BigDecimal.class) {
@@ -651,7 +658,7 @@ public final class JOOX {
         }
 
         // Booleans have a set of allowed values
-        else if (type == Boolean.class) {
+        else if (type == Boolean.class || type == boolean.class) {
             String s = value.toLowerCase();
 
             if (TRUE_VALUES.contains(s)) {
@@ -661,7 +668,7 @@ public final class JOOX {
                 return (T) Boolean.FALSE;
             }
             else {
-                return null;
+                return (T) ((type == Boolean.class) ? null : false);
             }
         }
 

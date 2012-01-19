@@ -414,6 +414,11 @@ public class JOOXTest {
         assertEquals((short) 3, (short) $.find("book").eq(2).id(Short.class));
         assertEquals((byte) 4, (byte) $.find("book").eq(3).id(Byte.class));
 
+        assertEquals(1, (int) $.find("book").eq(0).id(int.class));
+        assertEquals(2L, (long) $.find("book").eq(1).id(long.class));
+        assertEquals((short) 3, (short) $.find("book").eq(2).id(short.class));
+        assertEquals((byte) 4, (byte) $.find("book").eq(3).id(byte.class));
+
         assertEquals(1984, (int) $.find("name").text(Integer.class));
         assertEquals(1984, (long) $.find("name").text(Long.class));
         assertEquals((short) 1984, (short) $.find("name").text(Short.class));
@@ -423,6 +428,13 @@ public class JOOXTest {
         assertEquals(new BigInteger("1984"), $.find("name").text(BigInteger.class));
         assertEquals(new BigDecimal("1984"), $.find("name").text(BigDecimal.class));
 
+        assertEquals(1984, (int) $.find("name").text(int.class));
+        assertEquals(1984, (long) $.find("name").text(long.class));
+        assertEquals((short) 1984, (short) $.find("name").text(short.class));
+        assertEquals((byte) 1984, (byte) $.find("name").text(byte.class));
+        assertEquals(1984.0f, (float) $.find("name").text(float.class));
+        assertEquals(1984.0, (double) $.find("name").text(double.class));
+
         assertNull($.find("name").eq(1).text(Integer.class));
         assertNull($.find("name").eq(1).text(Long.class));
         assertNull($.find("name").eq(1).text(Short.class));
@@ -431,6 +443,14 @@ public class JOOXTest {
         assertNull($.find("name").eq(1).text(Double.class));
         assertNull($.find("name").eq(1).text(BigInteger.class));
         assertNull($.find("name").eq(1).text(BigDecimal.class));
+
+        assertEquals(0, (int) $.find("name").eq(1).text(int.class));
+        assertEquals(0, (long) $.find("name").eq(1).text(long.class));
+        assertEquals(0, (short) $.find("name").eq(1).text(short.class));
+        assertEquals(0, (byte) $.find("name").eq(1).text(byte.class));
+        assertEquals(0.0f, $.find("name").eq(1).text(float.class));
+        assertEquals(0.0, $.find("name").eq(1).text(double.class));
+        assertFalse($.find("name").eq(1).text(boolean.class));
     }
 
     @Test
