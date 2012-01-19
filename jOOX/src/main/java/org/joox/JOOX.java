@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -577,9 +578,12 @@ public final class JOOX {
         // else if (type == byte[].class) {
         // }
 
-        // [#28] TODO: Array conversion will recurse for split values
-        // else if (type.isArray()) {
-        // }
+        // [#28] Array conversion will recurse for split values
+        else if (type.isArray()) {
+            Class<?> component = type.getComponentType();
+            List<String> split = Util.split(value);
+            return (T) convert(split, component).toArray((Object[]) Array.newInstance(component, split.size()));
+        }
 
         // Strings are not converted
         else if (type == String.class) {

@@ -35,6 +35,8 @@
  */
 package org.joox.test;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.nCopies;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -451,6 +453,55 @@ public class JOOXTest {
         assertEquals(0.0f, $.find("name").eq(1).text(float.class));
         assertEquals(0.0, $.find("name").eq(1).text(double.class));
         assertFalse($.find("name").eq(1).text(boolean.class));
+    }
+
+    @Test
+    public void testConvertArrays() throws Exception {
+
+        // Null / empty checks
+        assertEquals(0, $.find("abc").texts(String[].class).size());
+        assertNull($.find("abc").text(String[].class));
+        assertEquals(String[].class, $("<root/>").text(String[].class).getClass());
+        assertEquals(emptyList(), asList($("<root/>").text(String[].class)));
+
+        // Simple checks on the <actor/> elements (first, last names)
+        assertEquals(3, $.find("actor").texts(String[].class).size());
+        assertEquals(String[].class, $.find("actor").text(String[].class).getClass());
+        assertEquals(asList("Charles", "Bronson"), asList($.find("actor").text(String[].class)));
+        assertEquals(asList("Charles", "Bronson"), asList($.find("actor").texts(String[].class).get(0)));
+        assertEquals(asList("Jason", "Robards"), asList($.find("actor").texts(String[].class).get(1)));
+        assertEquals(asList("Claudia", "Cardinale"), asList($.find("actor").texts(String[].class).get(2)));
+
+        // More sophisticated checks
+        Match m = $("root",
+            $("child", "a b, c,,d"),
+            $("child", ";a;b;c;d"),
+            $("child", "\"a b\" \"c d\"\" e\";f\" g;\"h\""),
+            $("child", "1,2,3 4;5;6 \"7.8\" \"9.0\";11")
+        );
+
+        assertEquals(4, m.find("child").texts(String[].class).size());
+        assertEquals(
+            asList("a", "b", "c", "", "d"),
+            asList(m.find("child").eq(0).text(String[].class)));
+        assertEquals(
+            asList("", "a", "b", "c", "d"),
+            asList(m.find("child").eq(1).text(String[].class)));
+        assertEquals(
+            asList("a b", "c d\" e", "f\"", "g", "h"),
+            asList(m.find("child").eq(2).text(String[].class)));
+        assertEquals(
+            asList("1", "2", "3", "4", "5", "6", "7.8", "9.0", "11"),
+            asList(m.find("child").eq(3).text(String[].class)));
+        assertEquals(
+            asList(1, 2, 3, 4, 5, 6, 7, 9, 11),
+            asList(m.find("child").eq(3).text(Integer[].class)));
+        assertEquals(
+            asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 9L, 11L),
+            asList(m.find("child").eq(3).text(Long[].class)));
+        assertEquals(
+            asList(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.8, 9.0, 11.0),
+            asList(m.find("child").eq(3).text(Double[].class)));
     }
 
     @Test

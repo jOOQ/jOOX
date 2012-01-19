@@ -35,6 +35,8 @@
  */
 package org.joox;
 
+import static java.util.Arrays.asList;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
@@ -228,5 +230,189 @@ class Util {
      */
     static final Context context(Element match, int matchIndex, int matchSize, Element element, int elementIndex, int elementSize) {
         return new DefaultContext(match, matchIndex, matchSize, element, elementIndex, elementSize);
+    }
+
+    /**
+     * Split a string into values
+     */
+    static final List<String> split(String value) {
+        List<String> result = new ArrayList<String>();
+
+        SplitState state = SplitState.NEW;
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < value.length(); i++) {
+            char c = value.charAt(i);
+
+            stateSwitch:
+            switch (state) {
+
+                // Seeking the first character of a new word
+                case NEW:
+                case NEW_WITH_AT_LEAST_ONE_WORD: {
+                    newSwitch:
+                    switch (c) {
+
+                        // Empty word
+                        case ',':
+                        case ';': {
+                            state = SplitState.NEW_WITH_AT_LEAST_ONE_WORD;
+                            result.add("");
+                            break newSwitch;
+                        }
+
+                        // Ignorable whitespace
+                        case ' ':
+                        case '\t':
+                        case '\n':
+                        case '\r': {
+                            break newSwitch;
+                        }
+
+                        // Start of a delimited word
+                        case '"': {
+                            state = SplitState.DELIMITED;
+                            break newSwitch;
+                        }
+
+                        // Start of a non-delimited word
+                        default: {
+                            state = SplitState.NON_DELIMITED;
+                            sb.append(c);
+                            break newSwitch;
+                        }
+                    }
+
+                    break stateSwitch;
+                }
+
+                // Within a delimited word
+                case DELIMITED: {
+                    delimitedSwitch:
+                    switch (c) {
+
+                        // Potential ending delimiter
+                        case '"': {
+
+                            // Escaped delimiter, consume subsequent quote char
+                            if (i + 1 < value.length() && value.charAt(i + 1) == '"') {
+                                sb.append(c);
+                                i++;
+                            }
+
+                            // Delimiter not followed by whitespace or word stop
+                            else if (i + 1 < value.length() && !asList(',', ';', ' ', '\t', '\n', '\r').contains(value.charAt(i + 1))) {
+                                sb.append(c);
+                            }
+
+                            // Consume word stop following delimiter
+                            else if (i + 1 < value.length() && asList(',', ';').contains(value.charAt(i + 1))) {
+                                result.add(sb.toString());
+                                sb = new StringBuilder();
+                                state = SplitState.NEW_WITH_AT_LEAST_ONE_WORD;
+                                i++;
+                            }
+
+                            // Ending delimiter. Either it's the last character
+                            // or it is followed by whitespace
+                            else {
+                                result.add(sb.toString());
+                                sb = new StringBuilder();
+                                state = SplitState.NEW;
+                            }
+
+                            break delimitedSwitch;
+                        }
+
+                        // Any word content
+                        default: {
+                            sb.append(c);
+                            break delimitedSwitch;
+                        }
+                    }
+
+                    break stateSwitch;
+                }
+
+                case NON_DELIMITED: {
+                    nonDelimitedSwitch:
+                    switch (c) {
+
+                        // Hard word stop
+                        case ',':
+                        case ';': {
+                            result.add(sb.toString());
+                            sb = new StringBuilder();
+                            state = SplitState.NEW_WITH_AT_LEAST_ONE_WORD;
+                            break nonDelimitedSwitch;
+                        }
+
+                        // Soft word stop
+                        case ' ':
+                        case '\t':
+                        case '\n':
+                        case '\r': {
+                            result.add(sb.toString());
+                            sb = new StringBuilder();
+                            state = SplitState.NEW;
+                            break nonDelimitedSwitch;
+                        }
+
+                        // Any word content
+                        default: {
+                            sb.append(c);
+                            break nonDelimitedSwitch;
+                        }
+                    }
+
+                    break stateSwitch;
+                }
+            }
+        }
+
+        // Cleaning up the last word
+        switch (state) {
+
+            // We were beginning a new word, so ignore sb content
+            case NEW:
+                break;
+
+            // The content of sb is relevant, so add it
+            case NEW_WITH_AT_LEAST_ONE_WORD:
+            case DELIMITED:
+            case NON_DELIMITED:
+                result.add(sb.toString());
+                break;
+        }
+
+        return result;
+    }
+
+    /**
+     * The states in the state machine for splitting strings into lists
+     */
+    static enum SplitState {
+
+        /**
+         * This is the initial state before a new word
+         */
+        NEW,
+
+        /**
+         * Like {@link #NEW}, but there will be at least one word. This is
+         * useful for trailing empty strings when content ends with
+         * <code>','</code> or <code>';'</code>
+         */
+        NEW_WITH_AT_LEAST_ONE_WORD,
+
+        /**
+         * The state within a word delimited by <code>'"'</code>
+         */
+        DELIMITED,
+
+        /**
+         * The state not within a word delimited by <code>'"'</code>
+         */
+        NON_DELIMITED,
     }
 }
