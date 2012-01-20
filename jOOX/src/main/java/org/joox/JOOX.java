@@ -148,10 +148,14 @@ public final class JOOX {
     }
 
     /**
-     * Wrap a DOM element or document in a jOOX {@link Match} element set
+     * Wrap a DOM {@link Node} in a jOOX {@link Match} element set
      * <p>
-     * If the supplied Node is neither an element nor a document, then an empty
-     * Match is created
+     * Supported node types are
+     * <ul>
+     * <li> {@link Document} : see {@link #$(Document)}</li>
+     * <li> {@link Element} : see {@link #$(Element)}</li>
+     * </ul>
+     * If the supplied Node is of any other type, then an empty Match is created
      */
     public static Match $(Node node) {
         if (node instanceof Document) {
