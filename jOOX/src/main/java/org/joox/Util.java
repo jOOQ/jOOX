@@ -36,6 +36,7 @@
 package org.joox;
 
 import static java.util.Arrays.asList;
+import static org.joox.JOOX.$;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -232,8 +233,20 @@ class Util {
         return sb.toString();
     }
 
+    /**
+     * Find the index among siblings of the same tag name
+     */
     private static final int siblingIndex(Element element) {
-        return JOOX.list(element.getParentNode().getChildNodes()).indexOf(element);
+
+        // The document element has index 0
+        if (element.getParentNode() == element.getOwnerDocument()) {
+            return 0;
+        }
+
+        // All other elements are compared with siblings with the same name
+        else {
+            return $(element).parent().children(element.getTagName()).get().indexOf(element);
+        }
     }
 
     /**

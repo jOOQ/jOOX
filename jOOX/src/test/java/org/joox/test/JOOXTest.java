@@ -1165,6 +1165,12 @@ public class JOOXTest {
             "/document[1]/library[3]/books[1]/book[1]",
             "/document[1]/library[3]/books[1]/book[2]"),
             $.find("book").xpaths());
+
+        assertEquals(asList(
+            "/document[1]/library[1]/dvds[1]/dvd[1]/actors[1]/actor[1]",
+            "/document[1]/library[1]/dvds[1]/dvd[1]/actors[1]/actor[2]",
+            "/document[1]/library[1]/dvds[1]/dvd[1]/actors[1]/actor[3]"),
+            $.find("actor").xpaths());
     }
 
     @Test
