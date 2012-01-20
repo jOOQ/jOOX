@@ -427,12 +427,15 @@ class Impl implements Match {
             XPathFactory factory = XPathFactory.newInstance();
             XPath xpath = factory.newXPath();
 
+            // Add the xalan ExtensionNamespaceContext if Xalan is available
+            Util.xalanExtensionAware(xpath);
+
+            // Add a variable resolver if we have any variables
             if (variables != null && variables.length != 0) {
-                xpath.setXPathVariableResolver(new Resolver(expression, variables));
+                xpath.setXPathVariableResolver(new VariableResolver(expression, variables));
             }
 
             XPathExpression exp = xpath.compile(expression);
-
             for (Element element : get()) {
                 for (Element match : iterable((NodeList) exp.evaluate(element, XPathConstants.NODESET))) {
                     result.add(match);
@@ -1703,14 +1706,15 @@ class Impl implements Match {
     // -------------------------------------------------------------------------
 
     /**
-     * A simple variable resolver mapping variable names to their respective index in an XPath expression.
+     * A simple variable resolver mapping variable names to their respective
+     * index in an XPath expression.
      */
-    private static class Resolver implements XPathVariableResolver {
+    private static class VariableResolver implements XPathVariableResolver {
 
         private final String expression;
         private final Object[] variables;
 
-        Resolver(String expression, Object[] variables) {
+        VariableResolver(String expression, Object[] variables) {
             this.expression = expression;
             this.variables = variables;
         }

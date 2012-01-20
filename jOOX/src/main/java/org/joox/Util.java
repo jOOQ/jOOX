@@ -45,6 +45,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
@@ -53,6 +54,8 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFunctionResolver;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
@@ -68,6 +71,21 @@ import org.xml.sax.SAXException;
  * @author Lukas Eder
  */
 class Util {
+
+    /**
+     * A flag indicating whether xalan extensions have been loaded
+     */
+    private static volatile boolean      xalanExtensionLoaded = false;
+
+    /**
+     * The xalan extensions {@link NamespaceContext} if available
+     */
+    private static NamespaceContext      xalanNamespaceContext;
+
+    /**
+     * The xalan extensions {@link XPathFunctionResolver} if available
+     */
+    private static XPathFunctionResolver xalanFunctionResolver;
 
     /**
      * Create some content in the context of a given document
@@ -422,5 +440,36 @@ class Util {
          * The state not within a word delimited by <code>'"'</code>
          */
         NON_DELIMITED,
+    }
+
+    /**
+     * Make a given {@link XPath} object "xalan-extension aware", if Xalan is on
+     * the classpath.
+     */
+    static void xalanExtensionAware(XPath xpath) {
+
+        // Load xalan extensions thread-safely for all of jOOX
+        if (!xalanExtensionLoaded) {
+            synchronized (Util.class) {
+                if (!xalanExtensionLoaded) {
+                    xalanExtensionLoaded = true;
+
+                    try {
+                        xalanNamespaceContext = (NamespaceContext)
+                            Class.forName("org.apache.xalan.extensions.ExtensionNamespaceContext").newInstance();
+
+                        xalanFunctionResolver = (XPathFunctionResolver)
+                            Class.forName("org.apache.xalan.extensions.XPathFunctionResolverImpl").newInstance();
+                    }
+                    catch (Exception ignore) {
+                    }
+                }
+            }
+        }
+
+        if (xalanNamespaceContext != null && xalanFunctionResolver != null) {
+            xpath.setNamespaceContext(xalanNamespaceContext);
+            xpath.setXPathFunctionResolver(xalanFunctionResolver);
+        }
     }
 }

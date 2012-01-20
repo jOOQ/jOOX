@@ -306,6 +306,18 @@ public interface Match extends Iterable<Element> {
      * <li>Match all book ID's : <code>xpath("//book/@id")</code></li>
      * <li>Match all book names : <code>xpath("//book/name/text()")</code></li>
      * </ul>
+     * <h3>Using jOOX with Xalan</h3>
+     * If Xalan is on your classpath, jOOX will automatically load xalan's
+     * namespace and function extensions. All functionality supported by <a
+     * href="http://exslt.org">http://exslt.org</a> will be available in your
+     * XPath expressions. Some examples:
+     * <ul>
+     * <li>Match the book with the highest ID :
+     * <code>xpath("//book[number(@id) = math:max(//book/@id)]")</code></li>
+     * <li>Match books written by Orwell :
+     * <code>xpath("//book[java:org.joox.test.Functions.byOrwellWithNodes(.)]</code>
+     * </li>
+     * </ul>
      */
     Match xpath(String expression);
 
@@ -333,6 +345,18 @@ public interface Match extends Iterable<Element> {
      * <ul>
      * <li>Match all book ID's : <code>xpath("//book/@id")</code></li>
      * <li>Match all book names : <code>xpath("//book/name/text()")</code></li>
+     * </ul>
+     * <h3>Using jOOX with Xalan</h3>
+     * If Xalan is on your classpath, jOOX will automatically load xalan's
+     * namespace and function extensions. All functionality supported by <a
+     * href="http://exslt.org">http://exslt.org</a> will be available in your
+     * XPath expressions. Some examples:
+     * <ul>
+     * <li>Match the book with the highest ID :
+     * <code>xpath("//book[number(@id) = math:max(//book/@id)]")</code></li>
+     * <li>Match books written by Orwell :
+     * <code>xpath("//book[java:org.joox.test.Functions.byOrwellWithNodes(.)]</code>
+     * </li>
      * </ul>
      */
     Match xpath(String expression, Object... variables);
