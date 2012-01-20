@@ -42,6 +42,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
 import static org.joox.JOOX.$;
 
 import java.io.ByteArrayInputStream;
@@ -1164,6 +1165,23 @@ public class JOOXTest {
             "/document[1]/library[3]/books[1]/book[1]",
             "/document[1]/library[3]/books[1]/book[2]"),
             $.find("book").xpaths());
+    }
+
+    @Test
+    public void testXPathWithVariables() throws Exception {
+        assertEquals(2, $.xpath("//*[@id > $1]", 3).size());
+        assertEquals(asList(4, 5), $.xpath("//*[@id > $1]", 3).ids(Integer.class));
+
+        assertEquals(5, $.xpath("//book[count(authors/author) = $1][authors/author[text() = $2]]", 1, "George Orwell").size());
+        assertEquals(5, $.xpath("//book[count(authors/author) = $2][authors/author[text() = $1]]", "George Orwell", 1).size());
+
+        assertEquals(asList(1, 2, 1, 1, 2), $.xpath("//book[count(authors/author) = $1][authors/author[text() = $2]]", 1, "George Orwell").ids(Integer.class));
+
+        try {
+            $.xpath("//*[$1 = $2]", 1);
+            fail();
+        }
+        catch (IndexOutOfBoundsException expected) {}
     }
 
     @Test

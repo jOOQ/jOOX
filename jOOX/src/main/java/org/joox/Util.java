@@ -233,6 +233,14 @@ class Util {
     }
 
     /**
+     * Return <code>string</code> or <code>""</code> if <code>string</code> is
+     * <code>null</code>
+     */
+    static final String nonNull(String string) {
+        return string == null ? "" : string;
+    }
+
+    /**
      * Split a string into values
      */
     static final List<String> split(String value) {

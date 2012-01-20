@@ -42,6 +42,7 @@ import static org.joox.JOOX.list;
 import static org.joox.JOOX.none;
 import static org.joox.JOOX.selector;
 import static org.joox.Util.context;
+import static org.joox.Util.nonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,11 +53,14 @@ import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.JAXB;
+import javax.xml.namespace.QName;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.XPathVariableResolver;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
@@ -412,14 +416,25 @@ class Impl implements Match {
 
     @Override
     public final Impl xpath(String expression) {
+        return xpath(expression, new Object[0]);
+    }
+
+    @Override
+    public final Impl xpath(String expression, Object... variables) {
         List<Element> result = new ArrayList<Element>();
 
         try {
             XPathFactory factory = XPathFactory.newInstance();
-            XPathExpression xpath = factory.newXPath().compile(expression);
+            XPath xpath = factory.newXPath();
+
+            if (variables != null && variables.length != 0) {
+                xpath.setXPathVariableResolver(new Resolver(expression, variables));
+            }
+
+            XPathExpression exp = xpath.compile(expression);
 
             for (Element element : get()) {
-                for (Element match : iterable((NodeList) xpath.evaluate(element, XPathConstants.NODESET))) {
+                for (Element match : iterable((NodeList) exp.evaluate(element, XPathConstants.NODESET))) {
                     result.add(match);
                 }
             }
@@ -1370,10 +1385,6 @@ class Impl implements Match {
         }
     }
 
-    private final String nonNull(String string) {
-        return string == null ? "" : string;
-    }
-
     @Override
     public final Impl replaceWith(String content) {
         return replaceWith(JOOX.content(content));
@@ -1685,5 +1696,42 @@ class Impl implements Match {
         }
 
         return true;
+    }
+
+    // -------------------------------------------------------------------------
+    // Utilities
+    // -------------------------------------------------------------------------
+
+    /**
+     * A simple variable resolver mapping variable names to their respective index in an XPath expression.
+     */
+    private static class Resolver implements XPathVariableResolver {
+
+        private final String expression;
+        private final Object[] variables;
+
+        Resolver(String expression, Object[] variables) {
+            this.expression = expression;
+            this.variables = variables;
+        }
+
+        @Override
+        public Object resolveVariable(QName variable) {
+            int index;
+
+            try {
+                index = Integer.parseInt(variable.getLocalPart()) - 1;
+            }
+            catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Variable " + variable + " is not supported by jOOX. Only numerical variables can be used for " + expression);
+            }
+
+            if (index < variables.length) {
+                return variables[index];
+            }
+            else {
+                throw new IndexOutOfBoundsException("No variable defined for " + variable + " in " + expression);
+            }
+        }
     }
 }

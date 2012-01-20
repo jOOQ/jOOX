@@ -288,11 +288,13 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Match all elements given a certain XPath expression applied to each
-     * element in the current set of matched element.
+     * element in the current set of matched elements.
      * <p>
      * The XPath expression is evaluated using standard
-     * {@link javax.xml.xpath.XPath}. Note that only matched elements will be
-     * considered in the results. Examples:
+     * {@link javax.xml.xpath.XPath}. It must not contain any variables. Use
+     * {@link #xpath(String, Object...)} instead, if you wish to use variables.
+     * Note that only matched elements will be considered in the results. You
+     * cannot match attributes or text nodes, for instance. Examples:
      * <ul>
      * <li>Match all elements : <code>xpath("//*")</code></li>
      * <li>Match all books : <code>xpath("/library/books/book")</code></li>
@@ -306,6 +308,34 @@ public interface Match extends Iterable<Element> {
      * </ul>
      */
     Match xpath(String expression);
+
+    /**
+     * Match all elements given a certain XPath expression applied to each
+     * element in the current set of matched elements.
+     * <p>
+     * The XPath expression is evaluated using standard
+     * {@link javax.xml.xpath.XPath}. It may contain numerical variables,
+     * declared as <code>$1</code>, <code>$2</code>, etc, starting with
+     * <code>$1</code>. Other variables, such as <code>$myVar</code> are not
+     * supported. You must provide at least one variable in the
+     * <code>variables</code> argument for every variable index. Note that only
+     * matched elements will be considered in the results. You cannot match
+     * attributes or text nodes, for instance. Examples:
+     * <ul>
+     * <li>Match all elements with id greater than 5:
+     * <code>xpath("//*[@id > $1]", 5)</code></li>
+     * <li>Match all books with more than two authors and one author is
+     * "George Orwell" :
+     * <code>xpath("/library/books/book[count(authors/author) > $1][authors/author[text() = $2]]", 2, "George Orwell")</code>
+     * </li>
+     * </ul>
+     * This doesn't work (not matching elements):
+     * <ul>
+     * <li>Match all book ID's : <code>xpath("//book/@id")</code></li>
+     * <li>Match all book names : <code>xpath("//book/name/text()")</code></li>
+     * </ul>
+     */
+    Match xpath(String expression, Object... variables);
 
     /**
      * Get the first in a set of matched elements.
