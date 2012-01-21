@@ -1250,6 +1250,11 @@ class Impl implements Match {
     }
 
     @Override
+    public final Impl content(Object content) {
+        return content(JOOX.content(content));
+    }
+
+    @Override
     public final Impl content(Content content) {
         final int size = size();
 

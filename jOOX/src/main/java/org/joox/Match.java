@@ -1200,6 +1200,15 @@ public interface Match extends Iterable<Element> {
     Match content(String content);
 
     /**
+     * Add some JAXB-marshallable XML content to all elements in the set of
+     * matched elements (possibly replacing existing content).
+     *
+     * @see JOOX#$(Object)
+     * @see JOOX#content(Object)
+     */
+    Match content(Object content);
+
+    /**
      * Add some XML content to all elements in the set of matched elements
      * (possibly replacing existing content). If the supplied content is invalid
      * XML or plain text, then it will be added as text just as with

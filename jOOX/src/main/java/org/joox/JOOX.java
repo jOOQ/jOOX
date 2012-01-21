@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -49,7 +50,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Result;
@@ -74,6 +79,9 @@ public final class JOOX {
 
     /**
      * Wrap a JAXB-marshallable element in a jOOX {@link Match} element set
+     *
+     * @see #content(Object)
+     * @see Match#content(Object)
      */
     public static Match $(Object object) {
         Document document = builder().newDocument();
@@ -382,6 +390,43 @@ public final class JOOX {
             @Override
             public String content(Context context) {
                 return value;
+            }
+        };
+    }
+
+    /**
+     * Get a constant content that returns a marshalled, JAXB-annotated
+     * <code>value</code> for all elements.
+     *
+     * @see #$(Object)
+     * @see Match#content(Object)
+     */
+    public static Content content(final Object value) {
+        if (value == null) {
+            return content("");
+        }
+
+        return new Content() {
+            private String marshalled;
+
+            @Override
+            public String content(Context context) {
+                if (marshalled == null) {
+                    try {
+                        JAXBContext jaxb = JAXBContext.newInstance(value.getClass());
+                        Marshaller marshaller = jaxb.createMarshaller();
+                        marshaller.setProperty("jaxb.fragment", true);
+
+                        StringWriter writer = new StringWriter();
+                        marshaller.marshal(value, writer);
+                        marshalled = writer.toString();
+                    }
+                    catch (JAXBException e) {
+                        throw new DataBindingException(e);
+                    }
+                }
+
+                return marshalled;
             }
         };
     }

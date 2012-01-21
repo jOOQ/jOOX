@@ -947,6 +947,15 @@ public class JOOXTest {
     }
 
     @Test
+    public void testContentJAXB() throws Exception {
+        assertEquals("<customer id=\"0\"><age>0</age></customer>",
+            $.content(new Customer()).content());
+        assertEquals($(new Customer()).toString(), $.content());
+        assertEquals("<customer id=\"0\"><customer id=\"0\"><age>0</age></customer></customer>",
+            $.find("customer").content(new Customer()).parent().content());
+    }
+
+    @Test
     public void testAfter() throws Exception {
         assertEquals(2, $.find("dvds").after("<cds/>").size());
         assertEquals(1, $.find("cds").size());
