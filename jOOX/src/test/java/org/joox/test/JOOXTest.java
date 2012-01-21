@@ -46,6 +46,7 @@ import static junit.framework.Assert.fail;
 import static org.joox.JOOX.$;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -962,6 +963,42 @@ public class JOOXTest {
     }
 
     @Test
+    public void testTransform() throws Exception {
+        // Transform the book nodes
+        assertEquals(
+            asList(2, 3, 4, 5, 2, 4, 2, 3),
+            $.find("book").transform(JOOXTest.class.getResourceAsStream("/book-id-increment.xsl")).ids(Integer.class));
+        assertEquals(
+            asList(1, 2, 3, 4, 1, 3, 1, 2),
+            $.find("book").transform(JOOXTest.class.getResourceAsStream("/book-id-decrement.xsl")).ids(Integer.class));
+        assertEquals($(xmlString).toString(), $.toString());
+
+        // Transform irrelevant nodes
+        assertEquals(
+            asList(1, 2, 3, 4, 1, 3, 1, 2),
+            $.find("author").transform(new File(JOOXTest.class.getResource("/book-id-increment.xsl").toURI()))
+                            .parents("document")
+                            .find("book")
+                            .ids(Integer.class));
+        assertEquals(
+            asList(1, 2, 3, 4, 1, 3, 1, 2),
+            $.find("author").transform(new File(JOOXTest.class.getResource("/book-id-decrement.xsl").toURI()))
+                            .parents("document")
+                            .find("book")
+                            .ids(Integer.class));
+        assertEquals($(xmlString).toString(), $.toString());
+
+        // Transform the library nodes
+        assertEquals(
+            asList(2, 3, 4, 5, 2, 4, 2, 3),
+            $.find("library").transform(JOOXTest.class.getResource("/book-id-increment.xsl")).find("book").ids(Integer.class));
+        assertEquals(
+            asList(1, 2, 3, 4, 1, 3, 1, 2),
+            $.find("library").transform(JOOXTest.class.getResource("/book-id-decrement.xsl")).find("book").ids(Integer.class));
+        assertEquals($(xmlString).toString(), $.toString());
+    }
+
+    @Test
     public void testAfter() throws Exception {
         assertEquals(2, $.find("dvds").after("<cds/>").size());
         assertEquals(1, $.find("cds").size());
@@ -1290,6 +1327,15 @@ public class JOOXTest {
         assertEquals("Lukas", $(getCustomer()).find("name").text());
         assertEquals(13, (int) $(getCustomer()).attr("id", Integer.class));
         assertEquals(30, (int) $(getCustomer()).find("age").text(Integer.class));
+    }
+
+    @Test
+    public void test$String() throws Exception {
+        assertEquals("<a/>", $("a").toString());
+        assertEquals("<a/>", $("<a></a>").toString());
+        assertEquals("<a/>", $("<a/>").toString());
+        assertEquals("<a/>", $("<!-- some comment --><a/>").toString());
+        assertEquals("<a/>", $("<?xml version=\"1.0\"?><!-- some comment --><a/>").toString());
     }
 
     @Test

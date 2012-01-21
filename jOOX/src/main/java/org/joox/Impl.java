@@ -44,6 +44,11 @@ import static org.joox.JOOX.selector;
 import static org.joox.Util.context;
 import static org.joox.Util.nonNull;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,7 +59,14 @@ import java.util.Set;
 
 import javax.xml.bind.JAXB;
 import javax.xml.namespace.QName;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -1628,6 +1640,76 @@ class Impl implements Match {
     @Override
     public final <T> T unmarshalOne(Class<T> type, int index) {
         return eq(index).unmarshalOne(type);
+    }
+
+    @Override
+    public final Impl transform(Transformer transformer) {
+        List<DOMResult> results = new ArrayList<DOMResult>();
+        List<Element> newElements = new ArrayList<Element>();
+
+        // Transform all matched elements
+        try {
+            for (Element element : get()) {
+                DOMResult result = new DOMResult();
+                transformer.transform(new DOMSource(element), result);
+                results.add(result);
+            }
+        }
+        catch (TransformerException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Replace all matched elements by their resulting transformations
+        for (int i = 0; i < size(); i++) {
+            Element element = get(i);
+            Element result = ((Document) results.get(i).getNode()).getDocumentElement();
+
+            result = (Element) document().importNode(result, true);
+            element.getParentNode().replaceChild(result, element);
+            newElements.add(result);
+        }
+
+        return new Impl(document).addElements(newElements);
+    }
+
+    @Override
+    public final Impl transform(Source transformer) {
+        try {
+            return transform(TransformerFactory.newInstance().newTransformer(transformer));
+        }
+        catch (TransformerConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public final Impl transform(InputStream transformer) {
+        return transform(new StreamSource(transformer));
+    }
+
+    @Override
+    public final Impl transform(Reader transformer) {
+        return transform(new StreamSource(transformer));
+    }
+
+    @Override
+    public final Impl transform(URL transformer) {
+        try {
+            return transform(transformer.openStream());
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public final Impl transform(File transformer) {
+        return transform(new StreamSource(transformer));
+    }
+
+    @Override
+    public final Impl transform(String transformer) {
+        return transform(new StreamSource(new File(transformer)));
     }
 
     // -------------------------------------------------------------------------

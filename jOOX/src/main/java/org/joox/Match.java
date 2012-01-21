@@ -35,7 +35,15 @@
  */
 package org.joox;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.URL;
 import java.util.List;
+
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -1418,4 +1426,92 @@ public interface Match extends Iterable<Element> {
      */
     <T> T unmarshalOne(Class<T> type, int index);
 
+    /**
+     * Transform all elements in the set of matched elements.
+     * <p>
+     * This will apply a given {@link Transformer} to every element in the set
+     * of matched elements. Every element in the set of matched elements will be
+     * replaced by its corresponding {@link Result} obtained from the
+     * <code>transformer</code>.
+     * <h3>Example Input:</h3> <code><pre>
+     * &lt;books>
+     *   &lt;book id="1"/>
+     *   &lt;book id="2"/>
+     * &lt;/books>
+     * </pre></code>
+     * <h3>Example XSLT:</h3> <code><pre>
+     * &lt;?xml version="1.0" encoding="ISO-8859-1"?>
+     * &lt;xsl:stylesheet version="1.0"
+     *     xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+     *
+     *     &lt;xsl:template match="book">
+     *         &lt;book id="{@id + 1}">
+     *             &lt;xsl:apply-templates/>
+     *         &lt;/book>
+     *     &lt;/xsl:template>
+     *
+     *     &lt;xsl:template match="@*|*">
+     *         &lt;xsl:copy>
+     *             &lt;xsl:apply-templates select="*|@*"/>
+     *         &lt;/xsl:copy>
+     *     &lt;/xsl:template>
+     * &lt;/xsl:stylesheet>
+     * </pre></code>
+     * <h3>Apply transformation:</h3> <code><pre>
+     * // Applies transformation to the document element:
+     * $(document).transform("increment.xsl");
+     *
+     * // Applies transformation to every book element:
+     * $(document).find("book").transform("increment.xsl");
+     * </pre></code>
+     * <h3>Result:</h3> <code><pre>
+     * &lt;books>
+     *   &lt;book id="2"/>
+     *   &lt;book id="3"/>
+     * &lt;/books>
+     * </pre></code>
+     */
+    Match transform(Transformer transformer);
+
+    /**
+     * Transform all elements in the set of matched elements.
+     *
+     * @see #transform(Transformer)
+     */
+    Match transform(Source transformer);
+
+    /**
+     * Transform all elements in the set of matched elements.
+     *
+     * @see #transform(Transformer)
+     */
+    Match transform(InputStream transformer);
+
+    /**
+     * Transform all elements in the set of matched elements.
+     *
+     * @see #transform(Transformer)
+     */
+    Match transform(Reader transformer);
+
+    /**
+     * Transform all elements in the set of matched elements.
+     *
+     * @see #transform(Transformer)
+     */
+    Match transform(URL transformer);
+
+    /**
+     * Transform all elements in the set of matched elements.
+     *
+     * @see #transform(Transformer)
+     */
+    Match transform(File transformer);
+
+    /**
+     * Transform all elements in the set of matched elements.
+     *
+     * @see #transform(Transformer)
+     */
+    Match transform(String transformer);
 }

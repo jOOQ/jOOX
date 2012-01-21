@@ -105,17 +105,32 @@ class Util {
             DocumentBuilder builder = JOOX.builder();
 
             try {
-                String wrapped = "<dummy>" + text + "</dummy>";
-                Document parsed = builder.parse(new InputSource(new StringReader(wrapped)));
-                DocumentFragment fragment = parsed.createDocumentFragment();
-                NodeList children = parsed.getDocumentElement().getChildNodes();
 
-                // appendChild removes children also from NodeList!
-                while (children.getLength() > 0) {
-                    fragment.appendChild(children.item(0));
+                // There is a processing instruction. We can safely assume
+                // valid XML and parse it as such
+                if (text.startsWith("<?xml")) {
+                    Document parsed = builder.parse(new InputSource(new StringReader(text)));
+                    DocumentFragment fragment = parsed.createDocumentFragment();
+                    fragment.appendChild(parsed.getDocumentElement());
+
+                    return (DocumentFragment) doc.importNode(fragment, true);
                 }
 
-                return (DocumentFragment) doc.importNode(fragment, true);
+                // Any XML document fragment. To be on the safe side, fragments
+                // are wrapped in a dummy root node
+                else {
+                    String wrapped = "<dummy>" + text + "</dummy>";
+                    Document parsed = builder.parse(new InputSource(new StringReader(wrapped)));
+                    DocumentFragment fragment = parsed.createDocumentFragment();
+                    NodeList children = parsed.getDocumentElement().getChildNodes();
+
+                    // appendChild removes children also from NodeList!
+                    while (children.getLength() > 0) {
+                        fragment.appendChild(children.item(0));
+                    }
+
+                    return (DocumentFragment) doc.importNode(fragment, true);
+                }
             }
 
             // This does not occur
