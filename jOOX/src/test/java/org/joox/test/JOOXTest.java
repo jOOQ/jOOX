@@ -944,6 +944,10 @@ public class JOOXTest {
 
         assertEquals("<xx/><xx/>", $.find("actors").content("<xx/><xx/>").content());
         assertEquals(2, $.find("xx").size());
+
+        // Null and empty string checks
+        assertEquals("<document/>", $.content((String) null).toString());
+        assertEquals("<document/>", $.content("").toString());
     }
 
     @Test
@@ -953,6 +957,8 @@ public class JOOXTest {
         assertEquals($(new Customer()).toString(), $.content());
         assertEquals("<customer id=\"0\"><customer id=\"0\"><age>0</age></customer></customer>",
             $.find("customer").content(new Customer()).parent().content());
+
+        assertEquals("<document/>", $.content((Object) null).toString());
     }
 
     @Test
