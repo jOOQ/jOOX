@@ -291,8 +291,99 @@ public final class JOOX {
     /**
      * A filter that returns all elements matched by a given selector.
      * <p>
-     * As of jOOX 0.9.0, this is the same as calling {@link #tag(String)}. More
-     * sophisticated selector expressions will be added in the future.
+     * In most cases, this is the same as calling {@link #tag(String)}. In
+     * {@link Match#find(String)}, the following CSS-style selector syntax
+     * elements are also supported:
+     * <table border="1">
+     * <tr>
+     * <th>Selector pattern</th>
+     * <th>meaning</th>
+     * </tr>
+     * <tr>
+     * <td>*</td>
+     * <td>any element</td>
+     * </tr>
+     * <tr>
+     * <td>E</td>
+     * <td>an element of type E</td>
+     * </tr>
+     * <tr>
+     * <td>E[foo]</td>
+     * <td>an E element with a "foo" attribute</td>
+     * </tr>
+     * <tr>
+     * <td>E[foo="bar"]</td>
+     * <td>an E element whose "foo" attribute value is exactly equal to "bar"</td>
+     * </tr>
+     * <tr>
+     * <td>E[foo~="bar"]</td>
+     * <td>an E element whose "foo" attribute value is a list of
+     * whitespace-separated values, one of which is exactly equal to "bar"</td>
+     * </tr>
+     * <tr>
+     * <td>E[foo^="bar"]</td>
+     * <td>an E element whose "foo" attribute value begins exactly with the
+     * string "bar"</td>
+     * </tr>
+     * <tr>
+     * <td>E[foo$="bar"]</td>
+     * <td>an E element whose "foo" attribute value ends exactly with the string
+     * "bar"</td>
+     * </tr>
+     * <tr>
+     * <td>E[foo*="bar"]</td>
+     * <td>an E element whose "foo" attribute value contains the substring "bar"
+     * </td>
+     * </tr>
+     * <tr>
+     * <td>E[foo|="en"]</td>
+     * <td>an E element whose "foo" attribute has a hyphen-separated list of
+     * values beginning (from the left) with "en"</td>
+     * </tr>
+     * <tr>
+     * <td>E:root</td>
+     * <td>an E element, root of the document</td>
+     * </tr>
+     * <tr>
+     * <td>E:first-child</td>
+     * <td>an E element, first child of its parent</td>
+     * </tr>
+     * <tr>
+     * <td>E:last-child</td>
+     * <td>an E element, last child of its parent</td>
+     * </tr>
+     * <tr>
+     * <td>E:only-child</td>
+     * <td>an E element, only child of its parent</td>
+     * </tr>
+     * <tr>
+     * <td>E:empty</td>
+     * <td>an E element that has no children (including text nodes)</td>
+     * </tr>
+     * <tr>
+     * <td>E#myid</td>
+     * <td>an E element with ID equal to "myid".</td>
+     * </tr>
+     * <tr>
+     * <td>E F</td>
+     * <td>an F element descendant of an E element</td>
+     * </tr>
+     * <tr>
+     * <td>E > F</td>
+     * <td>an F element child of an E element</td>
+     * </tr>
+     * <tr>
+     * <td>E + F</td>
+     * <td>an F element immediately preceded by an E element</td>
+     * </tr>
+     * <tr>
+     * <td>E ~ F</td>
+     * <td>an F element preceded by an E element</td>
+     * </tr>
+     * </table>
+     *
+     * @see <a
+     *      href="http://www.w3.org/TR/selectors/#selectors">http://www.w3.org/TR/selectors/#selectors</a>
      */
     public static Filter selector(final String selector) {
         return tag(selector);

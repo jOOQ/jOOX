@@ -43,6 +43,7 @@ import static org.joox.JOOX.none;
 import static org.joox.JOOX.selector;
 import static org.joox.Util.context;
 import static org.joox.Util.nonNull;
+import static org.joox.selector.CSS2XPath.css2xpath;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,11 +52,13 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXB;
 import javax.xml.namespace.QName;
@@ -162,7 +165,7 @@ class Impl implements Match {
         return this;
     }
 
-    final Impl addElements(List<Element> e) {
+    final Impl addElements(Collection<Element> e) {
         this.elements.addAll(e);
         return this;
     }
@@ -389,13 +392,37 @@ class Impl implements Match {
 
     @Override
     public final Impl find(String selector) {
-        List<NodeList> result = new ArrayList<NodeList>();
 
-        for (Element element : elements) {
-            result.add(element.getElementsByTagName(selector));
+        // Simple selectors are either valid XML element names, or *. They can
+        // be evaluated using standard DOM API
+        if (SIMPLE_SELECTOR.matcher(selector).matches()) {
+            List<NodeList> result = new ArrayList<NodeList>();
+
+            for (Element element : elements) {
+                result.add(element.getElementsByTagName(selector));
+            }
+
+            return new Impl(document, this).addNodeLists(result);
         }
 
-        return new Impl(document, this).addNodeLists(result);
+        // CSS selectors are transformed to XPath expressions
+        else {
+            return new Impl(document, this).addElements(xpath(css2xpath(selector, isRoot())).get());
+        }
+    }
+
+    /**
+     * Temporary utility method to indicate whether the root element is among
+     * the matched elements
+     */
+    private boolean isRoot() {
+        for (Element element : elements) {
+            if (element.getParentNode().getNodeType() == Node.DOCUMENT_NODE) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -1791,6 +1818,11 @@ class Impl implements Match {
     // -------------------------------------------------------------------------
     // Utilities
     // -------------------------------------------------------------------------
+
+    /**
+     * A selector pattern that can be evaluated using standard DOM API
+     */
+    public static final Pattern SIMPLE_SELECTOR = Pattern.compile("\\*|[\\w\\-]+");
 
     /**
      * A simple variable resolver mapping variable names to their respective

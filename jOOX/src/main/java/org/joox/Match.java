@@ -173,6 +173,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Find the first matching child of each element in the current set of
      * matched elements
+     *
+     * @see JOOX#selector(String)
      */
     Match child(String selector);
 
@@ -195,6 +197,8 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Find all children of each element in the current set of matched elements.
+     *
+     * @see JOOX#selector(String)
      */
     Match children(String selector);
 
@@ -235,6 +239,8 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Reduce the current set of matched elements.
+     *
+     * @see JOOX#selector(String)
      */
     Match filter(String selector);
 
@@ -273,6 +279,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Find all descendants of each element in the current set of matched
      * elements.
+     *
+     * @see JOOX#selector(String)
      */
     Match find(String selector);
 
@@ -377,6 +385,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Reduce the set of matched element to those who have a descendant that
      * matches a selector.
+     *
+     * @see JOOX#selector(String)
      */
     Match has(String selector);
 
@@ -401,6 +411,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Check if at least one element in the set of matched elements satisfies a
      * selector.
+     *
+     * @see JOOX#selector(String)
      */
     boolean is(String selector);
 
@@ -436,6 +448,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Get the immediate next sibling of every element in set of matched
      * elements, matching a selector
+     *
+     * @see JOOX#selector(String)
      */
     Match next(String selector);
 
@@ -463,6 +477,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all next siblings of every element in a set of matched elements,
      * matching a selector
+     *
+     * @see JOOX#selector(String)
      */
     Match nextAll(String selector);
 
@@ -486,6 +502,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all next siblings of every element in a set of matched elements until
      * the provided selector matches
+     *
+     * @see JOOX#selector(String)
      */
     Match nextUntil(String until);
 
@@ -509,6 +527,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all next siblings of every element in a set of matched elements,
      * matching a selector, until the provided selector matches
+     *
+     * @see JOOX#selector(String)
      */
     Match nextUntil(String until, String selector);
 
@@ -526,6 +546,8 @@ public interface Match extends Iterable<Element> {
      * <li> {@link Context#elementIndex()} - the relative index of the next
      * siblings that are being filtered</li>
      * </ul>
+     *
+     * @see JOOX#selector(String)
      */
     Match nextUntil(String until, Filter filter);
 
@@ -543,6 +565,8 @@ public interface Match extends Iterable<Element> {
      * <li> {@link Context#elementIndex()} - the relative index of the next
      * siblings that are being filtered</li>
      * </ul>
+     *
+     * @see JOOX#selector(String)
      */
     Match nextUntil(Filter until, String selector);
 
@@ -560,11 +584,15 @@ public interface Match extends Iterable<Element> {
      * <li> {@link Context#elementIndex()} - the relative index of the next
      * siblings that are being filtered</li>
      * </ul>
+     *
+     * @see JOOX#selector(String)
      */
     Match nextUntil(Filter until, Filter filter);
 
     /**
      * Remove elements from the set of matched elements.
+     *
+     * @see JOOX#selector(String)
      */
     Match not(String selector);
 
@@ -589,6 +617,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Get the immediate parent elements of every element in a set of matched
      * elements, matching a selector
+     *
+     * @see JOOX#selector(String)
      */
     Match parent(String selector);
 
@@ -616,6 +646,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all ancestor elements of every element in a set of matched elements,
      * matching a selector
+     *
+     * @see JOOX#selector(String)
      */
     Match parents(String selector);
 
@@ -639,6 +671,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all ancestors of every element in a set of matched elements until the
      * provided selector matches
+     *
+     * @see JOOX#selector(String)
      */
     Match parentsUntil(String until);
 
@@ -662,6 +696,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all ancestors of every element in a set of matched elements, matching
      * a selector, until the provided selector matches
+     *
+     * @see JOOX#selector(String)
      */
     Match parentsUntil(String until, String selector);
 
@@ -679,6 +715,8 @@ public interface Match extends Iterable<Element> {
      * <li> {@link Context#elementIndex()} - the relative index of the parent
      * that is being filtered</li>
      * </ul>
+     *
+     * @see JOOX#selector(String)
      */
     Match parentsUntil(String until, Filter filter);
 
@@ -696,6 +734,8 @@ public interface Match extends Iterable<Element> {
      * <li> {@link Context#elementIndex()} - the relative index of the parent
      * that is being filtered</li>
      * </ul>
+     *
+     * @see JOOX#selector(String)
      */
     Match parentsUntil(Filter until, String selector);
 
@@ -725,6 +765,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Get the immediate previous sibling of every element in set of matched
      * elements, matching a selector
+     *
+     * @see JOOX#selector(String)
      */
     Match prev(String selector);
 
@@ -753,6 +795,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all previous siblings of every element in a set of matched elements,
      * matching a selector
+     *
+     * @see JOOX#selector(String)
      */
     Match prevAll(String selector);
 
@@ -777,6 +821,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all previous siblings of every element in a set of matched elements
      * until the provided selector matches
+     *
+     * @see JOOX#selector(String)
      */
     Match prevUntil(String until);
 
@@ -801,6 +847,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all previous siblings of every element in a set of matched elements,
      * matching a selector, until the provided selector matches
+     *
+     * @see JOOX#selector(String)
      */
     Match prevUntil(String until, String selector);
 
@@ -819,6 +867,8 @@ public interface Match extends Iterable<Element> {
      * <li> {@link Context#elementIndex()} - the relative index of the previous
      * siblings that are being filtered</li>
      * </ul>
+     *
+     * @see JOOX#selector(String)
      */
     Match prevUntil(String until, Filter filter);
 
@@ -837,6 +887,8 @@ public interface Match extends Iterable<Element> {
      * <li> {@link Context#elementIndex()} - the relative index of the previous
      * siblings that are being filtered</li>
      * </ul>
+     *
+     * @see JOOX#selector(String)
      */
     Match prevUntil(Filter until, String selector);
 
@@ -866,6 +918,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all siblings of every element in a set of matched elements, matching
      * a selector
+     *
+     * @see JOOX#selector(String)
      */
     Match siblings(String selector);
 
@@ -1096,6 +1150,8 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Removes all elements in the set of matched elements, matching a selector
+     *
+     * @see JOOX#selector(String)
      */
     Match remove(String selector);
 

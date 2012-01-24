@@ -375,6 +375,240 @@ public class JOOXTest {
     }
 
     @Test
+    public void testFindCSS() {
+
+        // Combinator tests
+        // ----------------
+
+        // Descendants of root
+        assertEquals(8, $.find("document book").size());
+        assertEquals(
+            $.find("book"),
+            $.find("document book"));
+        assertEquals(8, $.find("library book").size());
+        assertEquals(
+            $.find("book"),
+            $.find("library book"));
+        assertEquals(8, $.find("books book").size());
+        assertEquals(
+            $.find("book"),
+            $.find("books book"));
+        assertEquals(0, $.find("book book").size());
+        assertEquals(0, $.find("dvd book").size());
+        assertEquals(0, $.find("author book").size());
+
+        // Descendants of the first library
+        assertEquals(4, $.find("library").eq(0).find("books book").size());
+        assertEquals(
+            $.find("library").eq(0).find("book"),
+            $.find("library").eq(0).find("books book"));
+        assertEquals(4, $.find("library").eq(0).find("books author").size());
+        assertEquals(
+            $.find("library").eq(0).find("author"),
+            $.find("library").eq(0).find("books author"));
+        assertEquals(
+            $.find("library").eq(0).find("author").texts(),
+            $.find("library").eq(0).find("books author").texts());
+
+        assertEquals(0, $.find("library").eq(0).find("book book").size());
+        assertEquals(0, $.find("library").eq(0).find("author book").size());
+
+        // Children of root
+        assertEquals(3, $.find("document > library").size());
+        assertEquals(
+            $.find("library"),
+            $.find("document > library"));
+
+        assertEquals(8, $.find("books > book").size());
+        assertEquals(
+            $.find("book"),
+            $.find("books > book"));
+
+        assertEquals(0, $.find("document > book").size());
+        assertEquals(0, $.find("library>book").size());
+
+        // Children of the first library
+        assertEquals(4, $.find("library").eq(0).find("books > book").size());
+        assertEquals(
+            $.find("library").eq(0).find("book"),
+            $.find("library").eq(0).find("books > book"));
+        assertEquals(4, $.find("library").eq(0).find("books > * > * > author").size());
+        assertEquals(
+            $.find("library").eq(0).find("author"),
+            $.find("library").eq(0).find("books > * > * > author"));
+
+        // TODO: TEST + and ~ combinators!
+
+        // Multiple selectors tests
+        // ------------------------
+        assertEquals(4, $.find("document, library").size());
+        assertEquals(
+            $.add($.find("library")),
+            $.find("document, library"));
+
+        assertEquals(9, $.find("library book, library dvd").size());
+        assertEquals(
+            $.xpath("//book | //dvd"),
+            $.find("library book, library dvd"));
+
+        assertEquals(9, $.find("library > * > book, library > dvds > dvd").size());
+        assertEquals(
+            $.xpath("//book | //dvd"),
+            $.find("library book, library dvd"));
+
+        // ID selector tests
+        // -----------------
+        assertEquals(3, $.find("#1").size());
+        assertEquals(
+            $.xpath("//book[@id = 1]"),
+            $.find("#1"));
+        assertEquals(3, $.find("book#1").size());
+        assertEquals(
+            $.xpath("//book[@id = 1]"),
+            $.find("book#1"));
+
+        assertEquals(5, $.find("#1, #2").size());
+        assertEquals(
+            $.xpath("//book[@id = 1 or @id = 2]"),
+            $.find("#1, #2"));
+        assertEquals(8, $.find("#1, #2, #3, #4").size());
+        assertEquals(
+            $.xpath("//book"),
+            $.find("#1, #2, #3, #4"));
+
+        // Attribute selector tests
+        // ------------------------
+        assertEquals(3, $.find("*[name]").size());
+        assertEquals(
+            $.find("library"),
+            $.find("*[name]"));
+        assertEquals(3, $.find("library[name]").size());
+        assertEquals(
+            $.find("library"),
+            $.find("library[name]"));
+        assertEquals(0, $.find("*[test]").size());
+
+        assertEquals(1, $.find("library[name=Amazon]").size());
+        assertEquals(
+            $.find("library").eq(0),
+            $.find("library[name=Amazon]"));
+        assertEquals(1, $.find("library[name='Amazon']").size());
+        assertEquals(
+            $.find("library").eq(0),
+            $.find("library[name='Amazon']"));
+        assertEquals(1, $.find("library[name=\"Amazon\"]").size());
+        assertEquals(
+            $.find("library").eq(0),
+            $.find("library[name=\"Amazon\"]"));
+
+        assertEquals(1, $.find("library[name^=Ama]").size());
+        assertEquals(
+            $.find("library").eq(0),
+            $.find("library[name^=Ama]"));
+        assertEquals(1, $.find("library[name$=zon]").size());
+        assertEquals(
+            $.find("library").eq(0),
+            $.find("library[name$=zon]"));
+        assertEquals(1, $.find("library[name*=mazo]").size());
+        assertEquals(
+            $.find("library").eq(0),
+            $.find("library[name*=mazo]"));
+
+        assertEquals(1, $("<document attr=\"prefix\"/>").find("*[attr|=prefix]").size());
+        assertEquals(
+            $("<document attr=\"prefix\"/>").toString(),
+            $("<document attr=\"prefix\"/>").find("*[attr|=prefix]").toString());
+        assertEquals(1, $("<document attr=\"prefix-value\"/>").find("*[attr|=prefix]").size());
+        assertEquals(
+            $("<document attr=\"prefix-value\"/>").toString(),
+            $("<document attr=\"prefix-value\"/>").find("*[attr|=prefix]").toString());
+
+        assertEquals(1, $.find("*[name~=Orell]").size());
+        assertEquals(
+            $.find("library").eq(2),
+            $.find("*[name~=Orell]"));
+        assertEquals(1, $.find("*[name~=Füssli]").size());
+        assertEquals(
+            $.find("library").eq(2),
+            $.find("*[name~=Füssli]"));
+
+        // :root pseudo selector tests
+        // ---------------------------
+        assertEquals(1, $.find(":root").size());
+        assertEquals($, $.find(":root"));
+        assertEquals(1, $.find("document:root").size());
+        assertEquals($, $.find("document:root"));
+        assertEquals(0, $.find("abc:root").size());
+        assertEquals(0, $.find("book:root").size());
+        assertEquals(3, $.find(":root library").size());
+        assertEquals(
+            $.find("library"),
+            $.find(":root library"));
+        assertEquals(3, $.find(":root > library").size());
+        assertEquals(
+            $.find("library"),
+            $.find(":root library"));
+
+        // :empty pseudo selector tests
+        // ----------------------------
+        assertEquals(0, $.find(":empty").size());
+        assertEquals(1, $("<document><a/></document>").find(":empty").size());
+        assertEquals(
+            "<a/>",
+            $("<document><a/></document>").find(":empty").toString());
+
+        assertEquals(2, $("<document><a/><b/></document>").find(":empty").size());
+        assertEquals(
+            asList("a", "b"),
+            $("<document><a/><b/></document>").find(":empty").tags());
+
+        assertEquals(2, $("<document><a/><b/><c> </c></document>").find(":empty").size());
+        assertEquals(
+            asList("a", "b"),
+            $("<document><a/><b/><c> </c></document>").find(":empty").tags());
+
+        assertEquals(2, $("<document><a/><b/><c test=\"test\"/></document>").find(":empty").size());
+        assertEquals(
+            asList("a", "b"),
+            $("<document><a/><b/><c test=\"test\"/></document>").find(":empty").tags());
+
+        // :first-child pseudo selector tests
+        // ----------------------------------
+        assertEquals(28, $.find(":first-child").size());
+        assertEquals(2, $.xpath("//library[1]//book[@id=1]").find(":first-child").size());
+        assertEquals(
+            $.xpath("//library[1]//book[@id=1]//name | //library[1]//book[@id=1]//author"),
+            $.xpath("//library[1]//book[@id=1]").find(":first-child"));
+        assertEquals(3, $.find("book:first-child").size());
+        assertEquals(
+            $.xpath("//book[@id=1]"),
+            $.find("book:first-child"));
+
+        // :last-child pseudo selector tests
+        // ---------------------------------
+        assertEquals(28, $.find(":last-child").size());
+        assertEquals(2, $.xpath("//library[1]//book[@id=1]").find(":last-child").size());
+        assertEquals(
+            $.xpath("//library[1]//book[@id=1]//authors | //library[1]//book[@id=1]//author"),
+            $.xpath("//library[1]//book[@id=1]").find(":last-child"));
+        assertEquals(3, $.find("book:last-child").size());
+        assertEquals(
+            asList("4", "3", "2"),
+            $.find("book:last-child").ids());
+
+        // :only-child pseudo selector tests
+        // ---------------------------------
+        assertEquals(13, $.find(":only-child").size());
+        assertEquals(0, $.find("dvds:only-child").size());
+        assertEquals(0, $.find("library").find("dvds:only-child").size());
+        assertEquals(1, $.find("dvd:only-child").size());
+        assertEquals(1, $.find("library").find("dvd:only-child").size());
+        assertEquals(
+            $.find("dvd"),
+            $.find("library").find("dvd:only-child"));
+    }
+
+    @Test
     public void testFindFilter() throws Exception {
         assertEquals(0, $.find(JOOX.none()).size());
         assertEquals(totalElements, $.find().size());
