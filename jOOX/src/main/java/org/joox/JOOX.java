@@ -875,7 +875,7 @@ public final class JOOX {
     private static final FastFilter ODD = new FastFilter() {
         @Override
         public boolean filter(Context context) {
-            return context.elementIndex() % 2 == 1;
+            return context.elementIndex() % 2 != 0;
         }
     };
 }
