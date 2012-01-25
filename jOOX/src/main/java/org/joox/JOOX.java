@@ -565,6 +565,18 @@ public final class JOOX {
         };
     }
 
+    /**
+     * Create a mapper that returns all paths to given elements
+     */
+    public static Mapper<String> paths() {
+        return new Mapper<String>() {
+            @Override
+            public String map(Context context) {
+                return Util.path(context.element());
+            }
+        };
+    }
+
     // ---------------------------------------------------------------------
     // DOM utilities
     // ---------------------------------------------------------------------

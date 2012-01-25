@@ -44,6 +44,7 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 import static org.joox.JOOX.$;
+import static org.joox.JOOX.paths;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -1457,6 +1458,30 @@ public class JOOXTest {
             "/document[1]/library[1]/dvds[1]/dvd[1]/actors[1]/actor[2]",
             "/document[1]/library[1]/dvds[1]/dvd[1]/actors[1]/actor[3]"),
             $.find("actor").xpaths());
+    }
+
+    @Test
+    public void testPath() throws Exception {
+        assertEquals("/document", $.map(paths()).get(0));
+        assertEquals(Arrays.asList("/document"), $.map(paths()));
+
+        assertEquals("/document/library/books/book", $.find("book").map(paths()).get(0));
+        assertEquals(Arrays.asList(
+            "/document/library/books/book",
+            "/document/library/books/book",
+            "/document/library/books/book",
+            "/document/library/books/book",
+            "/document/library/books/book",
+            "/document/library/books/book",
+            "/document/library/books/book",
+            "/document/library/books/book"),
+            $.find("book").map(paths()));
+
+        assertEquals(asList(
+            "/document/library/dvds/dvd/actors/actor",
+            "/document/library/dvds/dvd/actors/actor",
+            "/document/library/dvds/dvd/actors/actor"),
+            $.find("actor").map(paths()));
     }
 
     @Test

@@ -253,6 +253,23 @@ class Util {
     }
 
     /**
+     * Return an path expression describing an element
+     */
+    static final String path(Element element) {
+        StringBuilder sb = new StringBuilder();
+
+        Node iterator = element;
+        while (iterator.getNodeType() == Node.ELEMENT_NODE) {
+            sb.insert(0, ((Element) iterator).getTagName());
+            sb.insert(0, "/");
+
+            iterator = iterator.getParentNode();
+        }
+
+        return sb.toString();
+    }
+
+    /**
      * Find the index among siblings of the same tag name
      */
     private static final int siblingIndex(Element element) {
