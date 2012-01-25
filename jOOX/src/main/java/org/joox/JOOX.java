@@ -78,6 +78,13 @@ public final class JOOX {
     // ---------------------------------------------------------------------
 
     /**
+     * Wrap a new empty document
+     */
+    public static Match $() {
+        return $(builder().newDocument());
+    }
+
+    /**
      * Wrap a JAXB-marshallable element in a jOOX {@link Match} element set
      *
      * @see #content(Object)
@@ -140,7 +147,10 @@ public final class JOOX {
      * Wrap a DOM document in a jOOX {@link Match} element set
      */
     public static Match $(Document document) {
-        if (document.getDocumentElement() == null) {
+        if (document == null) {
+            return $();
+        }
+        else if (document.getDocumentElement() == null) {
             return new Impl(document);
         }
         else {
@@ -152,7 +162,12 @@ public final class JOOX {
      * Wrap a DOM element in a jOOX {@link Match} element set
      */
     public static Match $(Element element) {
-        return new Impl(element.getOwnerDocument()).addElements(element);
+        if (element == null) {
+            return $();
+        }
+        else {
+            return new Impl(element.getOwnerDocument()).addElements(element);
+        }
     }
 
     /**
@@ -173,7 +188,7 @@ public final class JOOX {
             return $((Element) node);
         }
 
-        return $(builder().newDocument());
+        return $();
     }
 
     /**
@@ -186,14 +201,19 @@ public final class JOOX {
             return new Impl(list.item(0).getOwnerDocument()).addNodeList(list);
         }
 
-        return $(builder().newDocument());
+        return $();
     }
 
     /**
      * Convenience method for calling <code>$(context.match())</code>
      */
     public static Match $(Context context) {
-        return $(context.match());
+        if (context == null) {
+            return $();
+        }
+        else {
+            return $(context.match());
+        }
     }
 
     /**
