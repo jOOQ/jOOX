@@ -427,6 +427,48 @@ public final class JOOX {
     }
 
     /**
+     * A filter that returns all elements with a given attribute
+     */
+    public static FastFilter attr(final String name) {
+        if (name == null || name.equals("")) {
+            return new FastFilter() {
+                @Override
+                public boolean filter(Context context) {
+                    return context.element().getAttributes().getLength() == 0;
+                }
+            };
+        }
+        else {
+            return new FastFilter() {
+                @Override
+                public boolean filter(Context context) {
+                    return context.element().hasAttribute(name);
+                }
+            };
+        }
+    }
+
+    /**
+     * A filter that returns all elements with a given attribute being set to a
+     * given value
+     */
+    public static FastFilter attr(final String name, final String... values) {
+        final List<String> list = Arrays.asList(values);
+
+        if (name == null || name.equals("")) {
+            return attr(name);
+        }
+        else {
+            return new FastFilter() {
+                @Override
+                public boolean filter(Context context) {
+                    return list.contains(context.element().getAttribute(name));
+                }
+            };
+        }
+    }
+
+    /**
      * Combine filters
      */
     public static Filter and(final Filter... filters) {

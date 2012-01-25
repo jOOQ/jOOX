@@ -44,6 +44,7 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 import static org.joox.JOOX.$;
+import static org.joox.JOOX.attr;
 import static org.joox.JOOX.paths;
 
 import java.io.ByteArrayInputStream;
@@ -1103,6 +1104,32 @@ public class JOOXTest {
         assertEquals(
             Collections.nCopies(totalElements, (String) null),
             $.find().removeAttr("id").attrs("id"));
+    }
+
+    @Test
+    public void testAttrFilter() throws Exception {
+        assertEquals(35, $.find().filter(attr(null)).size());
+        assertEquals(35, $.find().filter(attr("")).size());
+        assertEquals(35, $.find().filter(attr(null, "1", "2")).size());
+        assertEquals(35, $.find().filter(attr("", "1", "2")).size());
+        assertEquals(
+            $.xpath("/document//*[not(@*)]").size(),
+            $.find().filter(attr(null)).size());
+
+        assertEquals(9, $.find().filter(attr("id")).size());
+        assertEquals(
+            $.find("book, dvd"),
+            $.find().filter(attr("id")));
+
+        assertEquals(3, $.find().filter(attr("id", "1")).size());
+        assertEquals(
+            $.find("book[id='1']"),
+            $.find().filter(attr("id", "1")));
+
+        assertEquals(5, $.find().filter(attr("id", "1", "2")).size());
+        assertEquals(
+            $.find("book[id='1'], book[id='2']"),
+            $.find().filter(attr("id", "1", "2")));
     }
 
     @Test
