@@ -2,6 +2,50 @@ jOOX Release notes
 ------------------
 For an overview, see also http://code.google.com/p/joox/issues/list
 
+Version 1.0.0
+=================================================================
+
+This is the first "official" release of jOOX. All strategic XML
+API's are now supported by jOOX. These include:
+
+- Support for marshalling / unmarshalling JAXB annotated objects
+- Support for XPath parameters / variables
+- Support for XPath extension namespace / functions as provided
+  by http://exslt.org
+- Support for XSL transformation
+- Support for css-style selectors for XML navigation
+
+Features and improvements
+-------------------------
+#2   - Enhance selector support in Match.find(String) to support
+       css-style selectors
+#28  - Allow for converting array types from .text(), .texts(),
+       .attr(), .attrs()
+#53  - Add support for primitive type conversion in
+       JOOX.convert()
+#55  - Add Match.content(Object) and take arbitrary JAXB
+       annotated objects as content
+#58  - Add support for parameters in XPath:
+       Match.xpath(String, Object...)
+#61  - Add support for Xalan's namespaces in XPath, such as dyn,
+       math, set, etc.
+#64  - Add Match.transform(Transformer) for simple XSLT
+       transformation
+#69  - Add Mapper<String> JOOX.paths() to return non-unique XPath
+       expressions describing the path of every matched element
+#79  - Add JOOX.$(), a no-args constructor for creating empty
+       documents
+#80  - Add FastFilter attr(String, String...) to filter for
+       attribute values
+
+Bug fixes
+---------
+#54  - NullPointerException when providing null content
+#62  - Match.xpath() renders wrong indexes for heterogeneous
+       siblings
+#65  - Error when wrapped String starts with processing
+       instruction: $("<?xml...>")
+
 Version 0.9.4
 =================================================================
 
