@@ -1136,12 +1136,15 @@ public class JOOXTest {
     public void testEmpty() throws Exception {
         assertEquals(0, $.find("directors").empty().find().size());
         assertTrue($.find("directors").find().isEmpty());
+        assertFalse($.find("directors").find().isNotEmpty());
 
         assertEquals(0, $.find("director").size());
         assertTrue($.find("director").isEmpty());
+        assertFalse($.find("director").isNotEmpty());
 
         assertEquals(1, $.empty().size());
         assertFalse($.isEmpty());
+        assertTrue($.isNotEmpty());
 
         assertEquals(0, $.find().size());
     }

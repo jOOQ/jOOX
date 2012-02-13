@@ -118,6 +118,11 @@ public interface Match extends Iterable<Element> {
      */
     boolean isEmpty();
 
+    /**
+     * Whether there are any matched elements in the set of matched elements
+     */
+    boolean isNotEmpty();
+
     // ---------------------------------------------------------------------
     // Traversing
     // ---------------------------------------------------------------------

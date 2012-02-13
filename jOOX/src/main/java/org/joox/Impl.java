@@ -239,6 +239,11 @@ class Impl implements Match {
     }
 
     @Override
+    public final boolean isNotEmpty() {
+        return !isEmpty();
+    }
+
+    @Override
     public final Impl add(Element... e) {
         Impl x = copy();
         x.addUniqueElements(e);
