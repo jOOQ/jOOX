@@ -1144,6 +1144,16 @@ public interface Match extends Iterable<Element> {
     Match replaceWith(Element... content);
 
     /**
+     * Rename all tags in the set of matched elements to some new tag name
+     */
+    Match rename(String tag);
+
+    /**
+     * Rename all tags in the set of matched elements to some new tag name
+     */
+    Match rename(Content tag);
+
+    /**
      * Removes all content from all elements in the set of matched elements.
      */
     Match empty();

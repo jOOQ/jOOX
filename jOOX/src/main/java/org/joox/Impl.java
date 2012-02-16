@@ -1509,6 +1509,30 @@ class Impl implements Match {
         return this;
     }
 
+    @Override
+    public final Match rename(String tag) {
+        return rename(JOOX.content(tag));
+    }
+
+    @Override
+    public final Match rename(Content tag) {
+        final int size = size();
+
+        List<Element> result = new ArrayList<Element>();
+
+        for (int matchIndex = 0; matchIndex < size; matchIndex++) {
+            Element match = get(matchIndex);
+
+            String text = nonNull(tag.content(context(match, matchIndex, size)));
+            result.add((Element) document.renameNode(match, "", text));
+        }
+
+        elements.clear();
+        elements.addAll(result);
+
+        return this;
+    }
+
     // -------------------------------------------------------------------------
     // Utility API
     // -------------------------------------------------------------------------

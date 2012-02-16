@@ -1432,6 +1432,19 @@ public class JOOXTest {
     }
 
     @Test
+    public void testRename() throws Exception {
+        assertEquals(
+            Collections.nCopies(8, "xx"),
+            $.find("book").rename("xx").tags());
+
+        assertTrue($.find("book").isEmpty());
+        assertFalse($.find("book").isNotEmpty());
+        assertEquals(8, $.find("xx").size());
+        assertEquals(8, $.find("books").children().size());
+        assertEquals(8, $.find("books").children("xx").size());
+    }
+
+    @Test
     public void testElementCreation() throws Exception {
         assertEquals(1, $("<hello><world/></hello>").size());
         assertEquals(1, $("<hello><world/></hello>").children().size());
