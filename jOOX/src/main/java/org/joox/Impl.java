@@ -46,9 +46,13 @@ import static org.joox.Util.nonNull;
 import static org.joox.selector.CSS2XPath.css2xpath;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1665,6 +1669,30 @@ class Impl implements Match {
     // ---------------------------------------------------------------------
     // Transformation
     // ---------------------------------------------------------------------
+
+    @Override
+    public final Match write(Writer writer) throws IOException {
+        try {
+            for (Element e : this) {
+                writer.write(JOOX.$(e).toString());
+            }
+        }
+        finally {
+            writer.close();
+        }
+
+        return this;
+    }
+
+    @Override
+    public final Match write(OutputStream stream) throws IOException {
+        return write(new OutputStreamWriter(stream));
+    }
+
+    @Override
+    public final Match write(File file) throws IOException {
+        return write(new FileOutputStream(file));
+    }
 
     @Override
     public final <T> List<T> unmarshal(Class<T> type) {

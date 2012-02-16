@@ -48,7 +48,9 @@ import static org.joox.JOOX.attr;
 import static org.joox.JOOX.paths;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -1658,6 +1660,31 @@ public class JOOXTest {
     public void test$URLandURI() throws Exception {
         assertEquals($.toString(), $(JOOXTest.class.getResource("/example.xml")).toString());
         assertEquals($.toString(), $(JOOXTest.class.getResource("/example.xml").toURI()).toString());
+    }
+
+    @Test
+    public void testWrite() throws Exception {
+        StringWriter writer = new StringWriter();
+        $.write(writer);
+        assertEquals($.toString(), writer.toString());
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        $.write(stream);
+        assertEquals($.toString(), stream.toString());
+
+        writer = new StringWriter();
+        stream = new ByteArrayOutputStream();
+        assertEquals($, $.write(writer).write(stream));
+        assertEquals($.toString(), writer.toString());
+        assertEquals($.toString(), stream.toString());
+
+        writer = new StringWriter();
+        $.find("abc").write(writer);
+        assertEquals("", writer.toString());
+
+        writer = new StringWriter();
+        $.find("author").slice(0, 2).write(writer);
+        assertEquals("<author>George Orwell</author><author>George Orwell</author>", writer.toString());
     }
 
     @Test

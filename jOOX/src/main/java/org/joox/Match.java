@@ -36,8 +36,11 @@
 package org.joox;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
+import java.io.Writer;
 import java.net.URL;
 import java.util.List;
 
@@ -1467,8 +1470,32 @@ public interface Match extends Iterable<Element> {
     <T> T id(Class<T> type);
 
     // ---------------------------------------------------------------------
-    // Transformation
+    // Transformation, marshalling and streaming
     // ---------------------------------------------------------------------
+
+    /**
+     * Write the set of matched elements into a writer
+     * <p>
+     * If the set contains more or less than <code>1</code> element, this will
+     * result in writing non-well-formed XML
+     */
+    Match write(Writer writer) throws IOException;
+
+    /**
+     * Write the set of matched elements into a stream
+     * <p>
+     * If the set contains more or less than <code>1</code> element, this will
+     * result in writing non-well-formed XML
+     */
+    Match write(OutputStream stream) throws IOException;
+
+    /**
+     * Write the set of matched elements into a file
+     * <p>
+     * If the set contains more or less than <code>1</code> element, this will
+     * result in writing non-well-formed XML
+     */
+    Match write(File file) throws IOException;
 
     /**
      * Unmarshal the current set of matched elements into a JAXB-annotated type.
