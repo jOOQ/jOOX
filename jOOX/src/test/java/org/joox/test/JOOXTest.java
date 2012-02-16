@@ -64,6 +64,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.IOUtil;
+import org.joox.Content;
 import org.joox.Context;
 import org.joox.Each;
 import org.joox.Filter;
@@ -1442,6 +1443,19 @@ public class JOOXTest {
         assertEquals(8, $.find("xx").size());
         assertEquals(8, $.find("books").children().size());
         assertEquals(8, $.find("books").children("xx").size());
+
+        assertEquals(
+            asList("b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8"),
+            $.find("xx").rename(new Content() {
+                @Override
+                public String content(Context context) {
+                    return "b" + (context.matchIndex() + 1);
+                }
+            }).tags());
+
+        assertEquals(
+            asList("b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8"),
+            $.find("books").children().tags());
     }
 
     @Test
