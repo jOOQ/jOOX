@@ -43,6 +43,8 @@ import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -214,6 +216,20 @@ public final class JOOX {
         else {
             return $(context.match());
         }
+    }
+
+    /**
+     * Convenience method for calling <code>$(url.openStream())</code>
+     */
+    public static Match $(URL url) throws SAXException, IOException {
+        return $(url.openStream());
+    }
+
+    /**
+     * Convenience method for calling <code>$(new File(uri))</code>
+     */
+    public static Match $(URI uri) throws SAXException, IOException {
+        return $(new File(uri));
     }
 
     /**

@@ -1655,6 +1655,12 @@ public class JOOXTest {
     }
 
     @Test
+    public void test$URLandURI() throws Exception {
+        assertEquals($.toString(), $(JOOXTest.class.getResource("/example.xml")).toString());
+        assertEquals($.toString(), $(JOOXTest.class.getResource("/example.xml").toURI()).toString());
+    }
+
+    @Test
     public void testUnmarshal() throws Exception {
         Match match = $("customer",
             $("age", "30"),
