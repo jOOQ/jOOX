@@ -219,6 +219,18 @@ public final class JOOX {
     }
 
     /**
+     * Convenience method for calling <code>$(match)</code>
+     */
+    public static Match $(Match match) {
+        if (match == null) {
+            return $();
+        }
+        else {
+            return match;
+        }
+    }
+
+    /**
      * Convenience method for calling <code>$(url.openStream())</code>
      */
     public static Match $(URL url) throws SAXException, IOException {
