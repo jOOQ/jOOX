@@ -217,6 +217,18 @@ public final class JOOX {
             return $(context.match());
         }
     }
+    
+    /**
+     * Convenience method for calling <code>$(match)</code>
+     */
+    public static Match $(Match match) {
+        if (match == null) {
+            return $();
+        }
+        else {
+            return match;
+        }
+    }
 
     /**
      * Convenience method for calling <code>$(match)</code>
