@@ -47,6 +47,8 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -804,6 +806,7 @@ public final class JOOX {
      * <code>false</code></li>
      * <li> {@link java.util.Date}: Datetime conversion.</li>
      * <li> {@link java.util.Calendar}: Datetime conversion.</li>
+     * <li> {@link java.util.GregorianCalendar}: Datetime conversion.</li>
      * <li> {@link java.sql.Timestamp}: Datetime conversion. Possible patterns
      * for datetime conversion are
      * <ul>
@@ -966,16 +969,58 @@ public final class JOOX {
         }
 
         // [#29] TODO: Date-time types
-        // else if (type == java.util.Date.class) {
-        // }
-        // else if (type == java.util.Calendar.class) {
-        // }
-        // else if (type == java.sql.Timestamp.class) {
-        // }
-        // else if (type == java.sql.Date.class) {
-        // }
-        // else if (type == java.sql.Time.class) {
-        // }
+        else if (type == java.util.Date.class) {
+            try {
+                return (T) Util.parseDate(value);
+            }
+            catch (Exception e) {
+                return null;
+            }
+        }
+        else if (type == java.util.Calendar.class) {
+            try {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(Util.parseDate(value));
+                return (T) cal;
+            }
+            catch (Exception e) {
+                return null;
+            }
+        }
+        else if (type == java.util.GregorianCalendar.class) {
+            try {
+                Calendar cal = new GregorianCalendar();
+                cal.setTime(Util.parseDate(value));
+                return (T) cal;
+            }
+            catch (Exception e) {
+                return null;
+            }
+        }
+        else if (type == java.sql.Timestamp.class) {
+            try {
+                return (T) new java.sql.Timestamp(Util.parseDate(value).getTime());
+            }
+            catch (Exception e) {
+                return null;
+            }
+        }
+        else if (type == java.sql.Date.class) {
+            try {
+                return (T) new java.sql.Date(Util.parseDate(value).getTime());
+            }
+            catch (Exception e) {
+                return null;
+            }
+        }
+        else if (type == java.sql.Time.class) {
+            try {
+                return (T) new java.sql.Time(Util.parseDate(value).getTime());
+            }
+            catch (Exception e) {
+                return null;
+            }
+        }
 
         // All other types are ignored
         return null;

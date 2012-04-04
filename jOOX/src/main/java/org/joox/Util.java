@@ -42,10 +42,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.OutputKeys;
@@ -88,6 +94,18 @@ class Util {
      * The xalan extensions {@link XPathFunctionResolver} if available
      */
     private static XPathFunctionResolver xalanFunctionResolver;
+
+    /**
+     * A pattern for the dd.mm.yyyy format
+     */
+    private static final Pattern         PATTERN_DD_MM_YYYY   = Pattern.compile(
+        "^(\\d{2})[-\\./](\\d{2})[-\\./](\\d{4})(?:\\s(\\d{2})(?:[-\\./:](\\d{2})(?:[-\\./:](\\d{2})(?:\\.(\\d+))?)?)?)?$");
+
+    /**
+     * A pattern for various yyyy-mm-dd formats
+     */
+    private static final Pattern         PATTERN_YYYY_MM_DD   = Pattern.compile(
+        "^(\\d{4})(?:[-\\./](\\d{2})(?:[-\\./](\\d{2})(?:(?:[\\sT]|'T')(\\d{2})(?:[-\\./:](\\d{2})(?:[-\\./:](\\d{2})(?:\\.(\\d+))?)?)?)?)?)?$");
 
     /**
      * Create some content in the context of a given document
@@ -517,5 +535,90 @@ class Util {
             xpath.setNamespaceContext(xalanNamespaceContext);
             xpath.setXPathFunctionResolver(xalanFunctionResolver);
         }
+    }
+
+    /**
+     * Parse any date format
+     */
+    static java.util.Date parseDate(String formatted) {
+        if (formatted == null || formatted.trim().equals("")) {
+            return null;
+        }
+
+        try {
+            DatatypeFactory factory = DatatypeFactory.newInstance();
+            XMLGregorianCalendar calendar = factory.newXMLGregorianCalendar(formatted);
+            return calendar.toGregorianCalendar().getTime();
+        }
+        catch (Exception e) {
+            Matcher matcher = PATTERN_DD_MM_YYYY.matcher(formatted);
+
+            // Try matching dd.MM.yyyy date formats first
+            if (matcher.find()) {
+                String yyyy = matcher.group(3);
+                String mm = matcher.group(2);
+                String dd = matcher.group(1);
+                String hh = defaultIfEmpty(matcher.group(4), "0");
+                String min = defaultIfEmpty(matcher.group(5), "0");
+                String ss = defaultIfEmpty(matcher.group(6), "0");
+                String ms = defaultIfEmpty(matcher.group(7), "0");
+
+                return getDate(Integer.parseInt(yyyy),
+                               Integer.parseInt(mm),
+                               Integer.parseInt(dd),
+                               Integer.parseInt(hh),
+                               Integer.parseInt(min),
+                               Integer.parseInt(ss),
+                               Integer.parseInt(ms));
+            }
+
+            // Then try matching yyyy-MM-dd date formats
+            else {
+                Matcher matcher2 = PATTERN_YYYY_MM_DD.matcher(formatted);
+
+                if (matcher2.find()) {
+                    String yyyy = matcher2.group(1);
+                    String mm = defaultIfEmpty(matcher2.group(2), "1");
+                    String dd = defaultIfEmpty(matcher2.group(3), "1");
+                    String hh = defaultIfEmpty(matcher2.group(4), "0");
+                    String min = defaultIfEmpty(matcher2.group(5), "0");
+                    String ss = defaultIfEmpty(matcher2.group(6), "0");
+                    String ms = defaultIfEmpty(matcher2.group(7), "0");
+
+                    return getDate(Integer.parseInt(yyyy),
+                                   Integer.parseInt(mm),
+                                   Integer.parseInt(dd),
+                                   Integer.parseInt(hh),
+                                   Integer.parseInt(min),
+                                   Integer.parseInt(ss),
+                                   Integer.parseInt(ms));
+                }
+
+                // Finally, try matching plain timestamps
+                else {
+                    try {
+                        return new Date(Long.parseLong(formatted));
+                    } catch (NumberFormatException ignore) {
+                        return null;
+                    }
+                }
+            }
+        }
+    }
+
+    private static Date getDate(int year, int month, int day, int hour, int minute, int second, int millisecond) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(0);
+        calendar.set(year, month - 1, day, hour, minute, second);
+        calendar.set(Calendar.MILLISECOND, millisecond);
+        return calendar.getTime();
+    }
+
+    static String defaultIfEmpty(String string, String defaultString) {
+        if (string == null || string.equals("")) {
+            return defaultString;
+        }
+
+        return string;
     }
 }

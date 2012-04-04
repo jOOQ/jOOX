@@ -86,25 +86,35 @@ import org.w3c.dom.NodeList;
  */
 public class JOOXTest {
 
-    private String xmlString;
-    private Document xmlDocument;
-    private Element xmlElement;
-    private int totalElements;
-    private Match $;
-    private XPath xPath;
+    private String   xmlExampleString;
+    private Document xmlExampleDocument;
+    private Element  xmlExampleElement;
+
+    private String   xmlDatesString;
+    private Document xmlDatesDocument;
+    private Element  xmlDatesElement;
+
+    private int      totalElements;
+    private Match    $;
+    private XPath    xPath;
 
     @Before
     public void setUp() throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
 
-        xmlString = IOUtil.toString(JOOXTest.class.getResourceAsStream("/example.xml"));
-        xmlDocument = builder.parse(new ByteArrayInputStream(xmlString.getBytes()));
-        xmlElement = xmlDocument.getDocumentElement();
-        $ = $(xmlDocument);
+        xmlExampleString = IOUtil.toString(JOOXTest.class.getResourceAsStream("/example.xml"));
+        xmlExampleDocument = builder.parse(new ByteArrayInputStream(xmlExampleString.getBytes()));
+        xmlExampleElement = xmlExampleDocument.getDocumentElement();
+
+        xmlDatesString = IOUtil.toString(JOOXTest.class.getResourceAsStream("/dates.xml"));
+        xmlDatesDocument = builder.parse(new ByteArrayInputStream(xmlDatesString.getBytes()));
+        xmlDatesElement = xmlDatesDocument.getDocumentElement();
+
+        $ = $(xmlExampleDocument);
         xPath = XPathFactory.newInstance().newXPath();
         totalElements = ((Number) xPath
-            .evaluate("count(//*)", xmlDocument, XPathConstants.NUMBER))
+            .evaluate("count(//*)", xmlExampleDocument, XPathConstants.NUMBER))
             .intValue() - 1;
 
     }
@@ -125,19 +135,19 @@ public class JOOXTest {
 
     @Test
     public void testAdd() {
-        assertEquals(1, $(xmlElement).size());
-        assertEquals(1, $(xmlElement).add(xmlElement).size());
-        assertEquals(1, $(xmlElement).add(xmlElement, xmlElement).size());
+        assertEquals(1, $(xmlExampleElement).size());
+        assertEquals(1, $(xmlExampleElement).add(xmlExampleElement).size());
+        assertEquals(1, $(xmlExampleElement).add(xmlExampleElement, xmlExampleElement).size());
 
-        Match x = $(xmlElement).add(
-            (Element) xmlElement.getElementsByTagName("director").item(0),
-            (Element) xmlElement.getElementsByTagName("actor").item(0));
+        Match x = $(xmlExampleElement).add(
+            (Element) xmlExampleElement.getElementsByTagName("director").item(0),
+            (Element) xmlExampleElement.getElementsByTagName("actor").item(0));
         assertEquals(3, x.size());
         assertEquals("document", x.get(0).getTagName());
         assertEquals("director", x.get(1).getTagName());
         assertEquals("actor", x.get(2).getTagName());
 
-        x = x.add($(xmlElement).find("dvds"));
+        x = x.add($(xmlExampleElement).find("dvds"));
         assertEquals(4, x.size());
         assertEquals("document", x.get(0).getTagName());
         assertEquals("director", x.get(1).getTagName());
@@ -1064,10 +1074,10 @@ public class JOOXTest {
 
     @Test
     public void testDOMAccess() throws Exception {
-        assertEquals(xmlDocument, $.document());
-        assertEquals(xmlDocument, $.get(0).getOwnerDocument());
-        assertEquals(xmlElement, $.get(0));
-        assertEquals(xmlElement, $.get().get(0));
+        assertEquals(xmlExampleDocument, $.document());
+        assertEquals(xmlExampleDocument, $.get(0).getOwnerDocument());
+        assertEquals(xmlExampleElement, $.get(0));
+        assertEquals(xmlExampleElement, $.get().get(0));
         assertNull($.get(1));
 
         assertEquals("document", $.tag());
@@ -1248,7 +1258,7 @@ public class JOOXTest {
         assertEquals(
             asList(1, 2, 3, 4, 1, 3, 1, 2),
             $.find("book").transform(JOOXTest.class.getResourceAsStream("/book-id-decrement.xsl")).ids(Integer.class));
-        assertEquals($(xmlString).toString(), $.toString());
+        assertEquals($(xmlExampleString).toString(), $.toString());
 
         // Transform irrelevant nodes
         assertEquals(
@@ -1263,7 +1273,7 @@ public class JOOXTest {
                             .parents("document")
                             .find("book")
                             .ids(Integer.class));
-        assertEquals($(xmlString).toString(), $.toString());
+        assertEquals($(xmlExampleString).toString(), $.toString());
 
         // Transform the library nodes
         assertEquals(
@@ -1272,7 +1282,7 @@ public class JOOXTest {
         assertEquals(
             asList(1, 2, 3, 4, 1, 3, 1, 2),
             $.find("library").transform(JOOXTest.class.getResource("/book-id-decrement.xsl")).find("book").ids(Integer.class));
-        assertEquals($(xmlString).toString(), $.toString());
+        assertEquals($(xmlExampleString).toString(), $.toString());
     }
 
     @Test
@@ -1624,18 +1634,18 @@ public class JOOXTest {
     @Test
     public void test$Node() throws Exception {
         assertEquals(0, $((Node) null).find("book").size());
-        assertEquals(8, $((Node) xmlDocument).find("book").size());
-        assertEquals(8, $((Node) xmlElement).find("book").size());
+        assertEquals(8, $((Node) xmlExampleDocument).find("book").size());
+        assertEquals(8, $((Node) xmlExampleElement).find("book").size());
     }
 
     @Test
     public void test$NodeList() throws Exception {
         assertEquals(0, $((NodeList) null).size());
-        assertEquals(0, $(xmlDocument.getElementsByTagName("xxx")).size());
-        assertEquals(8, $(xmlDocument.getElementsByTagName("book")).size());
+        assertEquals(0, $(xmlExampleDocument.getElementsByTagName("xxx")).size());
+        assertEquals(8, $(xmlExampleDocument.getElementsByTagName("book")).size());
         assertEquals(
             Arrays.asList("1", "2", "3", "4", "1", "3", "1", "2"),
-            $(xmlDocument.getElementsByTagName("book")).ids());
+            $(xmlExampleDocument.getElementsByTagName("book")).ids());
     }
 
     @Test
@@ -1730,6 +1740,30 @@ public class JOOXTest {
     public void testLeaf() throws Exception {
         assertEquals($.xpath("//*[not(*)]"), $.find().leaf());
         assertEquals($.find("books").eq(0).find("name, author"), $.find("books").eq(0).find().leaf());
+    }
+
+    @Test
+    public void testDates() throws Exception {
+        $ = $(xmlDatesDocument);
+
+        // Some general conversion tests
+        assertEquals(java.sql.Date.valueOf("1981-07-10"),
+            $.find("sql-date").texts(java.sql.Date.class).get(0));
+        assertEquals(java.sql.Timestamp.valueOf("1981-07-10 00:00:00.0"),
+            $.find("sql-date").texts(java.sql.Timestamp.class).get(0));
+        assertEquals(new java.util.Date(java.sql.Date.valueOf("1981-07-10").getTime()),
+            $.find("sql-date").texts(java.util.Date.class).get(0));
+        assertEquals(new java.util.Date(java.sql.Date.valueOf("1981-07-10").getTime()),
+            $.find("sql-date").texts(java.util.Date.class).get(0));
+
+        assertEquals("1981-07-10",
+            $.find("sql-timestamp").texts(java.sql.Date.class).get(0).toString());
+        assertEquals(java.sql.Timestamp.valueOf("1981-07-10 09:15:37.0"),
+            $.find("sql-timestamp").texts(java.sql.Timestamp.class).get(0));
+        assertEquals(new java.util.Date(java.sql.Timestamp.valueOf("1981-07-10 09:15:37.0").getTime()),
+            $.find("sql-timestamp").texts(java.util.Date.class).get(0));
+        assertEquals(new java.util.Date(java.sql.Timestamp.valueOf("1981-07-10 09:15:37.0").getTime()),
+            $.find("sql-timestamp").texts(java.util.Date.class).get(0));
     }
 
     private Customer getCustomer() {
