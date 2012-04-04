@@ -930,6 +930,36 @@ class Impl implements Match {
     }
 
     @Override
+    public final Impl matchText(String regex) {
+        return matchText(regex, true);
+    }
+
+    @Override
+    public final Impl matchText(String regex, boolean keepMatches) {
+        if (keepMatches) {
+            return filter(JOOX.matchText(regex));
+        }
+        else {
+            return not(JOOX.matchText(regex));
+        }
+    }
+
+    @Override
+    public final Impl matchTag(String regex) {
+        return matchTag(regex, true);
+    }
+
+    @Override
+    public final Impl matchTag(String regex, boolean keepMatches) {
+        if (keepMatches) {
+            return filter(JOOX.matchTag(regex));
+        }
+        else {
+            return not(JOOX.matchTag(regex));
+        }
+    }
+
+    @Override
     public final Impl after(String content) {
         return after(JOOX.content(content));
     }

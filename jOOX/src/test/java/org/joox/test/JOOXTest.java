@@ -1708,6 +1708,19 @@ public class JOOXTest {
         assertEquals(getCustomer(), match.unmarshal(Customer.class, 0).get(0));
     }
 
+    @Test
+    public void testRegex() throws Exception {
+        assertEquals(11, $.find().matchTag("books?").size());
+        assertEquals(11, $.find().matchTag("books?", true).size());
+        assertEquals($.find().size() - 11,
+            $.find().matchTag("books?", false).size());
+
+        assertEquals(2, $.find("name, actor").matchText(".*in.*").size());
+        assertEquals(2, $.find("name, actor").matchText(".*in.*", true).size());
+        assertEquals($.find("name, actor").size() - 2,
+            $.find("name, actor").matchText(".*in.*", false).size());
+    }
+
     private Customer getCustomer() {
         Customer c = new Customer();
 

@@ -962,6 +962,45 @@ public interface Match extends Iterable<Element> {
      */
     Match slice(int start, int end);
 
+    /**
+     * Reduce the set of matched elements by filtering out those whose text
+     * content doesn't match a given regex
+     * <p>
+     * This is the same as calling <code>matchText(regex, true)</code>
+     *
+     * @see JOOX#matchText(String)
+     */
+    Match matchText(String regex);
+
+    /**
+     * Reduce the set of matched elements by filtering out those whose text
+     * content doesn't match a given regex <code>(keepMatches = true)</code>, or
+     * those whose text content matches a given regex
+     * <code>(keepMatches = false)</code>
+     *
+     * @see JOOX#matchText(String)
+     */
+    Match matchText(String regex, boolean keepMatches);
+
+    /**
+     * Reduce the set of matched elements by filtering out those whose tag name
+     * doesn't match a given regex
+     * <p>
+     * This is the same as calling <code>matchText(regex, true)</code>
+     *
+     * @see JOOX#matchTag(String)
+     */
+    Match matchTag(String regex);
+
+    /**
+     * Reduce the set of matched elements by filtering out those whose tag name
+     * doesn't match a given regex <code>(keepMatches = true)</code>, or those
+     * whose tag name matches a given regex <code>(keepMatches = false)</code>
+     *
+     * @see JOOX#matchTag(String)
+     */
+    Match matchTag(String regex, boolean keepMatches);
+
     // ---------------------------------------------------------------------
     // Manipulation of elements
     // ---------------------------------------------------------------------

@@ -51,6 +51,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXB;
@@ -449,6 +450,45 @@ public final class JOOX {
                 @Override
                 public boolean filter(Context context) {
                     return tagName.equals(context.element().getTagName());
+                }
+            };
+        }
+    }
+
+    /**
+     * A filter that returns all elements whose text content matches a given
+     * regex
+     *
+     * @see Pattern#matches(String, CharSequence)
+     */
+    public static FastFilter matchText(final String regex) {
+        if (regex == null || regex.equals("")) {
+            return none();
+        }
+        else {
+            return new FastFilter() {
+                @Override
+                public boolean filter(Context context) {
+                    return $(context).text().matches(regex);
+                }
+            };
+        }
+    }
+
+    /**
+     * A filter that returns all elements whose tag name matches a given regex
+     *
+     * @see Pattern#matches(String, CharSequence)
+     */
+    public static FastFilter matchTag(final String regex) {
+        if (regex == null || regex.equals("")) {
+            return none();
+        }
+        else {
+            return new FastFilter() {
+                @Override
+                public boolean filter(Context context) {
+                    return context.element().getTagName().matches(regex);
                 }
             };
         }
