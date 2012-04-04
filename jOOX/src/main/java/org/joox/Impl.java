@@ -960,6 +960,11 @@ class Impl implements Match {
     }
 
     @Override
+    public final Impl leaf() {
+        return filter(JOOX.leaf());
+    }
+
+    @Override
     public final Impl after(String content) {
         return after(JOOX.content(content));
     }

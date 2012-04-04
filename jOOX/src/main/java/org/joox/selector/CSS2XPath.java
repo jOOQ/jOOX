@@ -67,13 +67,15 @@ public final class CSS2XPath {
         List<List<Selector>> selectors = scanner.scan();
 
         StringBuilder sb = new StringBuilder();
-        if (!isRoot) {
-            sb.append(".");
-        }
-
         String selectorSeparator = "";
         for (List<Selector> selector : selectors) {
             sb.append(selectorSeparator);
+
+            // [#95] Append a dot if we should match only descendants of a
+            // non-root element
+            if (!isRoot) {
+                sb.append(".");
+            }
 
             for (Selector s : selector) {
                 switch (s.getCombinator()) {

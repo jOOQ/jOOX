@@ -461,6 +461,11 @@ public class JOOXTest {
             $.xpath("//book | //dvd"),
             $.find("library book, library dvd"));
 
+        assertEquals(8, $.find("books").eq(0).find("name, author").size());
+        assertEquals(
+            $.find("books").eq(0).xpath(".//name | .//author"),
+            $.find("books").eq(0).find("name, author"));
+
         // ID selector tests
         // -----------------
         assertEquals(3, $.find("#1").size());
@@ -1719,6 +1724,12 @@ public class JOOXTest {
         assertEquals(2, $.find("name, actor").matchText(".*in.*", true).size());
         assertEquals($.find("name, actor").size() - 2,
             $.find("name, actor").matchText(".*in.*", false).size());
+    }
+
+    @Test
+    public void testLeaf() throws Exception {
+        assertEquals($.xpath("//*[not(*)]"), $.find().leaf());
+        assertEquals($.find("books").eq(0).find("name, author"), $.find("books").eq(0).find().leaf());
     }
 
     private Customer getCustomer() {

@@ -1001,6 +1001,13 @@ public interface Match extends Iterable<Element> {
      */
     Match matchTag(String regex, boolean keepMatches);
 
+    /**
+     * Reduce the set of matched elements to the ones that are leaf elements
+     *
+     * @see JOOX#leaf()
+     */
+    Match leaf();
+
     // ---------------------------------------------------------------------
     // Manipulation of elements
     // ---------------------------------------------------------------------

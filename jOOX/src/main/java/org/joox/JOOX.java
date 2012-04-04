@@ -320,6 +320,13 @@ public final class JOOX {
     }
 
     /**
+     * A filter that returns true on leaf elements
+     */
+    public static FastFilter leaf() {
+        return LEAF;
+    }
+
+    /**
      * A filter that returns true on elements at given iteration indexes
      */
     public static FastFilter at(final int... indexes) {
@@ -1018,6 +1025,24 @@ public final class JOOX {
         @Override
         public boolean filter(Context context) {
             return context.elementIndex() % 2 != 0;
+        }
+    };
+
+    private static final FastFilter LEAF = new FastFilter() {
+        @Override
+        public boolean filter(Context context) {
+            NodeList children = context.element().getChildNodes();
+
+            for (int i = 0;;i++) {
+                Node item = children.item(i);
+
+                if (item == null) {
+                    return true;
+                }
+                else if (item.getNodeType() == Node.ELEMENT_NODE) {
+                    return false;
+                }
+            }
         }
     };
 }
