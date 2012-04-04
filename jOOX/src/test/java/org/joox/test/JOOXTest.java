@@ -1747,6 +1747,7 @@ public class JOOXTest {
         $ = $(xmlDatesDocument);
 
         // Some general conversion tests
+        // -----------------------------
         assertEquals(java.sql.Date.valueOf("1981-07-10"),
             $.find("sql-date").texts(java.sql.Date.class).get(0));
         assertEquals(java.sql.Timestamp.valueOf("1981-07-10 00:00:00.0"),
@@ -1764,6 +1765,18 @@ public class JOOXTest {
             $.find("sql-timestamp").texts(java.util.Date.class).get(0));
         assertEquals(new java.util.Date(java.sql.Timestamp.valueOf("1981-07-10 09:15:37.0").getTime()),
             $.find("sql-timestamp").texts(java.util.Date.class).get(0));
+
+        assertEquals(java.sql.Time.valueOf("09:15:37"),
+            $.find("sql-time").text(java.sql.Time.class));
+
+        // Conversion tests on attributes
+        // ------------------------------
+        assertEquals(java.sql.Date.valueOf("1981-07-10"),
+            $.find("record2").attr("sql-date", java.sql.Date.class));
+        assertEquals(java.sql.Timestamp.valueOf("1981-07-10 09:15:37.0"),
+            $.find("record2").attr("sql-timestamp", java.sql.Timestamp.class));
+        assertEquals(java.sql.Time.valueOf("09:15:37"),
+            $.find("record2").attr("sql-time", java.sql.Time.class));
     }
 
     private Customer getCustomer() {
