@@ -2,6 +2,37 @@ jOOX Release notes
 ------------------
 For an overview, see also http://code.google.com/p/joox/issues/list
 
+Version 1.1.0
+=================================================================
+
+In this minor release, jOOX has added a couple of new, useful
+methods to Match. See the list below for details
+
+Features and improvements
+-------------------------
+#29  - Allow for converting date time types from .text(),
+       .texts(), .attr(), .attrs()
+#31  - Add support for storing/streaming the underlying document
+       back to a File, Stream, Writer
+#83  - Overload $ with JOOX.$(URL) and JOOX.$(URI) for
+       convenience
+#84  - Add support for the DOM Document.renameNode() method
+       -> Match.rename(String)
+#85  - Add Match.isNotEmpty() method
+#87  - Add Match convenience method to prevent errors when
+       coding $($(match))
+#89  - Add JOOX.matchText(String), JOOX.matchTag(String) to allow
+       for using regular expressions
+#90  - Add Match.matchText(String) and Match.matchTag(String)
+#94  - Add Match.leaf() to reduce matched elements to leaf
+       elements
+#97  - Add Match.wrap() and unwrap() methods
+
+Bug fixes
+---------
+#95  - Bad generated XPath for CSS selectors with combinators,
+       when not applied to root node
+
 Version 1.0.0
 =================================================================
 
