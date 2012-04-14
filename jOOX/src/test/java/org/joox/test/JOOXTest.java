@@ -771,8 +771,8 @@ public class JOOXTest {
         assertEquals($.find("book"), $.find("book"));
         assertEquals($.find().filter("book").eq(0, 2, 4),
             $.xpath("/document/library[1]//book[1] | " +
-            		"/document/library[1]//book[3] | " +
-            		"/document/library[2]//book[1]"));
+                    "/document/library[1]//book[3] | " +
+                    "/document/library[2]//book[1]"));
     }
 
     @Test
@@ -1180,6 +1180,50 @@ public class JOOXTest {
         assertEquals(0, $.remove().size());
         assertEquals(0, $.find().size());
         assertEquals(0, $.size());
+    }
+
+    @Test
+    public void testWrap() throws Exception {
+        assertEquals(0, $.find("abc").wrap("parent").size());
+        assertEquals(0, $.find("parent").size());
+
+        Match wrapped = $.find("author").wrap("parent");
+        assertEquals(8, wrapped.size());
+        assertEquals(Collections.nCopies(8, "author"), wrapped.tags());
+        assertEquals($.find("author"), wrapped);
+        assertEquals(8, $.find("parent").size());
+        assertEquals(8, $.find("parent").children("author").size());
+        assertEquals($.find("author"), $.find("parent").children("author"));
+        assertEquals($.find("parent"), $.find("author").parent());
+
+        wrapped = $.wrap("newroot");
+        assertEquals(1, wrapped.size());
+        assertEquals("newroot", wrapped.parent().tag());
+        assertEquals("newroot", wrapped.document().getDocumentElement().getTagName());
+        assertEquals($.xpath("/newroot/document"), wrapped);
+    }
+
+    @Test
+    public void testUnwrap() throws Exception {
+        assertEquals(0, $.find("abc").unwrap().size());
+
+        Match unwrapped = $.find("author").unwrap();
+        assertEquals(8, unwrapped.size());
+        assertEquals(Collections.nCopies(8, "author"), unwrapped.tags());
+        assertEquals($.find("author"), unwrapped);
+        assertEquals(0, $.find("authors").size());
+        assertEquals(Collections.nCopies(8, "book"), unwrapped.parent().tags());
+        assertEquals($.find("book").children("author"), unwrapped);
+
+        try {
+            $.unwrap();
+            fail();
+        } catch (RuntimeException expected) {}
+
+        try {
+            $.find("library").unwrap();
+            fail();
+        } catch (RuntimeException expected) {}
     }
 
     @Test

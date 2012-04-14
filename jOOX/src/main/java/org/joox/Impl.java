@@ -1477,6 +1477,51 @@ class Impl implements Match {
     }
 
     @Override
+    public final Impl wrap(String content) {
+        return wrap(JOOX.content(content));
+    }
+
+    @Override
+    public final Impl wrap(Content content) {
+        final int size = size();
+
+        for (int matchIndex = 0; matchIndex < size; matchIndex++) {
+            Element match = get(matchIndex);
+            Node parent = match.getParentNode();
+            Document doc = match.getOwnerDocument();
+
+            String text = nonNull(content.content(context(match, matchIndex, size)));
+            Element wrapper = doc.createElement(text);
+            parent.replaceChild(wrapper, match);
+            wrapper.appendChild(match);
+        }
+
+        return this;
+    }
+
+    @Override
+    public final Impl unwrap() {
+        final int size = size();
+
+        for (int matchIndex = 0; matchIndex < size; matchIndex++) {
+            Element match = get(matchIndex);
+            Node wrapper = match.getParentNode();
+            Node parent = wrapper.getParentNode();
+
+            // match or wrapper is the document element
+            if (wrapper.getNodeType() == Node.DOCUMENT_NODE ||
+                parent.getNodeType() == Node.DOCUMENT_NODE) {
+
+                throw new RuntimeException("Cannot unwrap document element or direct children thereof");
+            }
+
+            parent.replaceChild(match, wrapper);
+        }
+
+        return this;
+    }
+
+    @Override
     public final Impl replaceWith(String content) {
         return replaceWith(JOOX.content(content));
     }

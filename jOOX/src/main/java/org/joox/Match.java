@@ -1231,6 +1231,34 @@ public interface Match extends Iterable<Element> {
      */
     Match remove(Filter filter);
 
+    /**
+     * Wrap all elements in the set of matched elements in a new parent element
+     * <p>
+     * The resulting set of matched elements contains the newly wrapped elements
+     *
+     * @see #unwrap()
+     */
+    Match wrap(String parent);
+
+    /**
+     * Wrap all elements in the set of matched elements in a new parent element
+     * <p>
+     * The resulting set of matched elements contains the newly wrapped elements
+     *
+     * @see #unwrap()
+     */
+    Match wrap(Content parent);
+
+    /**
+     * Removes all elements in the set of matched elements from their parents
+     * <p>
+     * The resulting set of matched elements contains the newly unwrapped
+     * elements
+     *
+     * @see #wrap(String)
+     */
+    Match unwrap();
+
     // ---------------------------------------------------------------------
     // Manipulation of attributes
     // ---------------------------------------------------------------------
