@@ -27,7 +27,7 @@
 				</authors>
 			</book>
 		</books>
-		
+
 		<dvds>
 			<dvd id="5">
 				<name>Once Upon a Time in the West</name>
@@ -43,7 +43,7 @@
 		</dvds>
 	</library>
 
-	<library name="Rösslitor">
+	<library name="Roesslitor">
 		<books>
 			<book id="1">
 				<name>1984</name>
@@ -60,7 +60,7 @@
 		</books>
 	</library>
 
-	<library name="Orell Füssli">
+	<library name="Orell Fuessli">
 		<books>
 			<book id="1">
 				<name>1984</name>

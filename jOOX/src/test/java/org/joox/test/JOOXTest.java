@@ -361,7 +361,7 @@ public class JOOXTest {
         assertEquals("author", $.find().eq(-1).tag());
         assertEquals("George Orwell", $.find().eq(-1).text());
         assertEquals("library", $.find().eq(-10).tag());
-        assertEquals("Orell Füssli", $.find().eq(-10).attr("name"));
+        assertEquals("Orell Fuessli", $.find().eq(-10).attr("name"));
     }
 
     @Test
@@ -547,10 +547,10 @@ public class JOOXTest {
         assertEquals(
             $.find("library").eq(2),
             $.find("*[name~=Orell]"));
-        assertEquals(1, $.find("*[name~=Füssli]").size());
+        assertEquals(1, $.find("*[name~=Fuessli]").size());
         assertEquals(
             $.find("library").eq(2),
-            $.find("*[name~=Füssli]"));
+            $.find("*[name~=Fuessli]"));
 
         // :root pseudo selector tests
         // ---------------------------
@@ -815,7 +815,7 @@ public class JOOXTest {
             $.find("book").map(JOOX.ids()));
 
         assertEquals(
-            Arrays.asList("Amazon", "Rösslitor", "Orell Füssli"),
+            Arrays.asList("Amazon", "Roesslitor", "Orell Fuessli"),
             $.find("library").map(JOOX.attrs("name")));
 
         assertEquals(Arrays.asList(0, 1, 2, 3), $.children().first().find("book").map(new Mapper<Integer>() {
