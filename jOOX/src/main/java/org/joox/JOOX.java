@@ -476,9 +476,11 @@ public final class JOOX {
         }
         else {
             return new FastFilter() {
+                private final Pattern pattern = Pattern.compile(regex);
+
                 @Override
                 public boolean filter(Context context) {
-                    return $(context).text().matches(regex);
+                    return pattern.matcher($(context).text()).matches();
                 }
             };
         }
@@ -495,9 +497,11 @@ public final class JOOX {
         }
         else {
             return new FastFilter() {
+                private final Pattern pattern = Pattern.compile(regex);
+
                 @Override
                 public boolean filter(Context context) {
-                    return context.element().getTagName().matches(regex);
+                    return pattern.matcher(context.element().getTagName()).matches();
                 }
             };
         }
