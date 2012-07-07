@@ -60,7 +60,6 @@ import java.util.List;
 import java.util.Queue;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
@@ -104,8 +103,7 @@ public class JOOXTest {
 
     @Before
     public void setUp() throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
+        DocumentBuilder builder = JOOX.builder();
 
         xmlExampleString = IOUtil.toString(JOOXTest.class.getResourceAsStream("/example.xml"));
         xmlExampleDocument = builder.parse(new ByteArrayInputStream(xmlExampleString.getBytes()));
@@ -1865,9 +1863,6 @@ public class JOOXTest {
         assertEquals(2, $.find(JOOX.tag("xx:node", false)).size());
         assertEquals(12, $.find("node").size());
 
-        // Namespace-unaware find() method (using CSS selectors)
-        assertEquals(12, $.find("root node").size());
-
         // Combinations of the above
         assertEquals(4, $.child("nested1").find("node").size());
         assertEquals(2, $.child("nested1").find(JOOX.tag("node", false)).size());
@@ -1891,10 +1886,32 @@ public class JOOXTest {
     public void testNamespacesXPath() {
         $ = $(xmlNamespacesDocument);
 
-        // xpath() method
-        // --------------
-        assertEquals(6, $.xpath("//node").size());
-        assertEquals(6, $.xpath("/root//node").size());
-        assertEquals(0, $.xpath("//ns:node").size());
+        // No explicit namespace specification
+        try {
+            assertEquals(2, $.xpath("//root-ns:node").size());
+            fail();
+        }
+        catch (Exception expected) {}
+
+        // Add some namespace awareness
+        assertEquals(2, $.namespace("root-ns", "http://www.example.com/root/ns")
+                         .xpath("//root-ns:node").size());
+
+        // Check for immutability of Match w.r.t. namespace(...)
+        try {
+            assertEquals(2, $.xpath("//root-ns:node").size());
+            fail();
+        }
+        catch (Exception expected) {}
+
+        // Add several namespaces
+        assertEquals(6, $.namespace("root-ns", "http://www.example.com/root/ns")
+                         .namespace("nested-ns", "http://www.example.com/nested/ns")
+                         .xpath("//root-ns:node | //nested-ns:node").size());
+
+        // Check if state remains after ordinary operations
+        assertEquals(2, $.namespace("root-ns", "http://www.example.com/root/ns")
+                         .find()
+                         .xpath("//root-ns:node").size());
     }
 }

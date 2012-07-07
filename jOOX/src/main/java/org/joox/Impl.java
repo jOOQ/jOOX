@@ -35,6 +35,7 @@
  */
 package org.joox;
 
+import static java.util.Collections.emptyList;
 import static org.joox.JOOX.all;
 import static org.joox.JOOX.convert;
 import static org.joox.JOOX.iterable;
@@ -67,6 +68,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXB;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -83,7 +85,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathVariableResolver;
 
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
@@ -104,15 +105,15 @@ class Impl implements Match {
     // XXX: Initialisation
     // -------------------------------------------------------------------------
 
-    Impl(Document document) {
-        this(document, null);
+    Impl(Document document, Map<String, String> namespaces) {
+        this(document, namespaces, null);
     }
 
-    Impl(Document document, Impl previousMatch) {
+    Impl(Document document, Map<String, String> namespaces, Impl previousMatch) {
         this.document = document;
         this.elements = new ArrayList<Element>();
         this.previousMatch = previousMatch;
-        this.namespaces = new HashMap<String, String>();
+        this.namespaces = namespaces == null ? new HashMap<String, String>() : new HashMap<String, String>(namespaces);
     }
 
     final Impl addNodeLists(List<NodeList> lists) {
@@ -194,34 +195,14 @@ class Impl implements Match {
 
     @Override
     public final Match namespace(String namespacePrefix, String namespaceURI) {
-        namespaces.put(namespacePrefix, namespaceURI);
-        return this;
+        return namespaces(Collections.singletonMap(namespacePrefix, namespaceURI));
     }
 
     @Override
     public final Match namespaces(Map<String, String> map) {
-        namespaces.putAll(map);
-        return this;
-    }
-
-    private final void loadNamespaces() {
-        try {
-            XPathFactory factory = XPathFactory.newInstance();
-            XPath xp = factory.newXPath();
-            NodeList nodeList = (NodeList) xp.compile("//namespace::*").evaluate(document, XPathConstants.NODESET);
-
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node n = nodeList.item(i);
-
-                String namespacePrefix = ((Attr) n).getName().replace("xmlns:", "");
-                String namespaceURI = n.getNodeValue();
-
-                namespaces.put(namespacePrefix, namespaceURI);
-            }
-        }
-        catch (XPathExpressionException e) {
-            throw new RuntimeException(e);
-        }
+        Impl result = copy();
+        result.namespaces.putAll(map);
+        return result;
     }
 
     // -------------------------------------------------------------------------
@@ -310,7 +291,7 @@ class Impl implements Match {
     public final Impl reverse() {
         List<Element> reversed = new ArrayList<Element>(elements);
         Collections.reverse(reversed);
-        return new Impl(document).addElements(reversed);
+        return new Impl(document, namespaces).addElements(reversed);
     }
 
     @Override
@@ -376,7 +357,7 @@ class Impl implements Match {
             }
         }
 
-        return new Impl(document, this).addUniqueElements(result);
+        return new Impl(document, namespaces, this).addUniqueElements(result);
     }
 
     @Override
@@ -384,7 +365,7 @@ class Impl implements Match {
         List<Match> result = new ArrayList<Match>();
 
         for (Element element : elements) {
-            result.add(new Impl(document).addElements(element));
+            result.add(new Impl(document, namespaces).addElements(element));
         }
 
         return result;
@@ -419,12 +400,12 @@ class Impl implements Match {
             }
         }
 
-        return new Impl(document).addElements(result);
+        return new Impl(document, namespaces).addElements(result);
     }
 
     @Override
     public final Impl eq(int... indexes) {
-        Impl result = new Impl(document);
+        Impl result = new Impl(document, namespaces);
 
         for (Element e : get(indexes)) {
             if (e != null) {
@@ -451,18 +432,21 @@ class Impl implements Match {
                 result.add(element.getElementsByTagName(selector));
             }
 
-            return new Impl(document, this).addNodeLists(result);
+            return new Impl(document, namespaces, this).addNodeLists(result);
         }
 
         // Simple selectors are valid XML element names without namespaces. They
-        // are fetched using a namespace-stripping filter
+        // are fetched using a namespace-stripping filter.
+
+        // [#107] Note, Element.getElementsByTagNameNS() cannot be used, as the
+        // underlying document may not be namespace-aware!
         else if (SIMPLE_SELECTOR.matcher(selector).matches()) {
             return find(JOOX.tag(selector, true));
         }
 
         // CSS selectors are transformed to XPath expressions
         else {
-            return new Impl(document, this).addElements(xpath(css2xpath(selector, isRoot())).get());
+            return new Impl(document, namespaces, this).addElements(xpath(css2xpath(selector, isRoot())).get());
         }
     }
 
@@ -505,7 +489,7 @@ class Impl implements Match {
             }
         }
 
-        return new Impl(document, this).addUniqueElements(result);
+        return new Impl(document, namespaces, this).addUniqueElements(result);
     }
 
     @Override
@@ -524,41 +508,14 @@ class Impl implements Match {
             // Add the xalan ExtensionNamespaceContext if Xalan is available
             Util.xalanExtensionAware(xpath);
 
-//            // [#9] Load namespaces from document if expression "may" contain
-//            // namespace references.
-//            if (expression.contains(":")) {
-//                if (namespaces.isEmpty()) {
-//                    loadNamespaces();
-//                }
-//
-//                xpath.setNamespaceContext(new NamespaceContext() {
-//
-//                    @SuppressWarnings("rawtypes")
-//                    @Override
-//                    public Iterator getPrefixes(String namespaceURI) {
-//                        return null;
-//                    }
-//
-//                    @Override
-//                    public String getPrefix(String namespaceURI) {
-//                        return null;
-//                    }
-//
-//                    @Override
-//                    public String getNamespaceURI(String prefix) {
-//                        if (namespaces.containsKey(prefix)) {
-//                            return namespaces.get(prefix);
-//                        }
-//                        else {
-//                            return XMLConstants.NULL_NS_URI;
-//                        }
-//                    }
-//                });
-//            }
-
             // Add a variable resolver if we have any variables
             if (variables != null && variables.length != 0) {
                 xpath.setXPathVariableResolver(new VariableResolver(expression, variables));
+            }
+
+            // [#9] Chain namespace contexts, in case namespaces could be needed
+            if (!namespaces.isEmpty() || expression.contains(":")) {
+                xpath.setNamespaceContext(new ChainedContext(xpath.getNamespaceContext()));
             }
 
             XPathExpression exp = xpath.compile(expression);
@@ -572,16 +529,16 @@ class Impl implements Match {
             throw new RuntimeException(e);
         }
 
-        return new Impl(document).addUniqueElements(result);
+        return new Impl(document, namespaces).addUniqueElements(result);
     }
 
     @Override
     public final Impl first() {
         if (size() > 0) {
-            return new Impl(document).addElements(get(0));
+            return new Impl(document, namespaces).addElements(get(0));
         }
         else {
-            return new Impl(document);
+            return new Impl(document, namespaces);
         }
     }
 
@@ -616,7 +573,7 @@ class Impl implements Match {
             }
         }
 
-        return new Impl(document).addElements(result);
+        return new Impl(document, namespaces).addElements(result);
     }
 
     @Override
@@ -644,10 +601,10 @@ class Impl implements Match {
         final int size = size();
 
         if (size > 0) {
-            return new Impl(document).addElements(get(size - 1));
+            return new Impl(document, namespaces).addElements(get(size - 1));
         }
         else {
-            return new Impl(document);
+            return new Impl(document, namespaces);
         }
     }
 
@@ -756,7 +713,7 @@ class Impl implements Match {
             }
         }
 
-        return new Impl(document, this).addUniqueElements(result);
+        return new Impl(document, namespaces, this).addUniqueElements(result);
     }
 
     @Override
@@ -863,7 +820,7 @@ class Impl implements Match {
             }
         }
 
-        return new Impl(document, this).addUniqueElements(result);
+        return new Impl(document, namespaces, this).addUniqueElements(result);
     }
 
     @Override
@@ -960,7 +917,7 @@ class Impl implements Match {
         }
 
         Collections.reverse(result);
-        return new Impl(document, this).addUniqueElements(result);
+        return new Impl(document, namespaces, this).addUniqueElements(result);
     }
 
     @Override
@@ -998,13 +955,13 @@ class Impl implements Match {
         end = Math.min(size, end);
 
         if (start > end) {
-            return new Impl(document);
+            return new Impl(document, namespaces);
         }
         if (start == 0 && end == size) {
             return this;
         }
 
-        return new Impl(document).addElements(elements.subList(start, end));
+        return new Impl(document, namespaces).addElements(elements.subList(start, end));
     }
 
     @Override
@@ -1705,7 +1662,7 @@ class Impl implements Match {
 
     @Override
     public final Impl copy() {
-        Impl copy = new Impl(document, previousMatch);
+        Impl copy = new Impl(document, namespaces, previousMatch);
         copy.elements.addAll(elements);
         return copy;
     }
@@ -1911,7 +1868,7 @@ class Impl implements Match {
             newElements.add(result);
         }
 
-        return new Impl(document).addElements(newElements);
+        return new Impl(document, namespaces).addElements(newElements);
     }
 
     @Override
@@ -2070,6 +2027,41 @@ class Impl implements Match {
             else {
                 throw new IndexOutOfBoundsException("No variable defined for " + variable + " in " + expression);
             }
+        }
+    }
+
+    /**
+     * A namespace context that is aware of this Impl's configured namespaces,
+     * as well as a chained context.
+     */
+    private class ChainedContext implements NamespaceContext {
+
+        private final NamespaceContext chained;
+
+        ChainedContext(NamespaceContext chained) {
+            this.chained = chained;
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        public Iterator getPrefixes(String namespaceURI) {
+            return chained == null ? emptyList().iterator() : chained.getPrefixes(namespaceURI);
+        }
+
+        @Override
+        public String getPrefix(String namespaceURI) {
+            return chained == null ? "" : chained.getPrefix(namespaceURI);
+        }
+
+        @Override
+        public String getNamespaceURI(String prefix) {
+            String namespaceURI = chained == null ? "" : chained.getNamespaceURI(prefix);
+
+            if ("".equals(namespaceURI) && namespaces.containsKey(prefix)) {
+                namespaceURI = namespaces.get(prefix);
+            }
+
+            return namespaceURI;
         }
     }
 }

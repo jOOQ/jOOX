@@ -156,7 +156,7 @@ public final class JOOX {
             return $();
         }
         else if (document.getDocumentElement() == null) {
-            return new Impl(document);
+            return new Impl(document, null);
         }
         else {
             return $(document.getDocumentElement());
@@ -171,7 +171,7 @@ public final class JOOX {
             return $();
         }
         else {
-            return new Impl(element.getOwnerDocument()).addElements(element);
+            return new Impl(element.getOwnerDocument(), null).addElements(element);
         }
     }
 
@@ -203,7 +203,7 @@ public final class JOOX {
      */
     public static Match $(NodeList list) {
         if (list != null && list.getLength() > 0) {
-            return new Impl(list.item(0).getOwnerDocument()).addNodeList(list);
+            return new Impl(list.item(0).getOwnerDocument(), null).addNodeList(list);
         }
 
         return $();

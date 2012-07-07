@@ -74,7 +74,26 @@ public interface Match extends Iterable<Element> {
     // Namespace configuration
     // ---------------------------------------------------------------------
 
+    /**
+     * Get a new Match with added namespace configuration for subsequent XPath
+     * calls
+     * <p>
+     * This is a convenience method for {@link #namespace(String, String)}
+     *
+     * @param namespacePrefix A namespace prefix
+     * @param namespaceURI A namespace URI
+     * @return A modified <code>Match</code>
+     * @see #namespaces(Map)
+     */
     Match namespace(String namespacePrefix, String namespaceURI);
+
+    /**
+     * Get a new Match with added namespace configuration for subsequent XPath
+     * calls
+     *
+     * @param map A mapping between prefix and namespace URI
+     * @return A modified <code>Match</code>
+     */
     Match namespaces(Map<String, String> map);
 
     // ---------------------------------------------------------------------
