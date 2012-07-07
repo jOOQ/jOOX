@@ -209,6 +209,23 @@ public interface Match extends Iterable<Element> {
     /**
      * Find the first matching child of each element in the current set of
      * matched elements
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -233,6 +250,23 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Find all children of each element in the current set of matched elements.
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -275,6 +309,23 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Reduce the current set of matched elements.
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -320,7 +371,8 @@ public interface Match extends Iterable<Element> {
      * <ul>
      * <li><strong>*</strong> can be used to select everything</li>
      * <li><strong>tag names</strong> can be used to select XML elements by tag
-     * names (see {@link Element#getElementsByTagName(String)}</li>
+     * names (see {@link Element#getElementsByTagName(String)} Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
      * <li><strong>CSS selectors</strong> can be used to select XML elements
      * using XPath (see {@link CSS2XPath#css2xpath(String)})</li>
      * </ul>
@@ -374,9 +426,13 @@ public interface Match extends Iterable<Element> {
      * <li>Match all book ID's : <code>xpath("//book/@id")</code></li>
      * <li>Match all book names : <code>xpath("//book/name/text()")</code></li>
      * </ul>
-     * <h3>Using jOOX with Xalan</h3>
-     * If Xalan is on your classpath, jOOX will automatically load xalan's
-     * namespace and function extensions. All functionality supported by <a
+     * <h3>Using jOOX with Namespaces</h3> Namespace declarations are supported
+     * in XPath expressions. If you wish to use namespace-specific XPath
+     * elements, call {@link #namespace(String, String)} prior to
+     * {@link #xpath(String)}
+     * <h3>Using jOOX with Xalan</h3> If Xalan is on your classpath, jOOX will
+     * automatically load xalan's namespace and function extensions. All
+     * functionality supported by <a
      * href="http://exslt.org">http://exslt.org</a> will be available in your
      * XPath expressions. Some examples:
      * <ul>
@@ -414,9 +470,13 @@ public interface Match extends Iterable<Element> {
      * <li>Match all book ID's : <code>xpath("//book/@id")</code></li>
      * <li>Match all book names : <code>xpath("//book/name/text()")</code></li>
      * </ul>
-     * <h3>Using jOOX with Xalan</h3>
-     * If Xalan is on your classpath, jOOX will automatically load xalan's
-     * namespace and function extensions. All functionality supported by <a
+     * <h3>Using jOOX with Namespaces</h3> Namespace declarations are supported
+     * in XPath expressions. If you wish to use namespace-specific XPath
+     * elements, call {@link #namespace(String, String)} prior to
+     * {@link #xpath(String)}
+     * <h3>Using jOOX with Xalan</h3> If Xalan is on your classpath, jOOX will
+     * automatically load xalan's namespace and function extensions. All
+     * functionality supported by <a
      * href="http://exslt.org">http://exslt.org</a> will be available in your
      * XPath expressions. Some examples:
      * <ul>
@@ -437,6 +497,23 @@ public interface Match extends Iterable<Element> {
     /**
      * Reduce the set of matched element to those who have a descendant that
      * matches a selector.
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -463,6 +540,23 @@ public interface Match extends Iterable<Element> {
     /**
      * Check if at least one element in the set of matched elements satisfies a
      * selector.
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -500,6 +594,23 @@ public interface Match extends Iterable<Element> {
     /**
      * Get the immediate next sibling of every element in set of matched
      * elements, matching a selector
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -529,6 +640,23 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all next siblings of every element in a set of matched elements,
      * matching a selector
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -554,6 +682,23 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all next siblings of every element in a set of matched elements until
      * the provided selector matches
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -579,6 +724,23 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all next siblings of every element in a set of matched elements,
      * matching a selector, until the provided selector matches
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -643,6 +805,23 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Remove elements from the set of matched elements.
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -669,6 +848,23 @@ public interface Match extends Iterable<Element> {
     /**
      * Get the immediate parent elements of every element in a set of matched
      * elements, matching a selector
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -698,6 +894,23 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all ancestor elements of every element in a set of matched elements,
      * matching a selector
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -723,6 +936,23 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all ancestors of every element in a set of matched elements until the
      * provided selector matches
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -748,6 +978,23 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all ancestors of every element in a set of matched elements, matching
      * a selector, until the provided selector matches
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -817,6 +1064,23 @@ public interface Match extends Iterable<Element> {
     /**
      * Get the immediate previous sibling of every element in set of matched
      * elements, matching a selector
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -847,6 +1111,23 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all previous siblings of every element in a set of matched elements,
      * matching a selector
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -873,6 +1154,23 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all previous siblings of every element in a set of matched elements
      * until the provided selector matches
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -899,6 +1197,23 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all previous siblings of every element in a set of matched elements,
      * matching a selector, until the provided selector matches
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -970,6 +1285,23 @@ public interface Match extends Iterable<Element> {
     /**
      * Get all siblings of every element in a set of matched elements, matching
      * a selector
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -1258,6 +1590,23 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Removes all elements in the set of matched elements, matching a selector
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}. Tag names are
+     * namespace-unaware. This means that existing namespaces will be ignored</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>CSS selectors</strong> cannot be used (yet) to select XML
+     * elements from this method. Use {@link #find(String)} instead</li>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
@@ -1310,6 +1659,9 @@ public interface Match extends Iterable<Element> {
     /**
      * Get an attribute from the first element in the set of matched elements,
      * or <code>null</code> if the first element does not have that attribute.
+     * <p>
+     * jOOX is namespace-unaware. The supplied attribute name will be compared
+     * against all attributes, matching the first one that has the given name.
      */
     String attr(String name);
 
@@ -1317,6 +1669,9 @@ public interface Match extends Iterable<Element> {
      * Get a converted attribute from the first element in the set of matched
      * elements, or <code>null</code> if the first element does not have that
      * attribute.
+     * <p>
+     * jOOX is namespace-unaware. The supplied attribute name will be compared
+     * against all attributes, matching the first one that has the given name.
      *
      * @see JOOX#convert(String, Class)
      */
@@ -1324,12 +1679,18 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Get an attribute from all elements in the set of matched elements
+     * <p>
+     * jOOX is namespace-unaware. The supplied attribute name will be compared
+     * against all attributes, matching the first one that has the given name.
      */
     List<String> attrs(String name);
 
     /**
      * Get a converted attribute from all elements in the set of matched
      * elements
+     * <p>
+     * jOOX is namespace-unaware. The supplied attribute name will be compared
+     * against all attributes, matching the first one that has the given name.
      *
      * @see JOOX#convert(String, Class)
      */
