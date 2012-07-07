@@ -43,6 +43,7 @@ import static org.joox.JOOX.list;
 import static org.joox.JOOX.none;
 import static org.joox.JOOX.selector;
 import static org.joox.Util.context;
+import static org.joox.Util.getNamespace;
 import static org.joox.Util.nonNull;
 import static org.joox.Util.stripNamespace;
 import static org.joox.selector.CSS2XPath.css2xpath;
@@ -203,6 +204,84 @@ class Impl implements Match {
     public final Match namespaces(Map<String, String> map) {
         Impl result = copy();
         result.namespaces.putAll(map);
+        return result;
+    }
+
+    @Override
+    public final String namespaceURI() {
+        return namespaceURI(0);
+    }
+
+    @Override
+    public final String namespaceURI(int index) {
+        Element element = get(index);
+
+        if (element != null) {
+            return element.getNamespaceURI();
+        }
+        else {
+            return null;
+        }
+    }
+
+    @Override
+    public final List<String> namespaceURIs() {
+        List<String> result = new ArrayList<String>();
+
+        for (int i = 0; i < elements.size(); i++) {
+            result.add(namespaceURI(i));
+        }
+
+        return result;
+    }
+
+    @Override
+    public final List<String> namespaceURIs(int... indexes) {
+        List<String> result = new ArrayList<String>();
+
+        for (int index : indexes) {
+            result.add(namespaceURI(index));
+        }
+
+        return result;
+    }
+
+    @Override
+    public final String namespacePrefix() {
+        return namespacePrefix(0);
+    }
+
+    @Override
+    public final String namespacePrefix(int index) {
+        Element element = get(index);
+
+        if (element != null) {
+            return getNamespace(element.getTagName());
+        }
+        else {
+            return null;
+        }
+    }
+
+    @Override
+    public final List<String> namespacePrefixes() {
+        List<String> result = new ArrayList<String>();
+
+        for (int i = 0; i < elements.size(); i++) {
+            result.add(namespacePrefix(i));
+        }
+
+        return result;
+    }
+
+    @Override
+    public final List<String> namespacePrefixes(int... indexes) {
+        List<String> result = new ArrayList<String>();
+
+        for (int index : indexes) {
+            result.add(namespacePrefix(index));
+        }
+
         return result;
     }
 
@@ -1917,7 +1996,7 @@ class Impl implements Match {
     // -------------------------------------------------------------------------
 
     @Override
-    public final String toString() {
+    public String toString() {
         if (elements.size() == 0) {
             return "[]";
         }
@@ -1995,7 +2074,7 @@ class Impl implements Match {
     /**
      * A selector pattern that can be evaluated using standard DOM API
      */
-    public static final Pattern SIMPLE_SELECTOR = Pattern.compile("[\\w\\-]+");
+    public final static Pattern SIMPLE_SELECTOR = Pattern.compile("[\\w\\-]+");
 
     /**
      * A simple variable resolver mapping variable names to their respective
@@ -2012,7 +2091,7 @@ class Impl implements Match {
         }
 
         @Override
-        public Object resolveVariable(QName variable) {
+        public final Object resolveVariable(QName variable) {
             int index;
 
             try {
@@ -2045,17 +2124,17 @@ class Impl implements Match {
 
         @SuppressWarnings("rawtypes")
         @Override
-        public Iterator getPrefixes(String namespaceURI) {
+        public final Iterator getPrefixes(String namespaceURI) {
             return chained == null ? emptyList().iterator() : chained.getPrefixes(namespaceURI);
         }
 
         @Override
-        public String getPrefix(String namespaceURI) {
+        public final String getPrefix(String namespaceURI) {
             return chained == null ? "" : chained.getPrefix(namespaceURI);
         }
 
         @Override
-        public String getNamespaceURI(String prefix) {
+        public final String getNamespaceURI(String prefix) {
             String namespaceURI = chained == null ? "" : chained.getNamespaceURI(prefix);
 
             if ("".equals(namespaceURI) && namespaces.containsKey(prefix)) {

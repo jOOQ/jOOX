@@ -96,6 +96,74 @@ public interface Match extends Iterable<Element> {
      */
     Match namespaces(Map<String, String> map);
 
+    /**
+     * Get a list of namespace URIs of the elements in the current set of
+     * matched elements.
+     * <p>
+     * This only works if the underlying document is namespace-aware
+     *
+     * @see Node#getNamespaceURI()
+     */
+    List<String> namespaceURIs();
+
+    /**
+     * Get a list of namespace URIs of the elements at given indexes in the
+     * current set of matched elements.
+     * <p>
+     * This only works if the underlying document is namespace-aware
+     *
+     * @see Node#getNamespaceURI()
+     */
+    List<String> namespaceURIs(int... indexes);
+
+    /**
+     * Get the namespace URI of the first element in the current set of matched
+     * elements.
+     * <p>
+     * This is the same as calling <code>namespaceURI(0)</code>
+     * <p>
+     * This only works if the underlying document is namespace-aware
+     *
+     * @see Node#getNamespaceURI()
+     */
+    String namespaceURI();
+
+    /**
+     * Get a namespace URI of the element at a given index in the current set of
+     * matched elements.
+     * <p>
+     * This only works if the underlying document is namespace-aware
+     *
+     * @see Node#getNamespaceURI()
+     */
+    String namespaceURI(int index);
+
+    /**
+     * Get a list of namespace prefixes of the elements in the current set of
+     * matched elements.
+     */
+    List<String> namespacePrefixes();
+
+    /**
+     * Get a list of namespace prefixes of the elements at given indexes in the
+     * current set of matched elements.
+     */
+    List<String> namespacePrefixes(int... indexes);
+
+    /**
+     * Get the namespace prefix of the first element in the current set of
+     * matched elements.
+     * <p>
+     * This is the same as calling <code>namespaceURI(0)</code>
+     */
+    String namespacePrefix();
+
+    /**
+     * Get a namespace prefix of the element at a given index in the current set
+     * of matched elements.
+     */
+    String namespacePrefix(int index);
+
     // ---------------------------------------------------------------------
     // DOM access
     // ---------------------------------------------------------------------

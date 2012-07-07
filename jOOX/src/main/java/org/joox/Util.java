@@ -643,11 +643,21 @@ class Util {
         return string;
     }
 
+    static String getNamespace(String tagName) {
+        int index = tagName.indexOf(':');
+
+        if (index > -1) {
+            return tagName.substring(0, index);
+        }
+
+        return null;
+    }
+
     static String stripNamespace(String tagName) {
         int index = tagName.indexOf(':');
 
         if (index > -1) {
-            tagName = tagName.substring(index + 1);
+            return tagName.substring(index + 1);
         }
 
         return tagName;

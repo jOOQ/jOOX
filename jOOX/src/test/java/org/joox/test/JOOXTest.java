@@ -1852,7 +1852,41 @@ public class JOOXTest {
 
     @Test
     public void testNamespacesAPI() {
-        // TODO: Test the namespaces() API for consistency
+        assertEquals(nCopies(3, null), $.find("library").namespacePrefixes());
+        assertEquals(nCopies(2, null), $.find("library").namespacePrefixes(0, 1));
+        assertEquals(null, $.find("library").namespacePrefix());
+        assertEquals(nCopies(3, null), $.find("library").namespaceURIs());
+        assertEquals(nCopies(2, null), $.find("library").namespaceURIs(0, 1));
+        assertEquals(null, $.find("library").namespaceURI());
+
+        $ = $(xmlNamespacesDocument);
+
+        assertEquals(null, $.namespacePrefix());
+        assertEquals("http://www.example.com/root", $.namespaceURI());
+
+        assertEquals(null, $.find("node").eq(1).namespacePrefix());
+        assertEquals("http://www.example.com/root", $.find("node").eq(1).namespaceURI());
+
+        assertEquals("ns", $.find("node").eq(2).namespacePrefix());
+        assertEquals("http://www.example.com/root/ns", $.find("node").eq(2).namespaceURI());
+
+        assertEquals(
+            asList(      null, null, "ns", "ns",
+                   null, null, null, "ns", "ns",
+                   null, null, null, "xx", "xx"),
+            $.find().namespacePrefixes());
+        assertEquals(
+            asList("http://www.example.com/root",
+                   "http://www.example.com/root",
+                   "http://www.example.com/root/ns",
+                   "http://www.example.com/root/ns",
+
+                   "http://www.example.com/nested",
+                   "http://www.example.com/nested",
+                   "http://www.example.com/nested",
+                   "http://www.example.com/nested/ns",
+                   "http://www.example.com/nested/ns"),
+            $.find().namespaceURIs(0, 1, 2, 3, 4, 5, 6, 7, 8));
     }
 
     @Test
