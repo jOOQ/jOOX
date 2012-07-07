@@ -67,6 +67,7 @@ import javax.xml.xpath.XPathFunctionResolver;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -167,8 +168,31 @@ class Util {
      * Get an attribute value if it exists, or <code>null</code>
      */
     static final String attr(Element element, String name) {
-        if (element.hasAttribute(name)) {
-            return element.getAttribute(name);
+        return attr(element, name, true);
+    }
+
+    /**
+     * Get an attribute value if it exists, or <code>null</code>
+     */
+    static final String attr(Element element, String name, boolean ignoreNamespace) {
+        NamedNodeMap attributes = element.getAttributes();
+
+        for (int i = 0; i < attributes.getLength(); i++) {
+            String localName = attributes.item(i).getNodeName();
+
+            // [#103] If namespaces are ignored, consider only local
+            // part of possibly namespace-unaware Element
+            if (ignoreNamespace) {
+                int index = localName.indexOf(':');
+
+                if (index > -1) {
+                    localName = localName.substring(index + 1);
+                }
+            }
+
+            if (name.equals(localName)) {
+                return attributes.item(i).getNodeValue();
+            }
         }
 
         return null;

@@ -607,7 +607,7 @@ public final class JOOX {
             return new FastFilter() {
                 @Override
                 public boolean filter(Context context) {
-                    return context.element().hasAttribute(name);
+                    return $(context).attr(name) != null;
                 }
             };
         }
@@ -627,7 +627,7 @@ public final class JOOX {
             return new FastFilter() {
                 @Override
                 public boolean filter(Context context) {
-                    return list.contains(context.element().getAttribute(name));
+                    return list.contains($(context).attr(name));
                 }
             };
         }
@@ -690,7 +690,7 @@ public final class JOOX {
         return new FastFilter() {
             @Override
             public boolean filter(Context context) {
-                return set.contains(context.element().getAttribute("id"));
+                return set.contains($(context).attr("id"));
             }
         };
     }
@@ -767,7 +767,7 @@ public final class JOOX {
         return new Mapper<String>() {
             @Override
             public String map(Context context) {
-                return $(context.element()).attr(attributeName);
+                return $(context).attr(attributeName);
             }
         };
     }

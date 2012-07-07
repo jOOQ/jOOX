@@ -1879,6 +1879,22 @@ public class JOOXTest {
         assertEquals(6, $.find(JOOX.matchTag("node", false)).size());
         assertEquals(0, $.find(JOOX.matchTag("xx:.*", true)).size());
         assertEquals(2, $.find(JOOX.matchTag("xx:.*", false)).size());
+
+        // Check attributes
+        assertEquals(2, $.find("node").filter(JOOX.attr("a1")).size());
+        assertEquals(2, $.find("node").filter(JOOX.attr("a1", "value")).size());
+        assertEquals(2, $.find("node").filter(JOOX.attr("a2")).size());
+        assertEquals(2, $.find("node").filter(JOOX.attr("a2", "ns:value")).size());
+        assertEquals(1, $.find("node").filter(JOOX.attr("a3")).size());
+        assertEquals(1, $.find("node").filter(JOOX.attr("a3", "value")).size());
+        assertEquals(asList("value", "value"), $.child("node").find().attrs("a1"));
+        assertEquals(asList("ns:value", "ns:value"), $.child("node").find().attrs("a2"));
+
+        // Namespace-overloaded attributes are not supported!
+        assertEquals(1, $.find("node").filter(JOOX.attr("a3", "value")).size());
+        assertEquals(0, $.find("node").filter(JOOX.attr("a3", "ns:value")).size());
+
+
         // TODO: restrict resulting elements to matching namespaces
     }
 
