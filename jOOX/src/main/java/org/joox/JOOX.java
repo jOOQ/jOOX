@@ -816,11 +816,15 @@ public final class JOOX {
     }
 
     /**
-     * Get a document builder
+     * Get a namespace-aware document builder
      */
     public static DocumentBuilder builder() {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+            // [#9] [#107] In order to take advantage of namespace-related DOM
+            // features, the internal builder should be namespace-aware
+            factory.setNamespaceAware(true);
             DocumentBuilder builder = factory.newDocumentBuilder();
 
             return builder;
