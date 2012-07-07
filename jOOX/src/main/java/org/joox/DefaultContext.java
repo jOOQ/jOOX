@@ -35,6 +35,8 @@
  */
 package org.joox;
 
+import static org.joox.JOOX.$;
+
 import org.w3c.dom.Element;
 
 /**
@@ -90,5 +92,14 @@ class DefaultContext implements Context {
     @Override
     public int matchSize() {
         return matchSize;
+    }
+
+    // -------------------------------------------------------------------------
+    // XXX: Object
+    // -------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return $(element).toString();
     }
 }
