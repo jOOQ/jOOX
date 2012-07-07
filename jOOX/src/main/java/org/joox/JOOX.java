@@ -510,6 +510,70 @@ public final class JOOX {
     }
 
     /**
+     * A filter that returns all elements with a given namespace prefix
+     * <p>
+     * <code>null</code> and the empty string are treated equally to indicate
+     * that no namespace prefix should be present.
+     */
+    public static FastFilter namespacePrefix(final String namespacePrefix) {
+
+        // The special * operator is also supported
+        if ("*".equals(namespacePrefix)) {
+            return all();
+        }
+
+        else {
+            return new FastFilter() {
+
+                @Override
+                public boolean filter(Context context) {
+                    String match = $(context).namespacePrefix();
+
+                    if (match == null || "".equals(match)) {
+                        return namespacePrefix == null || "".equals(namespacePrefix);
+                    }
+                    else {
+                        return match.equals(namespacePrefix);
+                    }
+                }
+            };
+        }
+    }
+
+    /**
+     * A filter that returns all elements with a given namespace URI
+     * <p>
+     * <code>null</code> and the empty string are treated equally to indicate
+     * that no namespace URI should be present.
+     * <p>
+     * This only works if the underlying document is namespace-aware
+     */
+    public static FastFilter namespaceURI(final String namespaceURI) {
+
+        // The special * operator is also supported
+        if ("*".equals(namespaceURI)) {
+            return all();
+        }
+
+        else {
+            return new FastFilter() {
+
+                @Override
+                public boolean filter(Context context) {
+                    String match = $(context).namespaceURI();
+
+                    if (match == null || "".equals(match)) {
+                        return namespaceURI == null || "".equals(namespaceURI);
+                    }
+                    else {
+                        return match.equals(namespaceURI);
+                    }
+                }
+            };
+        }
+    }
+
+    /**
      * A filter that returns all elements whose text content matches a given
      * regex
      *

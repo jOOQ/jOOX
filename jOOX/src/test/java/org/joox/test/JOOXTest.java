@@ -1859,6 +1859,13 @@ public class JOOXTest {
         assertEquals(nCopies(2, null), $.find("library").namespaceURIs(0, 1));
         assertEquals(null, $.find("library").namespaceURI());
 
+        assertEquals(totalElements, $.find().filter(JOOX.namespacePrefix(null)).size());
+        assertEquals(totalElements, $.find().filter(JOOX.namespacePrefix("")).size());
+        assertEquals(0, $.find().filter(JOOX.namespacePrefix("ns")).size());
+        assertEquals(totalElements, $.find().filter(JOOX.namespaceURI(null)).size());
+        assertEquals(totalElements, $.find().filter(JOOX.namespaceURI("")).size());
+        assertEquals(0, $.find().filter(JOOX.namespaceURI("ns")).size());
+
         $ = $(xmlNamespacesDocument);
 
         assertEquals(null, $.namespacePrefix());
@@ -1887,6 +1894,16 @@ public class JOOXTest {
                    "http://www.example.com/nested/ns",
                    "http://www.example.com/nested/ns"),
             $.find().namespaceURIs(0, 1, 2, 3, 4, 5, 6, 7, 8));
+
+        assertEquals(8, $.find().filter(JOOX.namespacePrefix(null)).size());
+        assertEquals(8, $.find().filter(JOOX.namespacePrefix("")).size());
+        assertEquals(4, $.find().filter(JOOX.namespacePrefix("ns")).size());
+        assertEquals(2, $.find().filter(JOOX.namespacePrefix("xx")).size());
+
+        assertEquals(2, $.find().filter(JOOX.namespaceURI("http://www.example.com/root")).size());
+        assertEquals(2, $.find().filter(JOOX.namespaceURI("http://www.example.com/root/ns")).size());
+        assertEquals(6, $.find().filter(JOOX.namespaceURI("http://www.example.com/nested")).size());
+        assertEquals(4, $.find().filter(JOOX.namespaceURI("http://www.example.com/nested/ns")).size());
     }
 
     @Test
