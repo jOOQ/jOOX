@@ -210,14 +210,14 @@ public final class JOOX {
     }
 
     /**
-     * Convenience method for calling <code>$(context.match())</code>
+     * Convenience method for calling <code>$(context.element())</code>
      */
     public static Match $(Context context) {
         if (context == null) {
             return $();
         }
         else {
-            return $(context.match());
+            return $(context.element());
         }
     }
 
