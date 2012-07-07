@@ -94,6 +94,10 @@ public class JOOXTest {
     private Document xmlDatesDocument;
     private Element  xmlDatesElement;
 
+    private String   xmlNamespacesString;
+    private Document xmlNamespacesDocument;
+    private Element  xmlNamespacesElement;
+
     private int      totalElements;
     private Match    $;
     private XPath    xPath;
@@ -110,6 +114,10 @@ public class JOOXTest {
         xmlDatesString = IOUtil.toString(JOOXTest.class.getResourceAsStream("/dates.xml"));
         xmlDatesDocument = builder.parse(new ByteArrayInputStream(xmlDatesString.getBytes()));
         xmlDatesElement = xmlDatesDocument.getDocumentElement();
+
+        xmlNamespacesString = IOUtil.toString(JOOXTest.class.getResourceAsStream("/namespaces.xml"));
+        xmlNamespacesDocument = builder.parse(new ByteArrayInputStream(xmlNamespacesString.getBytes()));
+        xmlNamespacesElement = xmlNamespacesDocument.getDocumentElement();
 
         $ = $(xmlExampleDocument);
         xPath = XPathFactory.newInstance().newXPath();
@@ -637,6 +645,10 @@ public class JOOXTest {
         assertEquals(totalElements / 2, $.find(JOOX.odd()).size());
         assertEquals(3, $.find(JOOX.tag("library")).size());
         assertEquals(8, $.find(JOOX.tag("book")).size());
+
+        assertEquals($.find(), $.find(JOOX.tag("*")));
+        assertEquals($.find("abcd"), $.find(JOOX.tag(null)));
+        assertEquals($.find("abcd"), $.find(JOOX.tag("")));
     }
 
     @Test
@@ -1833,5 +1845,39 @@ public class JOOXTest {
         c.id = 13;
 
         return c;
+    }
+
+    @Test
+    public void testNamespacesAPI() {
+        // TODO: Test the namespaces() API for consistency
+    }
+
+    @Test
+    public void testNamespacesFind() {
+        $ = $(xmlNamespacesDocument);
+
+        assertEquals(1, $.size());
+        assertEquals("root", $.tag());
+
+        // Namespace-unaware find() method (elements by tag name)
+        assertEquals(6, $.find(JOOX.tag("node", false)).size());
+        assertEquals(12, $.find(JOOX.tag("node", true)).size());
+        assertEquals(12, $.find("node").size());
+
+        // Namespace-unaware find() method (using CSS selectors)
+        assertEquals(12, $.find("root node").size());
+
+        // TODO: restrict resulting elements to matching namespaces
+    }
+
+    @Test
+    public void testNamespacesXPath() {
+        $ = $(xmlNamespacesDocument);
+
+        // xpath() method
+        // --------------
+        assertEquals(6, $.xpath("//node").size());
+        assertEquals(6, $.xpath("/root//node").size());
+        assertEquals(0, $.xpath("//ns:node").size());
     }
 }

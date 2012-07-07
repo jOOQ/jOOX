@@ -58,9 +58,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -81,6 +83,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathVariableResolver;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
@@ -92,12 +95,13 @@ import org.w3c.dom.NodeList;
  */
 class Impl implements Match {
 
-    private final Document      document;
-    private final List<Element> elements;
-    private final Impl          previousMatch;
+    private final Document            document;
+    private final List<Element>       elements;
+    private final Impl                previousMatch;
+    private final Map<String, String> namespaces;
 
     // -------------------------------------------------------------------------
-    // Initialisation
+    // XXX: Initialisation
     // -------------------------------------------------------------------------
 
     Impl(Document document) {
@@ -108,6 +112,7 @@ class Impl implements Match {
         this.document = document;
         this.elements = new ArrayList<Element>();
         this.previousMatch = previousMatch;
+        this.namespaces = new HashMap<String, String>();
     }
 
     final Impl addNodeLists(List<NodeList> lists) {
@@ -175,7 +180,7 @@ class Impl implements Match {
     }
 
     // -------------------------------------------------------------------------
-    // Iterable API
+    // XXX: Iterable API
     // -------------------------------------------------------------------------
 
     @Override
@@ -184,7 +189,43 @@ class Impl implements Match {
     }
 
     // -------------------------------------------------------------------------
-    // Match API
+    // XXX: Namespace-related API
+    // -------------------------------------------------------------------------
+
+    @Override
+    public final Match namespace(String namespacePrefix, String namespaceURI) {
+        namespaces.put(namespacePrefix, namespaceURI);
+        return this;
+    }
+
+    @Override
+    public final Match namespaces(Map<String, String> map) {
+        namespaces.putAll(map);
+        return this;
+    }
+
+    private final void loadNamespaces() {
+        try {
+            XPathFactory factory = XPathFactory.newInstance();
+            XPath xp = factory.newXPath();
+            NodeList nodeList = (NodeList) xp.compile("//namespace::*").evaluate(document, XPathConstants.NODESET);
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node n = nodeList.item(i);
+
+                String namespacePrefix = ((Attr) n).getName().replace("xmlns:", "");
+                String namespaceURI = n.getNodeValue();
+
+                namespaces.put(namespacePrefix, namespaceURI);
+            }
+        }
+        catch (XPathExpressionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // XXX: Match API
     // -------------------------------------------------------------------------
 
     @Override
@@ -400,11 +441,10 @@ class Impl implements Match {
     }
 
     @Override
-    public final Impl find(String selector) {
+    public final Impl find(final String selector) {
 
-        // Simple selectors are either valid XML element names, or *. They can
-        // be evaluated using standard DOM API
-        if (SIMPLE_SELECTOR.matcher(selector).matches()) {
+        // The * selector is evaluated using the standard DOM API
+        if ("*".equals(selector)) {
             List<NodeList> result = new ArrayList<NodeList>();
 
             for (Element element : elements) {
@@ -412,6 +452,12 @@ class Impl implements Match {
             }
 
             return new Impl(document, this).addNodeLists(result);
+        }
+
+        // Simple selectors are valid XML element names without namespaces. They
+        // are fetched using a namespace-stripping filter
+        else if (SIMPLE_SELECTOR.matcher(selector).matches()) {
+            return find(JOOX.tag(selector, true));
         }
 
         // CSS selectors are transformed to XPath expressions
@@ -477,6 +523,38 @@ class Impl implements Match {
 
             // Add the xalan ExtensionNamespaceContext if Xalan is available
             Util.xalanExtensionAware(xpath);
+
+//            // [#9] Load namespaces from document if expression "may" contain
+//            // namespace references.
+//            if (expression.contains(":")) {
+//                if (namespaces.isEmpty()) {
+//                    loadNamespaces();
+//                }
+//
+//                xpath.setNamespaceContext(new NamespaceContext() {
+//
+//                    @SuppressWarnings("rawtypes")
+//                    @Override
+//                    public Iterator getPrefixes(String namespaceURI) {
+//                        return null;
+//                    }
+//
+//                    @Override
+//                    public String getPrefix(String namespaceURI) {
+//                        return null;
+//                    }
+//
+//                    @Override
+//                    public String getNamespaceURI(String prefix) {
+//                        if (namespaces.containsKey(prefix)) {
+//                            return namespaces.get(prefix);
+//                        }
+//                        else {
+//                            return XMLConstants.NULL_NS_URI;
+//                        }
+//                    }
+//                });
+//            }
 
             // Add a variable resolver if we have any variables
             if (variables != null && variables.length != 0) {
@@ -1618,7 +1696,7 @@ class Impl implements Match {
     }
 
     // -------------------------------------------------------------------------
-    // Utility API
+    // XXX: Utility API
     // -------------------------------------------------------------------------
 
     private final boolean isFast(Filter filter) {
@@ -1747,7 +1825,7 @@ class Impl implements Match {
     }
 
     // ---------------------------------------------------------------------
-    // Transformation
+    // XXX: Transformation
     // ---------------------------------------------------------------------
 
     @Override
@@ -1877,7 +1955,7 @@ class Impl implements Match {
     }
 
     // -------------------------------------------------------------------------
-    // Object
+    // XXX: Object
     // -------------------------------------------------------------------------
 
     @Override
@@ -1953,13 +2031,13 @@ class Impl implements Match {
     }
 
     // -------------------------------------------------------------------------
-    // Utilities
+    // XXX: Utilities
     // -------------------------------------------------------------------------
 
     /**
      * A selector pattern that can be evaluated using standard DOM API
      */
-    public static final Pattern SIMPLE_SELECTOR = Pattern.compile("\\*|[\\w\\-]+");
+    public static final Pattern SIMPLE_SELECTOR = Pattern.compile("[\\w\\-]+");
 
     /**
      * A simple variable resolver mapping variable names to their respective

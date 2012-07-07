@@ -439,6 +439,13 @@ public final class JOOX {
      * <td>an F element preceded by an E element</td>
      * </tr>
      * </table>
+     * <p>
+     * Note that due to the presence of pseudo selectors, such as
+     * <code>:root</code>, <code>:empty</code>, etc, namespaces are not
+     * supported in selectors. Use jOOX's XPath functionality provided in
+     * {@link Match#xpath(String)} along with
+     * {@link Match#namespaces(java.util.Map)} if your XML document contains
+     * namespaces
      *
      * @see <a
      *      href="http://www.w3.org/TR/selectors/#selectors">http://www.w3.org/TR/selectors/#selectors</a>
@@ -449,16 +456,58 @@ public final class JOOX {
 
     /**
      * A filter that returns all elements with a given tag name
+     * <p>
+     * This is the same as calling <code>tag(tagName, false)</code>
+     *
+     * @see #tag(String, boolean)
      */
     public static FastFilter tag(final String tagName) {
+        return tag(tagName, false);
+    }
+
+    /**
+     * A filter that returns all elements with a given tag name
+     * <p>
+     * This method allows for specifying whether namespace prefixes should be
+     * ignored. This is particularly useful in DOM Level 1 documents, which are
+     * namespace-unaware. In those methods
+     * {@link Document#getElementsByTagNameNS(String, String)} will not work, as
+     * elements do not contain any <code>localName</code>.
+     *
+     * @param tagName The tag name to match. Use <strong>*</strong> as a special
+     *            tag name to match all tag names
+     * @param ignoreNamespace Whether namespace prefixes can be ignored. When
+     *            set to <code>true</code>, then the namespace prefix is
+     *            ignored. When set to <code>false</code>, then
+     *            <code>tagName</code> must include the actual namespace prefix.
+     */
+    public static FastFilter tag(final String tagName, final boolean ignoreNamespace) {
         if (tagName == null || tagName.equals("")) {
             return none();
         }
+
+        // [#104] The special * operator is also supported
+        else if ("*".equals(tagName)) {
+            return all();
+        }
+
         else {
             return new FastFilter() {
                 @Override
                 public boolean filter(Context context) {
-                    return tagName.equals(context.element().getTagName());
+                    String localName = context.element().getTagName();
+
+                    // [#103] If namespaces are ignored, consider only local
+                    // part of possibly namespace-unaware Element
+                    if (ignoreNamespace) {
+                        int index = localName.indexOf(':');
+
+                        if (index > -1) {
+                            localName = localName.substring(index + 1);
+                        }
+                    }
+
+                    return tagName.equals(localName);
                 }
             };
         }

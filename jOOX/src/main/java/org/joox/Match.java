@@ -43,11 +43,13 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 
+import org.joox.selector.CSS2XPath;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -67,6 +69,13 @@ import org.w3c.dom.Element;
  * @see <a href="http://jquery.com">http://jquery.com</a>
  */
 public interface Match extends Iterable<Element> {
+
+    // ---------------------------------------------------------------------
+    // Namespace configuration
+    // ---------------------------------------------------------------------
+
+    Match namespace(String namespacePrefix, String namespaceURI);
+    Match namespaces(Map<String, String> map);
 
     // ---------------------------------------------------------------------
     // DOM access
@@ -287,6 +296,22 @@ public interface Match extends Iterable<Element> {
     /**
      * Find all descendants of each element in the current set of matched
      * elements.
+     * <p>
+     * The selector provided to this method supports the following features:
+     * <ul>
+     * <li><strong>*</strong> can be used to select everything</li>
+     * <li><strong>tag names</strong> can be used to select XML elements by tag
+     * names (see {@link Element#getElementsByTagName(String)}</li>
+     * <li><strong>CSS selectors</strong> can be used to select XML elements
+     * using XPath (see {@link CSS2XPath#css2xpath(String)})</li>
+     * </ul>
+     * The following features are not supported:
+     * <ul>
+     * <li><strong>XPath</strong> cannot be used. Use {@link #xpath(String)}
+     * instead</li>
+     * <li><strong>Namespaces</strong> cannot be used. Use
+     * {@link #xpath(String)} with {@link #namespaces(Map)} instead</li>
+     * </ul>
      *
      * @see JOOX#selector(String)
      */
