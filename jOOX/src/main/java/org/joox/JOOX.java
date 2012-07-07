@@ -457,12 +457,12 @@ public final class JOOX {
     /**
      * A filter that returns all elements with a given tag name
      * <p>
-     * This is the same as calling <code>tag(tagName, false)</code>
+     * This is the same as calling <code>tag(tagName, true)</code>
      *
      * @see #tag(String, boolean)
      */
     public static FastFilter tag(final String tagName) {
-        return tag(tagName, false);
+        return tag(tagName, true);
     }
 
     /**
@@ -537,10 +537,33 @@ public final class JOOX {
 
     /**
      * A filter that returns all elements whose tag name matches a given regex
+     * <p>
+     * This is the same as calling <code>matchTag(regex, true)</code>
      *
      * @see Pattern#matches(String, CharSequence)
      */
     public static FastFilter matchTag(final String regex) {
+        return matchTag(regex, true);
+    }
+
+    /**
+     * A filter that returns all elements whose tag name matches a given regex
+     * <p>
+     * This method allows for specifying whether namespace prefixes should be
+     * ignored. This is particularly useful in DOM Level 1 documents, which are
+     * namespace-unaware. In those methods
+     * {@link Document#getElementsByTagNameNS(String, String)} will not work, as
+     * elements do not contain any <code>localName</code>.
+     *
+     * @param regex The regular expression to use for matching tag names.
+     * @param ignoreNamespace Whether namespace prefixes can be ignored. When
+     *            set to <code>true</code>, then the namespace prefix is
+     *            ignored. When set to <code>false</code>, then
+     *            <code>regex</code> must also match potential namespace
+     *            prefixes.
+     * @see Pattern#matches(String, CharSequence)
+     */
+    public static FastFilter matchTag(final String regex, final boolean ignoreNamespace) {
         if (regex == null || regex.equals("")) {
             return none();
         }
@@ -550,7 +573,19 @@ public final class JOOX {
 
                 @Override
                 public boolean filter(Context context) {
-                    return pattern.matcher(context.element().getTagName()).matches();
+                    String localName = context.element().getTagName();
+
+                    // [#106] If namespaces are ignored, consider only local
+                    // part of possibly namespace-unaware Element
+                    if (ignoreNamespace) {
+                        int index = localName.indexOf(':');
+
+                        if (index > -1) {
+                            localName = localName.substring(index + 1);
+                        }
+                    }
+
+                    return pattern.matcher(localName).matches();
                 }
             };
         }

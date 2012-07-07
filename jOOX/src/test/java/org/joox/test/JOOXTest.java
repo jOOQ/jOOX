@@ -1853,7 +1853,7 @@ public class JOOXTest {
     }
 
     @Test
-    public void testNamespacesFind() {
+    public void testNamespacesMatchAPI() {
         $ = $(xmlNamespacesDocument);
 
         assertEquals(1, $.size());
@@ -1862,11 +1862,28 @@ public class JOOXTest {
         // Namespace-unaware find() method (elements by tag name)
         assertEquals(6, $.find(JOOX.tag("node", false)).size());
         assertEquals(12, $.find(JOOX.tag("node", true)).size());
+        assertEquals(2, $.find(JOOX.tag("xx:node", false)).size());
         assertEquals(12, $.find("node").size());
 
         // Namespace-unaware find() method (using CSS selectors)
         assertEquals(12, $.find("root node").size());
 
+        // Combinations of the above
+        assertEquals(4, $.child("nested1").find("node").size());
+        assertEquals(2, $.child("nested1").find(JOOX.tag("node", false)).size());
+        assertEquals(4, $.child("nested1").find(JOOX.tag("node", true)).size());
+
+        // Check children() as well
+        assertEquals(2, $.child("nested1").children("node").size());
+        assertEquals(1, $.child("nested1").children(JOOX.tag("node", false)).size());
+        assertEquals(2, $.child("nested1").children(JOOX.tag("node", true)).size());
+
+        // Check matchTag()
+        assertEquals(12, $.find().matchTag("node").size());
+        assertEquals(12, $.find(JOOX.matchTag("node", true)).size());
+        assertEquals(6, $.find(JOOX.matchTag("node", false)).size());
+        assertEquals(0, $.find(JOOX.matchTag("xx:.*", true)).size());
+        assertEquals(2, $.find(JOOX.matchTag("xx:.*", false)).size());
         // TODO: restrict resulting elements to matching namespaces
     }
 
