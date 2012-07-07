@@ -180,6 +180,11 @@ public class JOOXTest {
 
     @Test
     public void testChildren() {
+        assertEquals("library", $.child().tag());
+        assertEquals("library", $.child("*").tag());
+        assertEquals(3, $.children().size());
+        assertEquals(3, $.children("*").size());
+
         assertEquals("library", $.children().get().get(0).getTagName());
         assertEquals("library", $.children().get().get(1).getTagName());
         assertEquals("library", $.children().get().get(2).getTagName());
