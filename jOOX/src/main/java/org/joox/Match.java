@@ -52,6 +52,7 @@ import javax.xml.transform.Transformer;
 import org.joox.selector.CSS2XPath;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * A wrapper type for {@link org.w3c.dom.Element}
