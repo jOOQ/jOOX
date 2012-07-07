@@ -500,11 +500,7 @@ public final class JOOX {
                     // [#103] If namespaces are ignored, consider only local
                     // part of possibly namespace-unaware Element
                     if (ignoreNamespace) {
-                        int index = localName.indexOf(':');
-
-                        if (index > -1) {
-                            localName = localName.substring(index + 1);
-                        }
+                        localName = Util.stripNamespace(localName);
                     }
 
                     return tagName.equals(localName);
@@ -578,11 +574,7 @@ public final class JOOX {
                     // [#106] If namespaces are ignored, consider only local
                     // part of possibly namespace-unaware Element
                     if (ignoreNamespace) {
-                        int index = localName.indexOf(':');
-
-                        if (index > -1) {
-                            localName = localName.substring(index + 1);
-                        }
+                        localName = Util.stripNamespace(localName);
                     }
 
                     return pattern.matcher(localName).matches();

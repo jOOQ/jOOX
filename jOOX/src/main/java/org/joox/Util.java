@@ -183,11 +183,7 @@ class Util {
             // [#103] If namespaces are ignored, consider only local
             // part of possibly namespace-unaware Element
             if (ignoreNamespace) {
-                int index = localName.indexOf(':');
-
-                if (index > -1) {
-                    localName = localName.substring(index + 1);
-                }
+                localName = stripNamespace(localName);
             }
 
             if (name.equals(localName)) {
@@ -299,7 +295,7 @@ class Util {
 
         Node iterator = element;
         while (iterator.getNodeType() == Node.ELEMENT_NODE) {
-            sb.insert(0, ((Element) iterator).getTagName());
+            sb.insert(0, $(iterator).tag());
             sb.insert(0, "/");
 
             iterator = iterator.getParentNode();
@@ -319,6 +315,7 @@ class Util {
         }
 
         // All other elements are compared with siblings with the same name
+        // TODO: How to deal with namespaces here? Omit or keep?
         else {
             return $(element).parent().children(element.getTagName()).get().indexOf(element);
         }
@@ -644,5 +641,15 @@ class Util {
         }
 
         return string;
+    }
+
+    static String stripNamespace(String tagName) {
+        int index = tagName.indexOf(':');
+
+        if (index > -1) {
+            tagName = tagName.substring(index + 1);
+        }
+
+        return tagName;
     }
 }

@@ -44,6 +44,7 @@ import static org.joox.JOOX.none;
 import static org.joox.JOOX.selector;
 import static org.joox.Util.context;
 import static org.joox.Util.nonNull;
+import static org.joox.Util.stripNamespace;
 import static org.joox.selector.CSS2XPath.css2xpath;
 
 import java.io.File;
@@ -1716,7 +1717,7 @@ class Impl implements Match {
         Element element = get(index);
 
         if (element != null) {
-            return element.getTagName();
+            return stripNamespace(element.getTagName());
         }
         else {
             return null;
@@ -1728,7 +1729,7 @@ class Impl implements Match {
         List<String> result = new ArrayList<String>();
 
         for (Element element : elements) {
-            result.add(element.getTagName());
+            result.add(stripNamespace(element.getTagName()));
         }
 
         return result;

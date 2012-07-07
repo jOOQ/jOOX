@@ -1861,7 +1861,9 @@ public class JOOXTest {
         assertEquals(6, $.find(JOOX.tag("node", false)).size());
         assertEquals(12, $.find(JOOX.tag("node", true)).size());
         assertEquals(2, $.find(JOOX.tag("xx:node", false)).size());
+        assertEquals(nCopies(2, "node"), $.find(JOOX.tag("xx:node", false)).tags());
         assertEquals(12, $.find("node").size());
+        assertEquals(nCopies(12, "node"), $.find("node").tags());
 
         // Combinations of the above
         assertEquals(4, $.child("nested1").find("node").size());
@@ -1893,7 +1895,6 @@ public class JOOXTest {
         // Namespace-overloaded attributes are not supported!
         assertEquals(1, $.find("node").filter(JOOX.attr("a3", "value")).size());
         assertEquals(0, $.find("node").filter(JOOX.attr("a3", "ns:value")).size());
-
 
         // TODO: restrict resulting elements to matching namespaces
     }
