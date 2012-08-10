@@ -1884,6 +1884,7 @@ class Impl implements Match {
         return write(new OutputStreamWriter(stream));
     }
 
+    @SuppressWarnings("resource")
     @Override
     public final Match write(File file) throws IOException {
         return write(new FileOutputStream(file));
