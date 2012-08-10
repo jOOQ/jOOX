@@ -91,10 +91,12 @@ public class JOOXTest {
 
     private String   xmlDatesString;
     private Document xmlDatesDocument;
+    @SuppressWarnings("unused")
     private Element  xmlDatesElement;
 
     private String   xmlNamespacesString;
     private Document xmlNamespacesDocument;
+    @SuppressWarnings("unused")
     private Element  xmlNamespacesElement;
 
     private int      totalElements;
