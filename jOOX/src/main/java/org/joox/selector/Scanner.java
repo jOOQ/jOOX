@@ -18,6 +18,7 @@ import java.util.List;
  *
  * @author Christer Sandberg
  */
+@SuppressWarnings("all")
 public class Scanner {
 
 	/** The input to scan. */
