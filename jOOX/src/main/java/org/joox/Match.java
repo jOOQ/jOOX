@@ -495,13 +495,17 @@ public interface Match extends Iterable<Element> {
      * <li>Match all book ID's : <code>xpath("//book/@id")</code></li>
      * <li>Match all book names : <code>xpath("//book/name/text()")</code></li>
      * </ul>
-     * <h3>Using jOOX with Namespaces</h3> Namespace declarations are supported
-     * in XPath expressions. If you wish to use namespace-specific XPath
-     * elements, call {@link #namespace(String, String)} prior to
-     * {@link #xpath(String)}
-     * <h3>Using jOOX with Xalan</h3> If Xalan is on your classpath, jOOX will
-     * automatically load xalan's namespace and function extensions. All
-     * functionality supported by <a
+     * <p>
+     * <h5>Using jOOX with Namespaces</h5>
+     * <p>
+     * Namespace declarations are supported in XPath expressions. If you wish to
+     * use namespace-specific XPath elements, call
+     * {@link #namespace(String, String)} prior to {@link #xpath(String)}
+     * <p>
+     * <h5>Using jOOX with Xalan</h5>
+     * <p>
+     * If Xalan is on your classpath, jOOX will automatically load xalan's
+     * namespace and function extensions. All functionality supported by <a
      * href="http://exslt.org">http://exslt.org</a> will be available in your
      * XPath expressions. Some examples:
      * <ul>
@@ -539,13 +543,17 @@ public interface Match extends Iterable<Element> {
      * <li>Match all book ID's : <code>xpath("//book/@id")</code></li>
      * <li>Match all book names : <code>xpath("//book/name/text()")</code></li>
      * </ul>
-     * <h3>Using jOOX with Namespaces</h3> Namespace declarations are supported
-     * in XPath expressions. If you wish to use namespace-specific XPath
-     * elements, call {@link #namespace(String, String)} prior to
-     * {@link #xpath(String)}
-     * <h3>Using jOOX with Xalan</h3> If Xalan is on your classpath, jOOX will
-     * automatically load xalan's namespace and function extensions. All
-     * functionality supported by <a
+     * <p>
+     * <h5>Using jOOX with Namespaces</h5>
+     * <p>
+     * Namespace declarations are supported in XPath expressions. If you wish to
+     * use namespace-specific XPath elements, call
+     * {@link #namespace(String, String)} prior to {@link #xpath(String)}
+     * <p>
+     * <h5>Using jOOX with Xalan</h5>
+     * <p>
+     * If Xalan is on your classpath, jOOX will automatically load xalan's
+     * namespace and function extensions. All functionality supported by <a
      * href="http://exslt.org">http://exslt.org</a> will be available in your
      * XPath expressions. Some examples:
      * <ul>
@@ -2079,13 +2087,19 @@ public interface Match extends Iterable<Element> {
      * of matched elements. Every element in the set of matched elements will be
      * replaced by its corresponding {@link Result} obtained from the
      * <code>transformer</code>.
-     * <h3>Example Input:</h3> <code><pre>
+     * <p>
+     * <h5>Example Input:</h5>
+     * <p>
+     * <code><pre>
      * &lt;books>
      *   &lt;book id="1"/>
      *   &lt;book id="2"/>
      * &lt;/books>
      * </pre></code>
-     * <h3>Example XSLT:</h3> <code><pre>
+     * <p>
+     * <h5>Example XSLT:</h5>
+     * <p>
+     * <code><pre>
      * &lt;?xml version="1.0" encoding="ISO-8859-1"?>
      * &lt;xsl:stylesheet version="1.0"
      *     xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -2103,14 +2117,20 @@ public interface Match extends Iterable<Element> {
      *     &lt;/xsl:template>
      * &lt;/xsl:stylesheet>
      * </pre></code>
-     * <h3>Apply transformation:</h3> <code><pre>
+     * <p>
+     * <h5>Apply transformation:</h5>
+     * <p>
+     * <code><pre>
      * // Applies transformation to the document element:
      * $(document).transform("increment.xsl");
      *
      * // Applies transformation to every book element:
      * $(document).find("book").transform("increment.xsl");
      * </pre></code>
-     * <h3>Result:</h3> <code><pre>
+     * <p>
+     * <h5>Result:</h5>
+     * <p>
+     * <code><pre>
      * &lt;books>
      *   &lt;book id="2"/>
      *   &lt;book id="3"/>
