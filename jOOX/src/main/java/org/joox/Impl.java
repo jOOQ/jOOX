@@ -37,6 +37,7 @@ package org.joox;
 
 import static java.util.Collections.emptyList;
 import static org.joox.JOOX.all;
+import static org.joox.JOOX.chain;
 import static org.joox.JOOX.convert;
 import static org.joox.JOOX.iterable;
 import static org.joox.JOOX.list;
@@ -460,6 +461,16 @@ class Impl implements Match {
         }
 
         return this;
+    }
+
+    @Override
+    public final Impl each(Each... each) {
+        return each(chain(each));
+    }
+
+    @Override
+    public final Impl each(Iterable<? extends Each> each) {
+        return each(chain(each));
     }
 
     @Override

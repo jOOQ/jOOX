@@ -377,6 +377,22 @@ public interface Match extends Iterable<Element> {
     Match each(Each each);
 
     /**
+     * Execute several callbacks for every element in the current set of matched
+     * elements.
+     *
+     * @see JOOX#chain(Each...)
+     */
+    Match each(Each... each);
+
+    /**
+     * Execute several callbacks for every element in the current set of matched
+     * elements.
+     *
+     * @see JOOX#chain(Iterable)
+     */
+    Match each(Iterable<? extends Each> each);
+
+    /**
      * Reduce the current set of matched elements.
      * <p>
      * The selector provided to this method supports the following features:

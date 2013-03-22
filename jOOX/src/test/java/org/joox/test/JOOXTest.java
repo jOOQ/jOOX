@@ -1995,21 +1995,35 @@ public class JOOXTest {
     @Test
     public void testChain() {
         final List<String> result = new ArrayList<String>();
-        $.find("library[name=Amazon]").find("book").each(chain(
-            new Each() {
-                @Override
-                public void each(Context context) {
-                    result.add($(context).tag());
-                }
-            },
-            new Each() {
-                @Override
-                public void each(Context context) {
-                    result.add($(context).id());
-                }
-            }
-        ));
 
+        Match books = $.find("library[name=Amazon]").find("book");
+        Each each1 = new Each() {
+            @Override
+            public void each(Context context) {
+                result.add($(context).tag());
+            }
+        };
+        Each each2 = new Each() {
+            @Override
+            public void each(Context context) {
+                result.add($(context).id());
+            }
+        };
+
+        result.clear();
+        books.each(chain(each1, each2));
+        assertEquals(asList("book", "1", "book", "2", "book", "3", "book", "4"), result);
+
+        result.clear();
+        books.each(chain(asList(each1, each2)));
+        assertEquals(asList("book", "1", "book", "2", "book", "3", "book", "4"), result);
+
+        result.clear();
+        books.each(each1, each2);
+        assertEquals(asList("book", "1", "book", "2", "book", "3", "book", "4"), result);
+
+        result.clear();
+        books.each(asList(each1, each2));
         assertEquals(asList("book", "1", "book", "2", "book", "3", "book", "4"), result);
     }
 
