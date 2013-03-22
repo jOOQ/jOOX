@@ -245,7 +245,7 @@ class Util {
             Source source = new DOMSource(element);
             Result target = new StreamResult(out);
             transformer.transform(source, target);
-            return out.toString();
+            return out.toString("UTF-8");
         }
         catch (Exception e) {
             return "[ ERROR IN toString() : " + e.getMessage() + " ]";
