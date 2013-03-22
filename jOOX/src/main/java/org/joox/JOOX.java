@@ -841,6 +841,52 @@ public final class JOOX {
     }
 
     // ---------------------------------------------------------------------
+    // API utilities
+    // ---------------------------------------------------------------------
+
+    /**
+     * Chain several instances of {@link Each} into a single one.
+     * <p>
+     * The resulting chained <code>Each</code> produces a new <code>Each</code>
+     * that can be used in the {@link Match#each(Each)} method. I.e. every node
+     * in a set of matched nodes will be passed to every chained
+     * <code>Each</code>, sequentially.
+     */
+    public static Each chain(final Each... each) {
+        return new Each() {
+            @Override
+            public void each(Context context) {
+                if (each != null) {
+                    for (Each e : each) {
+                        e.each(context);
+                    }
+                }
+            }
+        };
+    }
+
+    /**
+     * Chain several instances of {@link Each} into a single one.
+     * <p>
+     * The resulting chained <code>Each</code> produces a new <code>Each</code>
+     * that can be used in the {@link Match#each(Each)} method. I.e. every node
+     * in a set of matched nodes will be passed to every chained
+     * <code>Each</code>, sequentially.
+     */
+    public static Each chain(final Iterable<? extends Each> each) {
+        return new Each() {
+            @Override
+            public void each(Context context) {
+                if (each != null) {
+                    for (Each e : each) {
+                        e.each(context);
+                    }
+                }
+            }
+        };
+    }
+
+    // ---------------------------------------------------------------------
     // DOM utilities
     // ---------------------------------------------------------------------
 

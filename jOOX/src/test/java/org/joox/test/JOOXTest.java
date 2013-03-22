@@ -45,6 +45,7 @@ import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 import static org.joox.JOOX.$;
 import static org.joox.JOOX.attr;
+import static org.joox.JOOX.chain;
 import static org.joox.JOOX.paths;
 
 import java.io.ByteArrayInputStream;
@@ -53,6 +54,7 @@ import java.io.File;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -1988,6 +1990,27 @@ public class JOOXTest {
         assertEquals(2, $.namespace("root-ns", "http://www.example.com/root/ns")
                          .find()
                          .xpath("//root-ns:node").size());
+    }
+
+    @Test
+    public void testChain() {
+        final List<String> result = new ArrayList<String>();
+        $.find("library[name=Amazon]").find("book").each(chain(
+            new Each() {
+                @Override
+                public void each(Context context) {
+                    result.add($(context).tag());
+                }
+            },
+            new Each() {
+                @Override
+                public void each(Context context) {
+                    result.add($(context).id());
+                }
+            }
+        ));
+
+        assertEquals(asList("book", "1", "book", "2", "book", "3", "book", "4"), result);
     }
 
     @Test
