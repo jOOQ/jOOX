@@ -1677,12 +1677,14 @@ public interface Match extends Iterable<Element> {
     Match empty();
 
     /**
-     * Removes all elements in the set of matched elements.
+     * Removes all elements from their parent nodes in the set of matched
+     * elements.
      */
     Match remove();
 
     /**
-     * Removes all elements in the set of matched elements, matching a selector
+     * Removes all elements from their parent nodes in the set of matched
+     * elements, matching a selector
      * <p>
      * The selector provided to this method supports the following features:
      * <ul>
@@ -1706,7 +1708,8 @@ public interface Match extends Iterable<Element> {
     Match remove(String selector);
 
     /**
-     * Removes all elements in the set of matched elements, matching a filter
+     * Removes all elements from their parent nodes in the set of matched
+     * elements, matching a filter
      * <p>
      * The callback {@link Context} is populated like this:
      * <ul>
@@ -1718,7 +1721,8 @@ public interface Match extends Iterable<Element> {
     Match remove(Filter filter);
 
     /**
-     * Wrap all elements in the set of matched elements in a new parent element
+     * Wrap all elements from their parent nodes in the set of matched elements
+     * in a new parent element
      * <p>
      * The resulting set of matched elements contains the newly wrapped elements
      *
