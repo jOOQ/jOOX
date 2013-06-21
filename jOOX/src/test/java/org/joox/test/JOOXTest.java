@@ -1569,37 +1569,37 @@ public class JOOXTest {
 
     @Test
     public void testXPath() throws Exception {
-        assertEquals("/document[1]", $.xpath());
-        assertEquals("/document[1]", $.xpath(0));
+        assertEquals("/document", $.xpath());
+        assertEquals("/document", $.xpath(0));
         assertEquals(null, $.xpath(1));
-        assertEquals(Arrays.asList("/document[1]"), $.xpaths());
-        assertEquals(Arrays.asList("/document[1]", null), $.xpaths(0, 1));
+        assertEquals(Arrays.asList("/document"), $.xpaths());
+        assertEquals(Arrays.asList("/document", null), $.xpaths(0, 1));
 
-        assertEquals("/document[1]/library[1]/books[1]/book[1]", $.find("book").xpath());
-        assertEquals("/document[1]/library[1]/books[1]/book[1]", $.find("book").xpath(0));
-        assertEquals("/document[1]/library[1]/books[1]/book[2]", $.find("book").xpath(1));
-        assertEquals("/document[1]/library[1]/books[1]/book[3]", $.find("book").xpath(2));
-        assertEquals("/document[1]/library[1]/books[1]/book[4]", $.find("book").xpath(3));
-        assertEquals("/document[1]/library[2]/books[1]/book[1]", $.find("book").xpath(4));
-        assertEquals("/document[1]/library[2]/books[1]/book[2]", $.find("book").xpath(5));
-        assertEquals("/document[1]/library[3]/books[1]/book[1]", $.find("book").xpath(6));
-        assertEquals("/document[1]/library[3]/books[1]/book[2]", $.find("book").xpath(7));
+        assertEquals("/document/library[1]/books/book[1]", $.find("book").xpath());
+        assertEquals("/document/library[1]/books/book[1]", $.find("book").xpath(0));
+        assertEquals("/document/library[1]/books/book[2]", $.find("book").xpath(1));
+        assertEquals("/document/library[1]/books/book[3]", $.find("book").xpath(2));
+        assertEquals("/document/library[1]/books/book[4]", $.find("book").xpath(3));
+        assertEquals("/document/library[2]/books/book[1]", $.find("book").xpath(4));
+        assertEquals("/document/library[2]/books/book[2]", $.find("book").xpath(5));
+        assertEquals("/document/library[3]/books/book[1]", $.find("book").xpath(6));
+        assertEquals("/document/library[3]/books/book[2]", $.find("book").xpath(7));
         assertEquals(null, $.find("book").xpath(8));
         assertEquals(Arrays.asList(
-            "/document[1]/library[1]/books[1]/book[1]",
-            "/document[1]/library[1]/books[1]/book[2]",
-            "/document[1]/library[1]/books[1]/book[3]",
-            "/document[1]/library[1]/books[1]/book[4]",
-            "/document[1]/library[2]/books[1]/book[1]",
-            "/document[1]/library[2]/books[1]/book[2]",
-            "/document[1]/library[3]/books[1]/book[1]",
-            "/document[1]/library[3]/books[1]/book[2]"),
+            "/document/library[1]/books/book[1]",
+            "/document/library[1]/books/book[2]",
+            "/document/library[1]/books/book[3]",
+            "/document/library[1]/books/book[4]",
+            "/document/library[2]/books/book[1]",
+            "/document/library[2]/books/book[2]",
+            "/document/library[3]/books/book[1]",
+            "/document/library[3]/books/book[2]"),
             $.find("book").xpaths());
 
         assertEquals(asList(
-            "/document[1]/library[1]/dvds[1]/dvd[1]/actors[1]/actor[1]",
-            "/document[1]/library[1]/dvds[1]/dvd[1]/actors[1]/actor[2]",
-            "/document[1]/library[1]/dvds[1]/dvd[1]/actors[1]/actor[3]"),
+            "/document/library[1]/dvds/dvd/actors/actor[1]",
+            "/document/library[1]/dvds/dvd/actors/actor[2]",
+            "/document/library[1]/dvds/dvd/actors/actor[3]"),
             $.find("actor").xpaths());
     }
 
