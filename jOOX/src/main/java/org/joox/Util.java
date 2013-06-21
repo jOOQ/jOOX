@@ -275,9 +275,10 @@ class Util {
 
         Node iterator = element;
         while (iterator.getNodeType() == Node.ELEMENT_NODE) {
-            sb.insert(0, "]");
-            sb.insert(0, siblingIndex((Element) iterator) + 1);
-            sb.insert(0, "[");
+            Integer siblingIndex = siblingIndex((Element) iterator);
+            if (siblingIndex != null) {
+                sb.insert(0, "[" + (siblingIndex + 1) + "]");
+            }
             sb.insert(0, ((Element) iterator).getTagName());
             sb.insert(0, "/");
 
@@ -307,18 +308,18 @@ class Util {
     /**
      * Find the index among siblings of the same tag name
      */
-    private static final int siblingIndex(Element element) {
-
-        // The document element has index 0
+    private static final Integer siblingIndex(Element element) {
         if (element.getParentNode() == element.getOwnerDocument()) {
-            return 0;
+            return null;
+        } else if ($(element).parent().children(element.getTagName()).get()
+                .size() == 1) {
+            // if there is only one child, omit the specifier
+            return null;
         }
-
         // All other elements are compared with siblings with the same name
         // TODO: How to deal with namespaces here? Omit or keep?
-        else {
-            return $(element).parent().children(element.getTagName()).get().indexOf(element);
-        }
+        return $(element).parent().children(element.getTagName()).get()
+                .indexOf(element);
     }
 
     /**
