@@ -138,20 +138,7 @@ class Impl implements Match {
     }
 
     final Impl addUniqueElements(Element... e) {
-        if (e.length == 1) {
-            Element element = e[0];
-
-            elements.remove(element);
-            elements.add(element);
-        }
-        else if (e.length > 1) {
-            Set<Element> set = new LinkedHashSet<Element>(Arrays.asList(e));
-
-            this.elements.removeAll(set);
-            this.elements.addAll(set);
-        }
-
-        return this;
+        return addUniqueElements(Arrays.asList(e));
     }
 
     final Impl addUniqueElements(List<Element> e) {
