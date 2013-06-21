@@ -853,16 +853,7 @@ public final class JOOX {
      * <code>Each</code>, sequentially.
      */
     public static Each chain(final Each... each) {
-        return new Each() {
-            @Override
-            public void each(Context context) {
-                if (each != null) {
-                    for (Each e : each) {
-                        e.each(context);
-                    }
-                }
-            }
-        };
+        return chain(Arrays.asList(each));
     }
 
     /**
