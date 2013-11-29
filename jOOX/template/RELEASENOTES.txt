@@ -2,6 +2,44 @@ jOOX Release notes
 ------------------
 For an overview, see also http://code.google.com/p/joox/issues/list
 
+Version 1.2.0 - November 29, 2013
+=================================================================
+
+Features and improvements
+-------------------------
+#9   - Add support for namespaces in Match.xpath()
+#103 - Add FastFilter JOOX.tag(String tagName, boolean 
+       ignoreNamespace) as a utility to search for tags ignoring
+       namespaces
+#104 - Support "*" in JOOX.tag(String)
+#105 - Let Match.find(), Match.child(), Match.children() and 
+       similar methods be namespace-unaware (ignoring namespaces)
+#106 - Add FastFilter JOOX.matchTag(String regex, boolean 
+       ignoreNamespace) as a utility to search for tags ignoring 
+       namespaces
+#107 - JOOX's internal DocumentBuilder should be namespace-aware
+       in order to support those featuers
+#108 - Implement DefaultContext.toString() for debugging purposes
+#110 - Improve Javadoc where selectors are supported
+#111 - Add List<String> Match.namespaceURIs(), namespaceURI(), 
+       namespacePrefixes(), namespacePrefix() to fetch namespace 
+       information
+#112 - Add FastFilter JOOX.namespaceURI() and 
+       JOOX.namespacePrefix() to reduce matched element sets to
+       those elements that are in a given namespace
+#115 - Improve Javadoc on the Match.remove() method
+#118 - Add Match.each(Each...) for combining multiple callbacks
+#119 - Add Each JOOX.chain(Each...), 
+       chain(Iterable<? extends Each>), etc...
+
+Bug fixes
+---------
+#99  - Slight performance improvement by pre-compiling regex 
+       patterns 
+#109 - JOOX.$(Context) should be convenience for 
+       JOOX.$(Context.element()), not $(Context.match())
+#120 - UTF-8 issue when using Match#content()
+
 Version 1.1.0
 =================================================================
 
