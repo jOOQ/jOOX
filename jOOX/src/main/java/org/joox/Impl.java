@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -2003,6 +2004,23 @@ class Impl implements Match {
     @Override
     public final Impl transform(String transformer) {
         return transform(new StreamSource(new File(transformer)));
+    }
+
+    @Override
+    public Match sort(final Comparator<Element> comparator) {
+
+        Impl result = new Impl(document, namespaces);
+
+        List<Element> newElements = new ArrayList<Element>(elements);
+        Collections.sort(newElements,comparator);
+
+        for (Element e : newElements) {
+            if (e != null) {
+                result.addElements(e);
+            }
+        }
+
+        return result;
     }
 
     // -------------------------------------------------------------------------

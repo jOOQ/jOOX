@@ -57,6 +57,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -1807,6 +1808,17 @@ public class JOOXTest {
     }
 
     @Test
+    public void testSort() throws Exception {
+        assertEquals(11, $.find().matchTag("books?").sort(new SimpleElementComparator()).size());
+
+        assertEquals(asList("books", "book", "book", "book", "book", "books", "book", "book", "books", "book", "book"),
+                $.find().matchTag("books?").tags());
+
+        assertEquals(asList("book", "book", "book", "book","book", "book", "book", "book", "books", "books", "books"),
+                $.find().matchTag("books?").sort(new SimpleElementComparator()).tags());
+    }
+
+    @Test
     public void testLeaf() throws Exception {
         assertEquals($.xpath("//*[not(*)]"), $.find().leaf());
         assertEquals($.find("books").eq(0).find("name, author"), $.find("books").eq(0).find().leaf());
@@ -2036,5 +2048,12 @@ public class JOOXTest {
     public void testEncoding() {
         String xml = "<tag1><tag2>éâ</tag2></tag1>";
         assertEquals(xml, "<tag2>éâ</tag2>", $(xml).content());
+    }
+
+    class SimpleElementComparator implements Comparator<Element> {
+        @Override
+        public int compare(final Element element1, final Element element2) {
+            return element1.getTagName().compareTo(element2.getTagName());
+        }
     }
 }
