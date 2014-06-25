@@ -42,6 +42,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -2200,4 +2201,12 @@ public interface Match extends Iterable<Element> {
      * @see #transform(Transformer)
      */
     Match transform(String transformer);
+
+    /**
+     * Allows to sort the result with the given comparator.
+     *
+     * @param comparator The element comparator.
+     * @return
+     */
+    Match sort(Comparator<Element> comparator);
 }
