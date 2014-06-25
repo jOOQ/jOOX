@@ -163,7 +163,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>20030203.000550</version>
+            <version>2.4</version>
             <type>jar</type>
             <scope>test</scope>
         </dependency>
