@@ -1996,9 +1996,10 @@ class Impl implements Match {
 
         Impl result = new Impl(document, namespaces);
 
-        Collections.sort(elements,comparator);
+        List<Element> newElements = new ArrayList<Element>(elements);
+        Collections.sort(newElements,comparator);
 
-        for (Element e : elements) {
+        for (Element e : newElements) {
             if (e != null) {
                 result.addElements(e);
             }
