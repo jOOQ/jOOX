@@ -1073,6 +1073,21 @@ class Impl implements Match {
     }
 
     @Override
+    public final Match matchAttr(String name, String valueRegex) {
+        return matchAttr(name, valueRegex, true);
+    }
+
+    @Override
+    public final Match matchAttr(String name, String valueRegex, boolean keepMatches) {
+        if (keepMatches) {
+            return filter(JOOX.matchAttr(name, valueRegex));
+        }
+        else {
+            return not(JOOX.matchAttr(name, valueRegex));
+        }
+    }
+
+    @Override
     public final Impl leaf() {
         return filter(JOOX.leaf());
     }

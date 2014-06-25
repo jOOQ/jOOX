@@ -1452,6 +1452,26 @@ public interface Match extends Iterable<Element> {
     Match matchText(String regex, boolean keepMatches);
 
     /**
+     * Reduce the set of matched elements by filtering out those whose attribute
+     * content doesn't match a given regex
+     * <p>
+     * This is the same as calling <code>matchAttr(name, valueRegex, true)</code>
+     *
+     * @see JOOX#matchAttr(String, String)
+     */
+    Match matchAttr(String name, String valueRegex);
+
+    /**
+     * Reduce the set of matched elements by filtering out those whose attribute
+     * content doesn't match a given regex <code>(keepMatches = true)</code>, or
+     * those whose text content matches a given regex
+     * <code>(keepMatches = false)</code>
+     *
+     * @see JOOX#matchAttr(String, String)
+     */
+    Match matchAttr(String name, String valueRegex, boolean keepMatches);
+
+    /**
      * Reduce the set of matched elements by filtering out those whose tag name
      * doesn't match a given regex
      * <p>

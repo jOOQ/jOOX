@@ -1799,6 +1799,11 @@ public class JOOXTest {
         assertEquals(2, $.find("name, actor").matchText(".*in.*", true).size());
         assertEquals($.find("name, actor").size() - 2,
             $.find("name, actor").matchText(".*in.*", false).size());
+
+        assertEquals(2, $.find("library").matchAttr("name", ".*i.*").size());
+        assertEquals(1, $.find("library").matchAttr("name", ".*i.*", false).size());
+        assertEquals(asList("Roesslitor", "Orell Fuessli"), $.find("library").matchAttr("name", ".*i.*").attrs("name"));
+        assertEquals(asList("Amazon"), $.find("library").matchAttr("name", ".*i.*", false).attrs("name"));
     }
 
     @Test
