@@ -66,7 +66,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.io.IOUtil;
+import org.apache.commons.io.IOUtils;
 import org.joox.Content;
 import org.joox.Context;
 import org.joox.Each;
@@ -109,15 +109,15 @@ public class JOOXTest {
     public void setUp() throws Exception {
         DocumentBuilder builder = JOOX.builder();
 
-        xmlExampleString = IOUtil.toString(JOOXTest.class.getResourceAsStream("/example.xml"));
+        xmlExampleString = IOUtils.toString(JOOXTest.class.getResourceAsStream("/example.xml"));
         xmlExampleDocument = builder.parse(new ByteArrayInputStream(xmlExampleString.getBytes()));
         xmlExampleElement = xmlExampleDocument.getDocumentElement();
 
-        xmlDatesString = IOUtil.toString(JOOXTest.class.getResourceAsStream("/dates.xml"));
+        xmlDatesString = IOUtils.toString(JOOXTest.class.getResourceAsStream("/dates.xml"));
         xmlDatesDocument = builder.parse(new ByteArrayInputStream(xmlDatesString.getBytes()));
         xmlDatesElement = xmlDatesDocument.getDocumentElement();
 
-        xmlNamespacesString = IOUtil.toString(JOOXTest.class.getResourceAsStream("/namespaces.xml"));
+        xmlNamespacesString = IOUtils.toString(JOOXTest.class.getResourceAsStream("/namespaces.xml"));
         xmlNamespacesDocument = builder.parse(new ByteArrayInputStream(xmlNamespacesString.getBytes()));
         xmlNamespacesElement = xmlNamespacesDocument.getDocumentElement();
 
