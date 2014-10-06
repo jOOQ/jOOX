@@ -596,6 +596,33 @@ public final class JOOX {
     }
 
     /**
+     * A filter that returns all elements whose text content matches a given
+     * regex
+     *
+     * @see Pattern#matches(String, CharSequence)
+     */
+    public static FastFilter matchAttr(final String name, final String valueRegex) {
+        if (name == null || name.equals("") || valueRegex == null || valueRegex.equals("")) {
+            return none();
+        }
+        else {
+            return new FastFilter() {
+                private final Pattern pattern = Pattern.compile(valueRegex);
+
+                @Override
+                public boolean filter(Context context) {
+                    String value = $(context).attr(name);
+
+                    if (value == null)
+                        return false;
+
+                    return pattern.matcher(value).matches();
+                }
+            };
+        }
+    }
+
+    /**
      * A filter that returns all elements whose tag name matches a given regex
      * <p>
      * This is the same as calling <code>matchTag(regex, true)</code>

@@ -57,6 +57,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -66,7 +67,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.io.IOUtil;
+import org.apache.commons.io.IOUtils;
 import org.joox.Content;
 import org.joox.Context;
 import org.joox.Each;
@@ -109,15 +110,15 @@ public class JOOXTest {
     public void setUp() throws Exception {
         DocumentBuilder builder = JOOX.builder();
 
-        xmlExampleString = IOUtil.toString(JOOXTest.class.getResourceAsStream("/example.xml"));
+        xmlExampleString = IOUtils.toString(JOOXTest.class.getResourceAsStream("/example.xml"));
         xmlExampleDocument = builder.parse(new ByteArrayInputStream(xmlExampleString.getBytes()));
         xmlExampleElement = xmlExampleDocument.getDocumentElement();
 
-        xmlDatesString = IOUtil.toString(JOOXTest.class.getResourceAsStream("/dates.xml"));
+        xmlDatesString = IOUtils.toString(JOOXTest.class.getResourceAsStream("/dates.xml"));
         xmlDatesDocument = builder.parse(new ByteArrayInputStream(xmlDatesString.getBytes()));
         xmlDatesElement = xmlDatesDocument.getDocumentElement();
 
-        xmlNamespacesString = IOUtil.toString(JOOXTest.class.getResourceAsStream("/namespaces.xml"));
+        xmlNamespacesString = IOUtils.toString(JOOXTest.class.getResourceAsStream("/namespaces.xml"));
         xmlNamespacesDocument = builder.parse(new ByteArrayInputStream(xmlNamespacesString.getBytes()));
         xmlNamespacesElement = xmlNamespacesDocument.getDocumentElement();
 
@@ -1799,6 +1800,29 @@ public class JOOXTest {
         assertEquals(2, $.find("name, actor").matchText(".*in.*", true).size());
         assertEquals($.find("name, actor").size() - 2,
             $.find("name, actor").matchText(".*in.*", false).size());
+
+        assertEquals(2, $.find("library").matchAttr("name", ".*i.*").size());
+        assertEquals(1, $.find("library").matchAttr("name", ".*i.*", false).size());
+        assertEquals(asList("Roesslitor", "Orell Fuessli"), $.find("library").matchAttr("name", ".*i.*").attrs("name"));
+        assertEquals(asList("Amazon"), $.find("library").matchAttr("name", ".*i.*", false).attrs("name"));
+    }
+
+    @Test
+    public void testSort() throws Exception {
+        assertEquals(11, $.find().matchTag("books?").sort(new SimpleElementComparator()).size());
+
+        assertEquals(asList("books", "book", "book", "book", "book", "books", "book", "book", "books", "book", "book"),
+                $.find().matchTag("books?").tags());
+
+        assertEquals(asList("book", "book", "book", "book","book", "book", "book", "book", "books", "books", "books"),
+                $.find().matchTag("books?").sort(new SimpleElementComparator()).tags());
+    }
+
+    class SimpleElementComparator implements Comparator<Element> {
+        @Override
+        public int compare(final Element element1, final Element element2) {
+            return element1.getTagName().compareTo(element2.getTagName());
+        }
     }
 
     @Test
@@ -2037,4 +2061,5 @@ public class JOOXTest {
     public void testTrailingNewlines() {
         assertEquals("<test/>", $("\n<test/>\n").toString());
     }
+
 }

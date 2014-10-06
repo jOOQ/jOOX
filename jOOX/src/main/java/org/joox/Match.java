@@ -42,6 +42,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -1452,6 +1453,26 @@ public interface Match extends Iterable<Element> {
     Match matchText(String regex, boolean keepMatches);
 
     /**
+     * Reduce the set of matched elements by filtering out those whose attribute
+     * content doesn't match a given regex
+     * <p>
+     * This is the same as calling <code>matchAttr(name, valueRegex, true)</code>
+     *
+     * @see JOOX#matchAttr(String, String)
+     */
+    Match matchAttr(String name, String valueRegex);
+
+    /**
+     * Reduce the set of matched elements by filtering out those whose attribute
+     * content doesn't match a given regex <code>(keepMatches = true)</code>, or
+     * those whose text content matches a given regex
+     * <code>(keepMatches = false)</code>
+     *
+     * @see JOOX#matchAttr(String, String)
+     */
+    Match matchAttr(String name, String valueRegex, boolean keepMatches);
+
+    /**
      * Reduce the set of matched elements by filtering out those whose tag name
      * doesn't match a given regex
      * <p>
@@ -2200,4 +2221,12 @@ public interface Match extends Iterable<Element> {
      * @see #transform(Transformer)
      */
     Match transform(String transformer);
+
+    /**
+     * Allows to sort the result with the given comparator.
+     *
+     * @param comparator The element comparator.
+     * @return
+     */
+    Match sort(Comparator<Element> comparator);
 }
