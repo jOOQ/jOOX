@@ -2032,4 +2032,9 @@ public class JOOXTest {
         String xml = "<tag1><tag2>éâ</tag2></tag1>";
         assertEquals(xml, "<tag2>éâ</tag2>", $(xml).content());
     }
+
+    @Test
+    public void testTrailingNewlines() {
+        assertEquals("<test/>", $("\n<test/>\n").toString());
+    }
 }

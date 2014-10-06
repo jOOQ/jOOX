@@ -126,6 +126,10 @@ class Util {
 
             try {
 
+                // [#128] Trimming will get rid of leading and trailing whitespace, which would
+                // otherwise cause a HIERARCHY_REQUEST_ERR raised by the parser
+                text = text.trim();
+
                 // There is a processing instruction. We can safely assume
                 // valid XML and parse it as such
                 if (text.startsWith("<?xml")) {
