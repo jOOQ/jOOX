@@ -27,9 +27,9 @@
     </licenses>
 
     <scm>
-        <developerConnection>scm:svn:https://joox.googlecode.com/svn</developerConnection>
-        <url>https://joox.googlecode.com/svn</url>
-        <connection>scm:svn:https://joox.googlecode.com/svn</connection>
+        <developerConnection>https://github.com/jOOQ/jOOX</developerConnection>
+        <url>https://github.com/jOOQ/jOOX</url>
+        <connection>https://github.com/jOOQ/jOOX</connection>
     </scm>
 
     <build>
