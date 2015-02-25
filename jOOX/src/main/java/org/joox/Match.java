@@ -80,7 +80,7 @@ public interface Match extends Iterable<Element> {
      * Get a new Match with added namespace configuration for subsequent XPath
      * calls
      * <p>
-     * This is a convenience method for {@link #namespace(String, String)}
+     * This is a convenience method for {@link #namespaces(java.util.Map)}
      *
      * @param namespacePrefix A namespace prefix
      * @param namespaceURI A namespace URI
