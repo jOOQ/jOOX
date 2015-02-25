@@ -1452,6 +1452,14 @@ public class JOOXTest {
     }
 
     @Test
+    public void testAppendDetached() {
+        Document document = $("<a/>").document();
+        Element e = document.createElement("e");
+        $(document).append(e);
+        assertEquals("<a><e/></a>", $(document).toString());
+    }
+
+    @Test
     public void testPrepend() throws Exception {
         assertEquals(1, $.find("dvds").prepend("<dvd id=\"6\"/>").size());
         assertEquals(2, $.find("dvd").size());
@@ -2061,5 +2069,4 @@ public class JOOXTest {
     public void testTrailingNewlines() {
         assertEquals("<test/>", $("\n<test/>\n").toString());
     }
-
 }

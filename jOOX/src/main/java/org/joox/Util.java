@@ -208,7 +208,7 @@ class Util {
      * </ul>
      *
      * @param document The document to import elements into
-     * @param elements The elemenst that are made available to a document.
+     * @param elements The elements that are made available to a document.
      * @return Elements that are all in the supplied document, but detached.
      */
     static final List<Element> importOrDetach(Document document, Element... elements) {
@@ -219,9 +219,15 @@ class Util {
                 detached.add((Element) document.importNode(e, true));
             }
             else {
-                detached.add((Element) e.getParentNode().removeChild(e));
+                Node parent = e.getParentNode();
+
+                if (parent != null)
+                    parent.removeChild(e);
+
+                detached.add(e);
             }
         }
+
         return detached;
     }
 
