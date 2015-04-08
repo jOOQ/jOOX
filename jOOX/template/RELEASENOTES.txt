@@ -1,6 +1,23 @@
 jOOX Release notes
 ------------------
-For an overview, see also http://code.google.com/p/joox/issues/list
+For an overview, see also https://github.com/jOOQ/jOOX/issues
+
+Version 1.3.0 - April 08, 2013
+=================================================================
+
+Features and improvements
+-------------------------
+#114 - Fix Apache commons-io test dependency to something more up
+       to date
+#126 - Extended match with a simple sort method.
+
+Bug fixes
+---------
+#128 - Trailing new line results in 'org.w3c.dom.DOMException: 
+       HIERARCHY_REQUEST_ERR: An attempt was made to insert a
+       node where it is not permitted. '
+#131 - Util.importOrDetach() throws NPE if element belongs to
+       document and is already detached
 
 Version 1.2.0 - November 29, 2013
 =================================================================
