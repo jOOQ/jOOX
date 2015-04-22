@@ -1305,6 +1305,14 @@ public class JOOXTest {
     }
 
     @Test
+    public void testContentWithCDATA() {
+        assertEquals("<![CDATA[x]]>", $("<a><![CDATA[x]]></a>").content());
+        assertEquals("<![CDATA[x]]>y<![CDATA[z]]>", $("<a><![CDATA[x]]>y<![CDATA[z]]></a>").content());
+        assertEquals("<b><![CDATA[x]]></b>", $("<a><b><![CDATA[x]]></b></a>").content());
+        assertEquals("<b><![CDATA[x]]></b><c><![CDATA[y]]></c>", $("<a><b><![CDATA[x]]></b><c><![CDATA[y]]></c></a>").content());
+    }
+
+    @Test
     public void testContentJAXB() throws Exception {
         assertEquals("<customer id=\"0\"><age>0</age></customer>",
             $.content(new Customer()).content());

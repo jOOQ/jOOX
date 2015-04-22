@@ -265,16 +265,14 @@ class Util {
     /**
      * Check whether there are any element nodes in a {@link NodeList}
      */
-    static final boolean hasElementNodes(NodeList list) {
+    static final boolean textNodesOnly(NodeList list) {
         final int length = list.getLength();
 
-        for (int i = 0; i < length; i++) {
-            if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                return true;
-            }
-        }
+        for (int i = 0; i < length; i++)
+            if (list.item(i).getNodeType() != Node.TEXT_NODE)
+                return false;
 
-        return false;
+        return true;
     }
 
     /**

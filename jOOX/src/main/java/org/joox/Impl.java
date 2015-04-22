@@ -1444,7 +1444,7 @@ class Impl implements Match {
         }
 
         // The element contains only text
-        else if (!Util.hasElementNodes(children)) {
+        else if (Util.textNodesOnly(children)) {
             return element.getTextContent();
         }
 
