@@ -1313,6 +1313,17 @@ public class JOOXTest {
     }
 
     @Test
+    public void testContentWithNewlines() {
+        assertEquals("a\nb\nc", $("<x>a\nb\nc</x>").content());
+        assertEquals("a\nb\nc", $("<y><x>a\nb\nc</x></y>").find("x").content());
+
+        // Xalan seems to replace \n by \r\n on Windows... o_O. We should treat
+        // this in another bug, perhaps
+        assertEquals("a\n<b/>\nc", $("<x>a\n<b/>\nc</x>").content().replace("\r", ""));
+        assertEquals("a\n<b/>\nc", $("<y><x>a\n<b/>\nc</x></y>").find("x").content().replace("\r", ""));
+    }
+
+    @Test
     public void testContentJAXB() throws Exception {
         assertEquals("<customer id=\"0\"><age>0</age></customer>",
             $.content(new Customer()).content());

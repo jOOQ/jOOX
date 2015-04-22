@@ -1452,7 +1452,7 @@ class Impl implements Match {
         else {
             // TODO: Check this code's efficiency
             String name = element.getTagName();
-            return Util.toString(element).replaceAll("^<" + name + "(?:[^>]*)>(.*)</" + name + ">$", "$1");
+            return Util.toString(element).replaceAll("(?s)^<" + name + "(?:[^>]*)>(.*)</" + name + ">$", "$1");
         }
     }
 
