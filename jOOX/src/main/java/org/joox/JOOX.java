@@ -62,6 +62,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Result;
 import javax.xml.transform.dom.DOMResult;
 
@@ -941,6 +942,28 @@ public final class JOOX {
     public static DocumentBuilder builder() {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+            // -----------------------------------------------------------------
+            // [#136] FIX START: Prevent OWASP attack vectors
+            try {
+                factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            }
+            catch (ParserConfigurationException ignore) {}
+
+            try {
+                factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            }
+            catch (ParserConfigurationException ignore) {}
+
+            try {
+                factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            }
+            catch (ParserConfigurationException ignore) {}
+
+            factory.setXIncludeAware(false);
+            factory.setExpandEntityReferences(false);
+            // [#136] FIX END
+            // -----------------------------------------------------------------
 
             // [#9] [#107] In order to take advantage of namespace-related DOM
             // features, the internal builder should be namespace-aware
