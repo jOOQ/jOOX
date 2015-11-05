@@ -12,7 +12,7 @@
     <groupId>org.jooq</groupId>
     <artifactId>joox</artifactId>
     <version>1.3.0</version>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
 
     <name>jOOX</name>
     <description>jOOX stands for Java Object Oriented XML. It is a simple wrapper for the org.w3c.dom package, to allow for fluent XML document creation and manipulation where DOM is required but too verbose.</description>
@@ -87,6 +87,13 @@
                     <downloadSources>true</downloadSources>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.4.0</version>
+                <extensions>true</extensions>
+            </plugin>
         </plugins>
     </build>
 
@@ -114,7 +121,7 @@
                             <useDefaultExcludes>true</useDefaultExcludes>
                         </configuration>
                     </plugin>
-                    
+
                     <plugin>
                         <inherited>true</inherited>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -140,7 +147,7 @@
                                   var _gaq = _gaq || [];
                                   _gaq.push(['_setAccount', 'UA-30716479-1']);
                                   _gaq.push(['_trackPageview']);
-                        
+
                                   (function() {
                                     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
                                     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
@@ -149,12 +156,12 @@
                                 </script>
                             ]]>
                             </header>
-                            
+
                             <!-- Avoid running into Java 8's very restrictive doclint issues -->
                             <additionalparam>-Xdoclint:none</additionalparam>
                         </configuration>
                     </plugin>
-                    
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
