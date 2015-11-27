@@ -1962,6 +1962,82 @@ public interface Match extends Iterable<Element> {
      */
     Match text(Content content);
 
+    /**
+     * Get all CDATA content of the elements in the set of matched elements.
+     * <p>
+     * This is the same as {@link #texts()}.
+     */
+    List<String> cdatas();
+
+    /**
+     * Get all converted CDATA content of the elements in the set of matched
+     * elements.
+     * <p>
+     * This is the same as {@link #texts(Class)}.
+     *
+     * @see JOOX#convert(String, Class)
+     */
+    <T> List<T> cdatas(Class<T> type);
+
+    /**
+     * Get all CDATA content of the elements at given indexes in the set of
+     * matched elements.
+     * <p>
+     * This is the same as {@link #texts(int...)}.
+     */
+    List<String> cdatas(int... indexes);
+
+    /**
+     * Get the CDATA content of the first element in the set of matched
+     * elements, or <code>null</code> if there are no matched elements.
+     * <p>
+     * This is the same as calling <code>cdata(0)</code> or {@link #text()}.
+     */
+    String cdata();
+
+    /**
+     * Get the converted CDATA content of the first element in the set of
+     * matched elements, or <code>null</code> if there are no matched elements.
+     * <p>
+     * This is the same as {@link #text(Class)}.
+     *
+     * @see JOOX#convert(String, Class)
+     */
+    <T> T cdata(Class<T> type);
+
+    /**
+     * Get the CDATA content at a given index in the current set of matched
+     * elements.
+     * <p>
+     * This is the same as {@link #text(int)}.
+     */
+    String cdata(int index);
+
+    /**
+     * Set some CDATA content to all elements in the set of matched elements
+     * (possibly replacing existing content).
+     * <p>
+     * Unlike {@link #text(Content)}, this generates a
+     * {@link Node#CDATA_SECTION_NODE}.
+     */
+    Match cdata(String content);
+
+    /**
+     * Set some CDATA content to all elements in the set of matched elements
+     * (possibly replacing existing content).
+     * <p>
+     * The callback {@link Context} is populated like this:
+     * <ul>
+     * <li>{@link Context#match()} - the matched element being added to</li>
+     * <li>{@link Context#matchIndex()} - the index of the matched element being
+     * added to</li>
+     * </ul>
+     * <p>
+     * Unlike {@link #text(Content)}, this generates a
+     * {@link Node#CDATA_SECTION_NODE}.
+     */
+    Match cdata(Content content);
+
     // ---------------------------------------------------------------------
     // Convenience
     // ---------------------------------------------------------------------

@@ -1269,6 +1269,32 @@ public class JOOXTest {
     }
 
     @Test
+    public void testCData() throws Exception {
+        assertNull($.find("any").cdata());
+        assertEquals("Sergio Leone", $.find("director").cdata());
+        assertEquals("Charles Bronson", $.find("actor").cdata());
+        assertEquals("Charles Bronson", $.find("actor").cdata(0));
+        assertEquals("Jason Robards", $.find("actor").cdata(1));
+        assertEquals("Claudia Cardinale", $.find("actor").cdata(2));
+        assertEquals(
+            Arrays.asList("Charles Bronson", "Jason Robards", "Claudia Cardinale"),
+            $.find("actor").cdatas());
+
+        assertEquals(
+            Collections.nCopies(3, "Lukas Eder"),
+            $.find("actor").cdata("Lukas Eder").cdatas());
+        assertEquals(
+            Collections.nCopies(3, "<actor><![CDATA[Lukas Eder]]></actor>"),
+            $.find("actor").map(e -> e.toString()));
+
+        assertEquals("<abc/>", $.find("actors").cdata("<abc/>").cdata());
+        assertEquals("<actors><![CDATA[<abc/>]]></actors>", $.find("actors").toString());
+
+        assertEquals("<><aa>", $.find("actors").cdata("<><aa>").cdata());
+        assertEquals("<actors><![CDATA[<><aa>]]></actors>", $.find("actors").toString());
+    }
+
+    @Test
     public void testContent() throws Exception {
         assertEquals("Sergio Leone", $.find("director").content());
         assertEquals(Arrays.asList(

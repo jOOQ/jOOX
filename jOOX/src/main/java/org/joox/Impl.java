@@ -1554,6 +1554,55 @@ class Impl implements Match {
     }
 
     @Override
+    public final String cdata() {
+        return text();
+    }
+
+    @Override
+    public final String cdata(int index) {
+        return text(index);
+    }
+
+    @Override
+    public final <T> T cdata(Class<T> type) {
+        return text(type);
+    }
+
+    @Override
+    public final List<String> cdatas() {
+        return texts();
+    }
+
+    @Override
+    public final List<String> cdatas(int... indexes) {
+        return texts(indexes);
+    }
+
+    @Override
+    public final <T> List<T> cdatas(Class<T> type) {
+        return texts(type);
+    }
+
+    @Override
+    public final Impl cdata(String content) {
+        return cdata(JOOX.content(content));
+    }
+
+    @Override
+    public final Impl cdata(Content content) {
+        final int size = size();
+
+        for (int matchIndex = 0; matchIndex < size; matchIndex++) {
+            Element match = get(matchIndex);
+            String text = content.content(context(match, matchIndex, size));
+            empty(match);
+            match.appendChild(match.getOwnerDocument().createCDATASection(text));
+        }
+
+        return this;
+    }
+
+    @Override
     public final Match empty() {
         for (Element element : elements) {
             empty(element);
