@@ -1277,6 +1277,7 @@ public class JOOXTest {
 
     @Test
     public void testContent() throws Exception {
+        assertNull($.find("non-existing").content());
         assertEquals("Sergio Leone", $.find("director").content());
         assertEquals(Arrays.asList(
             "Charles Bronson",

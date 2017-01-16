@@ -1410,9 +1410,8 @@ class Impl implements Match {
     }
 
     private final String content(Element element) {
-        if (element == null) {
-            return "";
-        }
+        if (element == null)
+            return null;
 
         NodeList children = element.getChildNodes();
 
