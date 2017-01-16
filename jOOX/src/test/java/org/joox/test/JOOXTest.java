@@ -16,15 +16,15 @@ package org.joox.test;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.nCopies;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
 import static org.joox.JOOX.$;
 import static org.joox.JOOX.attr;
 import static org.joox.JOOX.chain;
 import static org.joox.JOOX.paths;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -54,7 +54,9 @@ import org.joox.JOOX;
 import org.joox.Mapper;
 import org.joox.Match;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -64,6 +66,7 @@ import org.w3c.dom.NodeList;
 /**
  * @author Lukas Eder
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class JOOXTest {
 
     private String   xmlExampleString;
@@ -679,8 +682,8 @@ public class JOOXTest {
         assertEquals(1984, (long) $.find("name").text(Long.class));
         assertEquals((short) 1984, (short) $.find("name").text(Short.class));
         assertEquals((byte) 1984, (byte) $.find("name").text(Byte.class));
-        assertEquals(1984.0f, (float) $.find("name").text(Float.class));
-        assertEquals(1984.0, (double) $.find("name").text(Double.class));
+        assertEquals(1984.0f, $.find("name").text(Float.class), 0.0f);
+        assertEquals(1984.0, $.find("name").text(Double.class), 0.0);
         assertEquals(new BigInteger("1984"), $.find("name").text(BigInteger.class));
         assertEquals(new BigDecimal("1984"), $.find("name").text(BigDecimal.class));
 
@@ -688,8 +691,8 @@ public class JOOXTest {
         assertEquals(1984, (long) $.find("name").text(long.class));
         assertEquals((short) 1984, (short) $.find("name").text(short.class));
         assertEquals((byte) 1984, (byte) $.find("name").text(byte.class));
-        assertEquals(1984.0f, (float) $.find("name").text(float.class));
-        assertEquals(1984.0, (double) $.find("name").text(double.class));
+        assertEquals(1984.0f, $.find("name").text(float.class), 0.0f);
+        assertEquals(1984.0, $.find("name").text(double.class), 0.0);
 
         assertNull($.find("name").eq(1).text(Integer.class));
         assertNull($.find("name").eq(1).text(Long.class));
@@ -704,8 +707,8 @@ public class JOOXTest {
         assertEquals(0, (long) $.find("name").eq(1).text(long.class));
         assertEquals(0, (short) $.find("name").eq(1).text(short.class));
         assertEquals(0, (byte) $.find("name").eq(1).text(byte.class));
-        assertEquals(0.0f, $.find("name").eq(1).text(float.class));
-        assertEquals(0.0, $.find("name").eq(1).text(double.class));
+        assertEquals(0.0f, $.find("name").eq(1).text(float.class), 0.0f);
+        assertEquals(0.0, $.find("name").eq(1).text(double.class), 0.0);
         assertFalse($.find("name").eq(1).text(boolean.class));
     }
 
