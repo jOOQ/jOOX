@@ -1,6 +1,4 @@
 /*
- * Copyright (c) 2011-2016, Data Geekery GmbH (http://www.datageekery.com)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -1838,7 +1836,7 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Get the XML content of the first element in the set of matched elements,
-     * or <code>null</code> if there are no matched elements
+     * or <code>null</code> if there are no matched elements.
      * <p>
      * This is the same as calling <code>content(0)</code>
      */
