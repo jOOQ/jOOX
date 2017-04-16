@@ -1,6 +1,6 @@
 # Overview
 
-*jOOX* stands for Java Object Oriented XML. It is a simple wrapper for the org.w3c.dom package, to allow for fluent XML document creation and manipulation where DOM is required but too verbose. jOOX only wraps the underlying document and can be used to enhance DOM, not as an alternative.
+*jOOX* stands for jOOX Object Oriented XML. It is a simple wrapper for the org.w3c.dom package, to allow for fluent XML document creation and manipulation where DOM is required but too verbose. jOOX only wraps the underlying document and can be used to enhance DOM, not as an alternative.
 
 *jOOX*'s fluency is inspired by [jRTF](https://github.com/ullenboom/jrtf), a very nice fluent API for the creation of RTF documents in Java.
 
