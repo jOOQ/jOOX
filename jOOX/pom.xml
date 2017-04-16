@@ -15,7 +15,7 @@
     <packaging>bundle</packaging>
 
     <name>jOOX</name>
-    <description>jOOX stands for Java Object Oriented XML. It is a simple wrapper for the org.w3c.dom package, to allow for fluent XML document creation and manipulation where DOM is required but too verbose.</description>
+    <description>jOOX is a recursive acronym that stands for jOOX Object Oriented XML. It is a simple wrapper for the org.w3c.dom package, to allow for fluent XML document creation and manipulation where DOM is required but too verbose.</description>
     <url>https://github.com/jOOQ/jOOX</url>
 
     <licenses>
