@@ -938,7 +938,12 @@ public final class JOOX {
             }
             catch (ParserConfigurationException ignore) {}
 
-            factory.setXIncludeAware(false);
+            // [#149] Not implemented on Android
+            try {
+                factory.setXIncludeAware(false);
+            }
+            catch (UnsupportedOperationException ignore) {}
+
             factory.setExpandEntityReferences(false);
             // [#136] FIX END
             // -----------------------------------------------------------------
