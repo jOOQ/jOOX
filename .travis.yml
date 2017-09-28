@@ -1,5 +1,5 @@
 language: java
 jdk:
-- oraclejdk8
+- openjdk8
 install: sh -c 'cd jOOX && mvn install -DskipTests=true'
 script: sh -c 'cd jOOX && mvn test'
