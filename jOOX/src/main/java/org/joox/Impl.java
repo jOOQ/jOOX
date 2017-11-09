@@ -67,6 +67,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathVariableResolver;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
@@ -1422,7 +1423,8 @@ class Impl implements Match {
 
         // The element contains only text
         else if (Util.textNodesOnly(children)) {
-            return element.getTextContent();
+            String textContent = element.getTextContent();
+            return StringEscapeUtils.escapeXml10(textContent);
         }
 
         // The element contains content
