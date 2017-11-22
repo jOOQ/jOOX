@@ -547,7 +547,7 @@ class Util {
     /**
      * Parse any date format
      */
-    static java.util.Date parseDate(String formatted) {
+    static final java.util.Date parseDate(String formatted) {
         if (formatted == null || formatted.trim().equals("")) {
             return null;
         }
@@ -613,7 +613,7 @@ class Util {
         }
     }
 
-    private static Date getDate(int year, int month, int day, int hour, int minute, int second, int millisecond) {
+    private static final Date getDate(int year, int month, int day, int hour, int minute, int second, int millisecond) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(0);
         calendar.set(year, month - 1, day, hour, minute, second);
@@ -621,7 +621,7 @@ class Util {
         return calendar.getTime();
     }
 
-    static String defaultIfEmpty(String string, String defaultString) {
+    static final String defaultIfEmpty(String string, String defaultString) {
         if (string == null || string.equals("")) {
             return defaultString;
         }
@@ -629,7 +629,7 @@ class Util {
         return string;
     }
 
-    static String getNamespace(String tagName) {
+    static final String getNamespace(String tagName) {
         int index = tagName.indexOf(':');
 
         if (index > -1) {
@@ -639,7 +639,7 @@ class Util {
         return null;
     }
 
-    static String stripNamespace(String tagName) {
+    static final String stripNamespace(String tagName) {
         int index = tagName.indexOf(':');
 
         if (index > -1) {
