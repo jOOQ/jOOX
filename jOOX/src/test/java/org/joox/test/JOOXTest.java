@@ -2096,4 +2096,22 @@ public class JOOXTest {
     public void testTrailingNewlines() {
         assertEquals("<test/>", $("\n<test/>\n").toString());
     }
+
+    @Test
+    public void testXMLEntities() {
+        assertEquals("a & b", $("<test>a &amp; b</test>").content());
+        assertEquals("a & b", $("<test>a &amp; b</test>").text());
+        assertEquals("a < > b", $("<test>a &lt; &gt; b</test>").content());
+        assertEquals("a < > b", $("<test>a &lt; &gt; b</test>").text());
+
+        assertEquals("a & b", $("<test/>").content("a &amp; b").content());
+        assertEquals("a & b", $("<test/>").content("a &amp; b").text());
+        assertEquals("a < > b", $("<test/>").content("a &lt; &gt; b").content());
+        assertEquals("a < > b", $("<test/>").content("a &lt; &gt; b").text());
+
+        assertEquals("a &amp; b", $("<test/>").text("a &amp; b").content());
+        assertEquals("a &amp; b", $("<test/>").text("a &amp; b").text());
+        assertEquals("a &lt; &gt; b", $("<test/>").text("a &lt; &gt; b").content());
+        assertEquals("a &lt; &gt; b", $("<test/>").text("a &lt; &gt; b").text());
+    }
 }

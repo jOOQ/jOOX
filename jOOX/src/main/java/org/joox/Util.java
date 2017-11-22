@@ -98,8 +98,9 @@ class Util {
      */
     static final DocumentFragment createContent(Document doc, String text) {
 
-        // Text might hold XML content
-        if (text != null && text.contains("<")) {
+        // [#150] Text might hold XML content, which can be leniently identified by the presence
+        //        of either < or & characters (other entities, like >, ", ' are not stricly XML content)
+        if (text != null && (text.contains("<") || text.contains("&"))) {
             DocumentBuilder builder = JOOX.builder();
 
             try {
