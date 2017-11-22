@@ -99,9 +99,8 @@ class Impl implements Match {
     }
 
     final Impl addNodeLists(List<NodeList> lists) {
-        for (NodeList list : lists) {
+        for (NodeList list : lists)
             addNodeList(list);
-        }
 
         return this;
     }
@@ -109,9 +108,8 @@ class Impl implements Match {
     final Impl addNodeList(NodeList list) {
         final int length = list.getLength();
 
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < length; i++)
             elements.add((Element) list.item(i));
-        }
 
         return this;
     }
@@ -183,21 +181,18 @@ class Impl implements Match {
     public final String namespaceURI(int index) {
         Element element = get(index);
 
-        if (element != null) {
+        if (element != null)
             return element.getNamespaceURI();
-        }
-        else {
+        else
             return null;
-        }
     }
 
     @Override
     public final List<String> namespaceURIs() {
         List<String> result = new ArrayList<String>();
 
-        for (int i = 0; i < elements.size(); i++) {
+        for (int i = 0; i < elements.size(); i++)
             result.add(namespaceURI(i));
-        }
 
         return result;
     }
@@ -206,9 +201,8 @@ class Impl implements Match {
     public final List<String> namespaceURIs(int... indexes) {
         List<String> result = new ArrayList<String>();
 
-        for (int index : indexes) {
+        for (int index : indexes)
             result.add(namespaceURI(index));
-        }
 
         return result;
     }
@@ -222,21 +216,18 @@ class Impl implements Match {
     public final String namespacePrefix(int index) {
         Element element = get(index);
 
-        if (element != null) {
+        if (element != null)
             return getNamespace(element.getTagName());
-        }
-        else {
+        else
             return null;
-        }
     }
 
     @Override
     public final List<String> namespacePrefixes() {
         List<String> result = new ArrayList<String>();
 
-        for (int i = 0; i < elements.size(); i++) {
+        for (int i = 0; i < elements.size(); i++)
             result.add(namespacePrefix(i));
-        }
 
         return result;
     }
@@ -245,9 +236,8 @@ class Impl implements Match {
     public final List<String> namespacePrefixes(int... indexes) {
         List<String> result = new ArrayList<String>();
 
-        for (int index : indexes) {
+        for (int index : indexes)
             result.add(namespacePrefix(index));
-        }
 
         return result;
     }
@@ -266,22 +256,18 @@ class Impl implements Match {
         final int size = elements.size();
 
         if (index >= 0) {
-            if (index < size) {
+            if (index < size)
                 return elements.get(index);
-            }
-            else {
+            else
                 return null;
-            }
         }
         else {
             final int calculated = size + index;
 
-            if (calculated >= 0 && calculated < size) {
+            if (calculated >= 0 && calculated < size)
                 return elements.get(calculated);
-            }
-            else {
+            else
                 return null;
-            }
         }
     }
 
@@ -289,9 +275,8 @@ class Impl implements Match {
     public final List<Element> get(int... indexes) {
         List<Element> result = new ArrayList<Element>();
 
-        for (int i : indexes) {
+        for (int i : indexes)
             result.add(get(i));
-        }
 
         return result;
     }
@@ -327,9 +312,8 @@ class Impl implements Match {
     public final Impl add(Match... e) {
         Impl x = copy();
 
-        for (Match element : e) {
+        for (Match element : e)
             x.addUniqueElements(element.get());
-        }
 
         return x;
     }
@@ -343,9 +327,8 @@ class Impl implements Match {
 
     @Override
     public final Impl andSelf() {
-        if (previousMatch != null) {
+        if (previousMatch != null)
             addUniqueElements(previousMatch.get());
-        }
 
         return this;
     }
@@ -398,9 +381,8 @@ class Impl implements Match {
             for (int elementIndex = 0; elementIndex < elementSize; elementIndex++) {
                 Element e = list.get(elementIndex);
 
-                if (filter.filter(context(match, matchIndex, size, e, elementIndex, elementSize))) {
+                if (filter.filter(context(match, matchIndex, size, e, elementIndex, elementSize)))
                     result.add(e);
-                }
             }
         }
 
@@ -411,9 +393,8 @@ class Impl implements Match {
     public final List<Match> each() {
         List<Match> result = new ArrayList<Match>();
 
-        for (Element element : elements) {
+        for (Element element : elements)
             result.add(new Impl(document, namespaces).addElements(element));
-        }
 
         return result;
     }
@@ -422,9 +403,8 @@ class Impl implements Match {
     public final Impl each(Each each) {
         final int size = size();
 
-        for (int matchIndex = 0; matchIndex < size; matchIndex++) {
+        for (int matchIndex = 0; matchIndex < size; matchIndex++)
             each.each(context(get(matchIndex), matchIndex, size));
-        }
 
         return this;
     }
@@ -452,9 +432,8 @@ class Impl implements Match {
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
 
-            if (filter.filter(context(match, matchIndex, size))) {
+            if (filter.filter(context(match, matchIndex, size)))
                 result.add(match);
-            }
         }
 
         return new Impl(document, namespaces).addElements(result);
@@ -464,11 +443,9 @@ class Impl implements Match {
     public final Impl eq(int... indexes) {
         Impl result = new Impl(document, namespaces);
 
-        for (Element e : get(indexes)) {
-            if (e != null) {
+        for (Element e : get(indexes))
+            if (e != null)
                 result.addElements(e);
-            }
-        }
 
         return result;
     }
@@ -485,9 +462,8 @@ class Impl implements Match {
         if ("*".equals(selector)) {
             List<NodeList> result = new ArrayList<NodeList>();
 
-            for (Element element : elements) {
+            for (Element element : elements)
                 result.add(element.getElementsByTagName(selector));
-            }
 
             return new Impl(document, namespaces, this).addNodeLists(result);
         }
@@ -512,11 +488,9 @@ class Impl implements Match {
      * the matched elements
      */
     private boolean isRoot() {
-        for (Element element : elements) {
-            if (element.getParentNode().getNodeType() == Node.DOCUMENT_NODE) {
+        for (Element element : elements)
+            if (element.getParentNode().getNodeType() == Node.DOCUMENT_NODE)
                 return true;
-            }
-        }
 
         return false;
     }
@@ -537,12 +511,10 @@ class Impl implements Match {
             inner: for (int elementIndex = 0;; elementIndex++) {
                 Element e = (Element) nodes.item(elementIndex);
 
-                if (e == null) {
+                if (e == null)
                     break inner;
-                }
-                else if (filter.filter(context(match, matchIndex, size, e, elementIndex, elementSize))) {
+                else if (filter.filter(context(match, matchIndex, size, e, elementIndex, elementSize)))
                     result.add(e);
-                }
             }
         }
 
@@ -566,21 +538,17 @@ class Impl implements Match {
             Util.xalanExtensionAware(xpath);
 
             // Add a variable resolver if we have any variables
-            if (variables != null && variables.length != 0) {
+            if (variables != null && variables.length != 0)
                 xpath.setXPathVariableResolver(new VariableResolver(expression, variables));
-            }
 
             // [#9] Chain namespace contexts, in case namespaces could be needed
-            if (!namespaces.isEmpty() || expression.contains(":")) {
+            if (!namespaces.isEmpty() || expression.contains(":"))
                 xpath.setNamespaceContext(new ChainedContext(xpath.getNamespaceContext()));
-            }
 
             XPathExpression exp = xpath.compile(expression);
-            for (Element element : get()) {
-                for (Element match : iterable((NodeList) exp.evaluate(element, XPathConstants.NODESET))) {
+            for (Element element : get())
+                for (Element match : iterable((NodeList) exp.evaluate(element, XPathConstants.NODESET)))
                     result.add(match);
-                }
-            }
         }
         catch (XPathExpressionException e) {
             throw new RuntimeException(e);
@@ -591,12 +559,10 @@ class Impl implements Match {
 
     @Override
     public final Impl first() {
-        if (size() > 0) {
+        if (size() > 0)
             return new Impl(document, namespaces).addElements(get(0));
-        }
-        else {
+        else
             return new Impl(document, namespaces);
-        }
     }
 
     @Override
@@ -645,9 +611,8 @@ class Impl implements Match {
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
 
-            if (filter.filter(context(match, matchIndex, size))) {
+            if (filter.filter(context(match, matchIndex, size)))
                 return true;
-            }
         }
 
         return false;
@@ -657,12 +622,10 @@ class Impl implements Match {
     public final Impl last() {
         final int size = size();
 
-        if (size > 0) {
+        if (size > 0)
             return new Impl(document, namespaces).addElements(get(size - 1));
-        }
-        else {
+        else
             return new Impl(document, namespaces);
-        }
     }
 
     @Override
@@ -670,9 +633,8 @@ class Impl implements Match {
         final int size = size();
         final List<E> result = new ArrayList<E>();
 
-        for (int matchIndex = 0; matchIndex < size; matchIndex++) {
+        for (int matchIndex = 0; matchIndex < size; matchIndex++)
             result.add(map.map(context(get(matchIndex), matchIndex, size)));
-        }
 
         return result;
     }
@@ -753,19 +715,17 @@ class Impl implements Match {
                 }
                 else if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element e = (Element) node;
-                    // TODO: [#34] Calculate elementSize()
-                    if (until.filter(context(match, matchIndex, size, e, elementIndex, -1))) {
-                        break;
-                    }
 
                     // TODO: [#34] Calculate elementSize()
-                    if (filter.filter(context(match, matchIndex, size, e, elementIndex++, -1))) {
+                    if (until.filter(context(match, matchIndex, size, e, elementIndex, -1)))
+                        break;
+
+                    // TODO: [#34] Calculate elementSize()
+                    if (filter.filter(context(match, matchIndex, size, e, elementIndex++, -1)))
                         result.add(e);
-                    }
 
-                    if (!all) {
+                    if (!all)
                         break;
-                    }
                 }
             }
         }
@@ -860,19 +820,17 @@ class Impl implements Match {
                 }
                 else if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element e = (Element) node;
-                    // TODO: [#34] Calculate elementSize()
-                    if (until.filter(context(match, matchIndex, size, e, elementIndex, -1))) {
-                        break;
-                    }
 
                     // TODO: [#34] Calculate elementSize()
-                    if (filter.filter(context(match, matchIndex, size, e, elementIndex++, -1))) {
+                    if (until.filter(context(match, matchIndex, size, e, elementIndex, -1)))
+                        break;
+
+                    // TODO: [#34] Calculate elementSize()
+                    if (filter.filter(context(match, matchIndex, size, e, elementIndex++, -1)))
                         result.add(e);
-                    }
 
-                    if (!all) {
+                    if (!all)
                         break;
-                    }
                 }
             }
         }
@@ -956,19 +914,17 @@ class Impl implements Match {
                 }
                 else if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element e = (Element) node;
-                    // TODO: [#34] Calculate elementSize()
-                    if (until.filter(context(match, matchIndex, size, e, elementIndex, -1))) {
-                        break;
-                    }
 
                     // TODO: [#34] Calculate elementSize()
-                    if (filter.filter(context(match, matchIndex, size, e, elementIndex++, -1))) {
+                    if (until.filter(context(match, matchIndex, size, e, elementIndex, -1)))
+                        break;
+
+                    // TODO: [#34] Calculate elementSize()
+                    if (filter.filter(context(match, matchIndex, size, e, elementIndex++, -1)))
                         result.add(e);
-                    }
 
-                    if (!all) {
+                    if (!all)
                         break;
-                    }
                 }
             }
         }
@@ -1001,22 +957,18 @@ class Impl implements Match {
     public final Impl slice(int start, int end) {
         final int size = size();
 
-        if (start < 0) {
+        if (start < 0)
             start = size + start;
-        }
-        if (end < 0) {
+        if (end < 0)
             end = size + end;
-        }
 
         start = Math.max(0, start);
         end = Math.min(size, end);
 
-        if (start > end) {
+        if (start > end)
             return new Impl(document, namespaces);
-        }
-        if (start == 0 && end == size) {
+        if (start == 0 && end == size)
             return this;
-        }
 
         return new Impl(document, namespaces).addElements(elements.subList(start, end));
     }
@@ -1028,12 +980,10 @@ class Impl implements Match {
 
     @Override
     public final Impl matchText(String regex, boolean keepMatches) {
-        if (keepMatches) {
+        if (keepMatches)
             return filter(JOOX.matchText(regex));
-        }
-        else {
+        else
             return not(JOOX.matchText(regex));
-        }
     }
 
     @Override
@@ -1043,12 +993,10 @@ class Impl implements Match {
 
     @Override
     public final Impl matchTag(String regex, boolean keepMatches) {
-        if (keepMatches) {
+        if (keepMatches)
             return filter(JOOX.matchTag(regex));
-        }
-        else {
+        else
             return not(JOOX.matchTag(regex));
-        }
     }
 
     @Override
@@ -1058,12 +1006,10 @@ class Impl implements Match {
 
     @Override
     public final Match matchAttr(String name, String valueRegex, boolean keepMatches) {
-        if (keepMatches) {
+        if (keepMatches)
             return filter(JOOX.matchAttr(name, valueRegex));
-        }
-        else {
+        else
             return not(JOOX.matchAttr(name, valueRegex));
-        }
     }
 
     @Override
@@ -1125,14 +1071,11 @@ class Impl implements Match {
             Node parent = element.getParentNode();
             Node next = element.getNextSibling();
 
-            for (Element e : detached) {
-                if (i == 0) {
+            for (Element e : detached)
+                if (i == 0)
                     result.add((Element) parent.insertBefore(e, next));
-                }
-                else {
+                else
                     result.add((Element) parent.insertBefore(e.cloneNode(true), next));
-                }
-            }
         }
 
         elements.clear();
@@ -1192,14 +1135,11 @@ class Impl implements Match {
             Element element = get(i);
             Node parent = element.getParentNode();
 
-            for (Element e : detached) {
-                if (i == 0) {
+            for (Element e : detached)
+                if (i == 0)
                     result.add((Element) parent.insertBefore(e, element));
-                }
-                else {
+                else
                     result.add((Element) parent.insertBefore(e.cloneNode(true), element));
-                }
-            }
 
             result.add(element);
         }
@@ -1226,12 +1166,10 @@ class Impl implements Match {
             String text = nonNull(content.content(context(match, matchIndex, size)));
             DocumentFragment imported = Util.createContent(doc, text);
 
-            if (imported != null) {
+            if (imported != null)
                 match.appendChild(imported);
-            }
-            else {
+            else
                 match.appendChild(doc.createTextNode(text));
-            }
         }
 
         return this;
@@ -1248,16 +1186,12 @@ class Impl implements Match {
 
         List<Element> detached = Util.importOrDetach(document, content);
 
-        for (int i = 0; i < size; i++) {
-            for (Element e : detached) {
-                if (i == 0) {
+        for (int i = 0; i < size; i++)
+            for (Element e : detached)
+                if (i == 0)
                     get(i).appendChild(e);
-                }
-                else {
+                else
                     get(i).appendChild(e.cloneNode(true));
-                }
-            }
-        }
 
         return this;
     }
@@ -1279,12 +1213,10 @@ class Impl implements Match {
             DocumentFragment imported = Util.createContent(doc, text);
             Node first = match.getFirstChild();
 
-            if (imported != null) {
+            if (imported != null)
                 match.insertBefore(imported, first);
-            }
-            else {
+            else
                 match.insertBefore(doc.createTextNode(text), first);
-            }
         }
 
         return this;
@@ -1306,12 +1238,10 @@ class Impl implements Match {
                 Element element = get(i);
                 Node first = element.getFirstChild();
 
-                if (i == 0) {
+                if (i == 0)
                     element.insertBefore(e, first);
-                }
-                else {
+                else
                     element.insertBefore(e.cloneNode(true), first);
-                }
             }
         }
 
@@ -1320,9 +1250,8 @@ class Impl implements Match {
 
     @Override
     public final String attr(String name) {
-        if (size() > 0) {
+        if (size() > 0)
             return Util.attr(get(0), name);
-        }
 
         return null;
     }
@@ -1336,9 +1265,8 @@ class Impl implements Match {
     public final List<String> attrs(String name) {
         List<String> result = new ArrayList<String>();
 
-        for (Element element : elements) {
+        for (Element element : elements)
             result.add(Util.attr(element, name));
-        }
 
         return result;
     }
@@ -1361,12 +1289,10 @@ class Impl implements Match {
             Element match = get(matchIndex);
             String value = content.content(context(match, matchIndex, size));
 
-            if (value == null) {
+            if (value == null)
                 match.removeAttribute(name);
-            }
-            else {
+            else
                 match.setAttribute(name, value);
-            }
         }
 
         return this;
@@ -1391,9 +1317,8 @@ class Impl implements Match {
     public final List<String> contents() {
         List<String> result = new ArrayList<String>();
 
-        for (Element element : elements) {
+        for (Element element : elements)
             result.add(content(element));
-        }
 
         return result;
     }
@@ -1402,9 +1327,8 @@ class Impl implements Match {
     public final List<String> contents(int... indexes) {
         List<String> result = new ArrayList<String>();
 
-        for (int index : indexes) {
+        for (int index : indexes)
             result.add(content(index));
-        }
 
         return result;
     }
@@ -1416,14 +1340,12 @@ class Impl implements Match {
         NodeList children = element.getChildNodes();
 
         // The element is empty
-        if (children.getLength() == 0) {
+        if (children.getLength() == 0)
             return "";
-        }
 
         // The element contains only text
-        else if (Util.textNodesOnly(children)) {
+        else if (Util.textNodesOnly(children))
             return element.getTextContent();
-        }
 
         // The element contains content
         else {
@@ -1473,9 +1395,8 @@ class Impl implements Match {
     public final String text(int index) {
         Element element = get(index);
 
-        if (element != null) {
+        if (element != null)
             return element.getTextContent();
-        }
 
         return null;
     }
@@ -1489,9 +1410,8 @@ class Impl implements Match {
     public final List<String> texts() {
         List<String> result = new ArrayList<String>();
 
-        for (Element element : elements) {
+        for (Element element : elements)
             result.add(element.getTextContent());
-        }
 
         return result;
     }
@@ -1500,9 +1420,8 @@ class Impl implements Match {
     public final List<String> texts(int... indexes) {
         List<String> result = new ArrayList<String>();
 
-        for (int index : indexes) {
+        for (int index : indexes)
             result.add(text(index));
-        }
 
         return result;
     }
@@ -1581,9 +1500,8 @@ class Impl implements Match {
 
     @Override
     public final Match empty() {
-        for (Element element : elements) {
+        for (Element element : elements)
             empty(element);
-        }
 
         return this;
     }
@@ -1606,14 +1524,12 @@ class Impl implements Match {
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
 
-            if (filter.filter(context(match, matchIndex, size))) {
+            if (filter.filter(context(match, matchIndex, size)))
                 remove.add(match);
-            }
         }
 
-        for (Element element : remove) {
+        for (Element element : remove)
             remove(element);
-        }
 
         return this;
     }
@@ -1626,9 +1542,8 @@ class Impl implements Match {
     private final void empty(Element element) {
         Node child;
 
-        while ((child = element.getFirstChild()) != null) {
+        while ((child = element.getFirstChild()) != null)
             element.removeChild(child);
-        }
     }
 
     @Override
@@ -1728,12 +1643,10 @@ class Impl implements Match {
             for (Element e : detached) {
                 Element replacement;
 
-                if (i == 0) {
+                if (i == 0)
                     replacement = e;
-                }
-                else {
+                else
                     replacement = (Element) e.cloneNode(true);
-                }
 
                 parent.insertBefore(replacement, element);
                 result.add(replacement);
@@ -1796,21 +1709,18 @@ class Impl implements Match {
     public final String xpath(int index) {
         Element element = get(index);
 
-        if (element != null) {
+        if (element != null)
             return Util.xpath(element);
-        }
-        else {
+        else
             return null;
-        }
     }
 
     @Override
     public final List<String> xpaths() {
         List<String> result = new ArrayList<String>();
 
-        for (Element element : elements) {
+        for (Element element : elements)
             result.add(Util.xpath(element));
-        }
 
         return result;
     }
@@ -1819,9 +1729,8 @@ class Impl implements Match {
     public final List<String> xpaths(int... indexes) {
         List<String> result = new ArrayList<String>();
 
-        for (int index : indexes) {
+        for (int index : indexes)
             result.add(xpath(index));
-        }
 
         return result;
     }
@@ -1835,21 +1744,18 @@ class Impl implements Match {
     public final String tag(int index) {
         Element element = get(index);
 
-        if (element != null) {
+        if (element != null)
             return stripNamespace(element.getTagName());
-        }
-        else {
+        else
             return null;
-        }
     }
 
     @Override
     public final List<String> tags() {
         List<String> result = new ArrayList<String>();
 
-        for (Element element : elements) {
+        for (Element element : elements)
             result.add(stripNamespace(element.getTagName()));
-        }
 
         return result;
     }
@@ -1858,9 +1764,8 @@ class Impl implements Match {
     public final List<String> tags(int... indexes) {
         List<String> result = new ArrayList<String>();
 
-        for (int index : indexes) {
+        for (int index : indexes)
             result.add(tag(index));
-        }
 
         return result;
     }
@@ -1889,9 +1794,8 @@ class Impl implements Match {
     public final List<String> ids(int... indexes) {
         List<String> result = new ArrayList<String>();
 
-        for (int index : indexes) {
+        for (int index : indexes)
             result.add(id(index));
-        }
 
         return result;
     }
@@ -1908,9 +1812,8 @@ class Impl implements Match {
     @Override
     public final Match write(Writer writer) throws IOException {
         try {
-            for (Element e : this) {
+            for (Element e : this)
                 writer.write(JOOX.$(e).toString());
-            }
         }
         finally {
             writer.close();
@@ -1934,9 +1837,8 @@ class Impl implements Match {
     public final <T> List<T> unmarshal(Class<T> type) {
         List<T> result = new ArrayList<T>();
 
-        for (Element element : elements) {
+        for (Element element : elements)
             result.add(JAXB.unmarshal(new DOMSource(element), type));
-        }
 
         return result;
     }
@@ -1950,9 +1852,8 @@ class Impl implements Match {
     public final <T> T unmarshalOne(Class<T> type) {
         List<T> list = unmarshal(type);
 
-        if (list.size() > 0) {
+        if (list.size() > 0)
             return list.get(0);
-        }
 
         return null;
     }
@@ -2034,17 +1935,14 @@ class Impl implements Match {
 
     @Override
     public Match sort(final Comparator<Element> comparator) {
-
         Impl result = new Impl(document, namespaces);
 
         List<Element> newElements = new ArrayList<Element>(elements);
         Collections.sort(newElements,comparator);
 
-        for (Element e : newElements) {
-            if (e != null) {
+        for (Element e : newElements)
+            if (e != null)
                 result.addElements(e);
-            }
-        }
 
         return result;
     }
@@ -2091,15 +1989,12 @@ class Impl implements Match {
     public boolean equals(Object obj) {
 
         // Compare types
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (obj == null) {
+        if (obj == null)
             return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != obj.getClass())
             return false;
-        }
 
         // Compare documents
         Impl other = (Impl) obj;
@@ -2159,12 +2054,10 @@ class Impl implements Match {
                 throw new IllegalArgumentException("Variable " + variable + " is not supported by jOOX. Only numerical variables can be used for " + expression);
             }
 
-            if (index < variables.length) {
+            if (index < variables.length)
                 return variables[index];
-            }
-            else {
+            else
                 throw new IndexOutOfBoundsException("No variable defined for " + variable + " in " + expression);
-            }
         }
     }
 
@@ -2195,9 +2088,8 @@ class Impl implements Match {
         public final String getNamespaceURI(String prefix) {
             String namespaceURI = chained == null ? "" : chained.getNamespaceURI(prefix);
 
-            if ("".equals(namespaceURI) && namespaces.containsKey(prefix)) {
+            if ("".equals(namespaceURI) && namespaces.containsKey(prefix))
                 namespaceURI = namespaces.get(prefix);
-            }
 
             return namespaceURI;
         }

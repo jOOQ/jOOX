@@ -164,13 +164,11 @@ class Util {
 
             // [#103] If namespaces are ignored, consider only local
             // part of possibly namespace-unaware Element
-            if (ignoreNamespace) {
+            if (ignoreNamespace)
                 localName = stripNamespace(localName);
-            }
 
-            if (name.equals(localName)) {
+            if (name.equals(localName))
                 return attributes.item(i).getNodeValue();
-            }
         }
 
         return null;
@@ -215,9 +213,8 @@ class Util {
     static final Element[] elements(Match... content) {
         Set<Element> result = new LinkedHashSet<Element>();
 
-        for (Match x : content) {
+        for (Match x : content)
             result.addAll(x.get());
-        }
 
         return result.toArray(new Element[result.size()]);
     }
@@ -296,15 +293,13 @@ class Util {
     private static final int siblingIndex(Element element) {
 
         // The document element has index 0
-        if (element.getParentNode() == element.getOwnerDocument()) {
+        if (element.getParentNode() == element.getOwnerDocument())
             return 0;
-        }
 
         // All other elements are compared with siblings with the same name
         // TODO: How to deal with namespaces here? Omit or keep?
-        else {
+        else
             return $(element).parent().children(element.getTagName()).get().indexOf(element);
-        }
     }
 
     /**
@@ -548,9 +543,8 @@ class Util {
      * Parse any date format
      */
     static final java.util.Date parseDate(String formatted) {
-        if (formatted == null || formatted.trim().equals("")) {
+        if (formatted == null || formatted.trim().equals(""))
             return null;
-        }
 
         try {
             DatatypeFactory factory = DatatypeFactory.newInstance();
@@ -622,9 +616,8 @@ class Util {
     }
 
     static final String defaultIfEmpty(String string, String defaultString) {
-        if (string == null || string.equals("")) {
+        if (string == null || string.equals(""))
             return defaultString;
-        }
 
         return string;
     }
@@ -632,9 +625,8 @@ class Util {
     static final String getNamespace(String tagName) {
         int index = tagName.indexOf(':');
 
-        if (index > -1) {
+        if (index > -1)
             return tagName.substring(0, index);
-        }
 
         return null;
     }
@@ -642,9 +634,8 @@ class Util {
     static final String stripNamespace(String tagName) {
         int index = tagName.indexOf(':');
 
-        if (index > -1) {
+        if (index > -1)
             return tagName.substring(index + 1);
-        }
 
         return tagName;
     }
