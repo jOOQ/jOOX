@@ -1291,9 +1291,9 @@ public class JOOXTest {
         assertEquals("Claudia Cardinale", $.find("actor").content(2));
 
         assertEquals("<><aa>", $.find("actors").content("<><aa>").text());
-        assertEquals("<><aa>", $.find("actors").content());
+        assertEquals("&lt;&gt;&lt;aa&gt;", $.find("actors").content());
         assertEquals("<abc><x></abc>", $.find("actors").content("<abc><x></abc>").text());
-        assertEquals("<abc><x></abc>", $.find("actors").content());
+        assertEquals("&lt;abc&gt;&lt;x&gt;&lt;/abc&gt;", $.find("actors").content());
         assertEquals("", $.find("actors").content("<abc><x/></abc>").text());
         assertEquals("<abc><x/></abc>", $.find("actors").content());
         assertEquals(1, $.find("abc").size());
@@ -1322,11 +1322,12 @@ public class JOOXTest {
 
     @Test
     public void testContentWithNewlines() {
-        assertEquals("a\nb\nc", $("<x>a\nb\nc</x>").content());
-        assertEquals("a\nb\nc", $("<y><x>a\nb\nc</x></y>").find("x").content());
-
         // Xalan seems to replace \n by \r\n on Windows... o_O. We should treat
         // this in another bug, perhaps
+
+        assertEquals("a\nb\nc", $("<x>a\nb\nc</x>").content().replace("\r", ""));
+        assertEquals("a\nb\nc", $("<y><x>a\nb\nc</x></y>").find("x").content().replace("\r", ""));
+
         assertEquals("a\n<b/>\nc", $("<x>a\n<b/>\nc</x>").content().replace("\r", ""));
         assertEquals("a\n<b/>\nc", $("<y><x>a\n<b/>\nc</x></y>").find("x").content().replace("\r", ""));
     }
@@ -1459,7 +1460,7 @@ public class JOOXTest {
         assertEquals(1, $.find("director").append("<><aa>").size());
         assertEquals(0, $.find("director").children().size());
         assertEquals("Sergio Leone<><aa>", $.find("director").text());
-        assertEquals("Sergio Leone<><aa>", $.find("director").content());
+        assertEquals("Sergio Leone&lt;&gt;&lt;aa&gt;", $.find("director").content());
 
         // Append a new book
         // -----------------
@@ -1505,7 +1506,7 @@ public class JOOXTest {
         assertEquals(1, $.find("director").prepend("<><aa>").size());
         assertEquals(0, $.find("director").children().size());
         assertEquals("<><aa>Sergio Leone", $.find("director").text());
-        assertEquals("<><aa>Sergio Leone", $.find("director").content());
+        assertEquals("&lt;&gt;&lt;aa&gt;Sergio Leone", $.find("director").content());
 
         // Prepend a new book
         // ------------------
@@ -1535,7 +1536,7 @@ public class JOOXTest {
 
         assertEquals(0, $.find("best-director-in-the-world").replaceWith("<><aa>").size());
         assertEquals("<><aa>", $.find("directors").text().trim());
-        assertEquals("<><aa>", $.find("directors").content().trim());
+        assertEquals("&lt;&gt;&lt;aa&gt;", $.find("directors").content().trim());
 
         // Replace a new book
         // ------------------
@@ -2099,19 +2100,19 @@ public class JOOXTest {
 
     @Test
     public void testXMLEntities() {
-        assertEquals("a & b", $("<test>a &amp; b</test>").content());
-        assertEquals("a & b", $("<test>a &amp; b</test>").text());
-        assertEquals("a < > b", $("<test>a &lt; &gt; b</test>").content());
-        assertEquals("a < > b", $("<test>a &lt; &gt; b</test>").text());
+        assertEquals("a &amp; b"    , $("<test>a &amp; b</test>").content());
+        assertEquals("a & b"        , $("<test>a &amp; b</test>").text());
+        assertEquals("a &lt; &gt; b", $("<test>a &lt; &gt; b</test>").content());
+        assertEquals("a < > b"      , $("<test>a &lt; &gt; b</test>").text());
 
-        assertEquals("a & b", $("<test/>").content("a &amp; b").content());
-        assertEquals("a & b", $("<test/>").content("a &amp; b").text());
-        assertEquals("a < > b", $("<test/>").content("a &lt; &gt; b").content());
-        assertEquals("a < > b", $("<test/>").content("a &lt; &gt; b").text());
+        assertEquals("a &amp; b"    , $("<test/>").content("a &amp; b").content());
+        assertEquals("a & b"        , $("<test/>").content("a &amp; b").text());
+        assertEquals("a &lt; &gt; b", $("<test/>").content("a &lt; &gt; b").content());
+        assertEquals("a < > b"      , $("<test/>").content("a &lt; &gt; b").text());
 
-        assertEquals("a &amp; b", $("<test/>").text("a &amp; b").content());
-        assertEquals("a &amp; b", $("<test/>").text("a &amp; b").text());
-        assertEquals("a &lt; &gt; b", $("<test/>").text("a &lt; &gt; b").content());
-        assertEquals("a &lt; &gt; b", $("<test/>").text("a &lt; &gt; b").text());
+        assertEquals("a &amp;amp; b"        , $("<test/>").text("a &amp; b").content());
+        assertEquals("a &amp; b"            , $("<test/>").text("a &amp; b").text());
+        assertEquals("a &amp;lt; &amp;gt; b", $("<test/>").text("a &lt; &gt; b").content());
+        assertEquals("a &lt; &gt; b"        , $("<test/>").text("a &lt; &gt; b").text());
     }
 }

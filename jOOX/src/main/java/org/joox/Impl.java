@@ -1344,8 +1344,9 @@ class Impl implements Match {
             return "";
 
         // The element contains only text
+        // [#151] TODO: Check this code's efficiency
         else if (Util.textNodesOnly(children))
-            return element.getTextContent();
+            return element.getTextContent().replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
 
         // The element contains content
         else {
