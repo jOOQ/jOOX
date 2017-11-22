@@ -1427,7 +1427,7 @@ class Impl implements Match {
 
         // The element contains content
         else {
-            // TODO: Check this code's efficiency
+            // [#151] TODO: Check this code's efficiency
             String name = element.getTagName();
             return Util.toString(element).replaceAll("(?s)^<" + name + "(?:[^>]*)>(.*)</" + name + ">$", "$1");
         }
