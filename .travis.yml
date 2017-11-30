@@ -1,5 +1,9 @@
 language: java
 jdk:
-- oraclejdk9
-install: sh -c 'cd jOOX && mvn install -DskipTests=true'
-script: sh -c 'cd jOOX && mvn test'
+  - oraclejdk9
+install: 
+  - sh -c 'cd jOOX && mvn install -DskipTests=true'
+  - sh -c 'cd jOOX-java-6 && mvn install -DskipTests=true'
+script: 
+  - sh -c 'cd jOOX && mvn test'
+  - sh -c 'cd jOOX-java-6 && mvn test'
