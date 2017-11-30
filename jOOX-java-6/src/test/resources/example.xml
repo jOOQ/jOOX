@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<library name="Amazon">
+		<books>
+			<book id="1">
+				<name>1984</name>
+				<authors>
+					<author>George Orwell</author>
+				</authors>
+			</book>
+			<book id="2">
+				<name>Animal Farm</name>
+				<authors>
+					<author>George Orwell</author>
+				</authors>
+			</book>
+			<book id="3">
+				<name>O Alquimista</name>
+				<authors>
+					<author>Paulo Coelho</author>
+				</authors>
+			</book>
+			<book id="4">
+				<name>Brida</name>
+				<authors>
+					<author>Paulo Coelho</author>
+				</authors>
+			</book>
+		</books>
+
+		<dvds>
+			<dvd id="5">
+				<name>Once Upon a Time in the West</name>
+				<directors>
+					<director>Sergio Leone</director>
+				</directors>
+				<actors>
+					<actor>Charles Bronson</actor>
+					<actor>Jason Robards</actor>
+					<actor>Claudia Cardinale</actor>
+				</actors>
+			</dvd>
+		</dvds>
+	</library>
+
+	<library name="Roesslitor">
+		<books>
+			<book id="1">
+				<name>1984</name>
+				<authors>
+					<author>George Orwell</author>
+				</authors>
+			</book>
+			<book id="3">
+				<name>O Alquimista</name>
+				<authors>
+					<author>Paulo Coelho</author>
+				</authors>
+			</book>
+		</books>
+	</library>
+
+	<library name="Orell Fuessli">
+		<books>
+			<book id="1">
+				<name>1984</name>
+				<authors>
+					<author>George Orwell</author>
+				</authors>
+			</book>
+			<book id="2">
+				<name>Animal Farm</name>
+				<authors>
+					<author>George Orwell</author>
+				</authors>
+			</book>
+		</books>
+	</library>
+</document>

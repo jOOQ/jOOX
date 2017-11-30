@@ -10,8 +10,9 @@
 
 ## Dependencies
 
-None!
-
+- java.sql
+- java.xml
+- java.xml.bind
 
 ### Download
 

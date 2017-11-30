@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="http://www.example.com/root" xmlns:ns="http://www.example.com/root/ns">
+
+	<node>
+		<node a1="value" ns:a2="ns:value" />
+		<ns:node a1="value" ns:a2="ns:value" />
+	</node>
+	<ns:node />
+
+	<nested1 xmlns="http://www.example.com/nested" xmlns:ns="http://www.example.com/nested/ns">
+		<node>
+			<node a3="value" ns:a3="ns:value"/>
+			<ns:node />
+		</node>
+		<ns:node />
+	</nested1>
+
+	<nested2 xmlns="http://www.example.com/nested" xmlns:xx="http://www.example.com/nested/ns">
+		<node>
+			<node />
+			<xx:node />
+		</node>
+		<xx:node />
+	</nested2>
+</root>

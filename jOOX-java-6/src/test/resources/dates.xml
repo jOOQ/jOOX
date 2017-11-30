@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dates>
+	<record>
+		<sql-date>1981-07-10</sql-date>
+		<sql-timestamp>1981-07-10 09:15:37</sql-timestamp>
+		<sql-time>09:15:37</sql-time>
+	</record>
+	<record2 sql-date="1981-07-10" sql-timestamp="1981-07-10 09:15:37" sql-time="09:15:37"/>
+</dates>
