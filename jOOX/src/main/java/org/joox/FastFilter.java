@@ -24,6 +24,9 @@ package org.joox;
  *
  * @author Lukas Eder
  */
+/* [java-8] */
+@FunctionalInterface
+/* [/java-8] */
 public interface FastFilter extends Filter {
 
 }
