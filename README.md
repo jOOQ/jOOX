@@ -12,6 +12,29 @@
 
 None!
 
+
+### Download
+
+**For use with Java 9+**
+
+```xml
+<dependency>
+  <groupId>org.jooq</groupId>
+  <artifactId>joox</artifactId>
+  <version>1.6.0</version>
+</dependency>
+```
+
+**For use with Java 6+**
+
+```xml
+<dependency>
+  <groupId>org.jooq</groupId>
+  <artifactId>joox-java-6</artifactId>
+  <version>1.6.0</version>
+</dependency>
+```
+
 ## Simple example
 
 ```java
