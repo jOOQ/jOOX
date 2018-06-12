@@ -7,5 +7,7 @@ module org.jooq.joox {
     // XML API dependencies
     requires java.xml;
     requires java.xml.bind;
+
+    exports org.joox;
 }
 /* [/java-9] */
