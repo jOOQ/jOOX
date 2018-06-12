@@ -1266,7 +1266,12 @@ public class JOOXTest {
             $.find("actor").cdata("Lukas Eder").cdatas());
         assertEquals(
             Collections.nCopies(3, "<actor><![CDATA[Lukas Eder]]></actor>"),
-            $.find("actor").map(e -> e.toString()));
+            $.find("actor").map(new Mapper<Object>() {
+                @Override
+                public Object map(Context context) {
+                    return context.toString();
+                }
+            }));
 
         assertEquals("<abc/>", $.find("actors").cdata("<abc/>").cdata());
         assertEquals("<actors><![CDATA[<abc/>]]></actors>", $.find("actors").toString());
