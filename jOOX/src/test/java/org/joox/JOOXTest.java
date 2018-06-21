@@ -46,6 +46,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -1681,9 +1682,12 @@ public class JOOXTest {
 
     @Test
     public void testXPathWithFunctions() throws Exception {
-        // There seems to be a regression regarding namespaces when integration testing on JDK 10
-        // assertEquals(1, $.xpath("//book[number(@id) = math:max(//book/@id)]").size());
-        // assertEquals(4, (int) $.xpath("//book[number(@id) = math:max(//book/@id)]").id(Integer.class));
+        /* [java-9] */
+        // The xalan dependency cannot be read when running jOOX on the module path
+        Assume.assumeTrue(false);
+        /* [/java-9] */
+        assertEquals(1, $.xpath("//book[number(@id) = math:max(//book/@id)]").size());
+        assertEquals(4, (int) $.xpath("//book[number(@id) = math:max(//book/@id)]").id(Integer.class));
 
         assertEquals(5, $.xpath("//book[java:org.joox.Functions.byOrwellWithNodes(.)]").size());
         assertEquals(asList(1, 2, 1, 1, 2), $.xpath("//book[java:org.joox.Functions.byOrwellWithNodes(.)]").ids(Integer.class));
