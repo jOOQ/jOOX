@@ -513,6 +513,7 @@ class Util {
      * Make a given {@link XPath} object "xalan-extension aware", if Xalan is on
      * the classpath.
      */
+    @SuppressWarnings("deprecation")
     static final void xalanExtensionAware(XPath xpath) {
 
         // Load xalan extensions thread-safely for all of jOOX

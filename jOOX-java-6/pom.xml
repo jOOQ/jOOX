@@ -70,6 +70,15 @@
                         </configuration>
                     </execution>
                 </executions>
+
+                <!-- Required to compile with Java 10 https://stackoverflow.com/a/49398936/521799 -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                        <version>6.2</version> <!-- Use newer version of ASM -->
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <plugin>
@@ -85,6 +94,7 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>3.5.0</version>
+                <extensions>true</extensions>
             </plugin>
         </plugins>
     </build>
