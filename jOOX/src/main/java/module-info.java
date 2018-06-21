@@ -9,5 +9,9 @@ module org.jooq.joox {
     requires java.xml.bind;
 
     exports org.joox;
+
+    // Required for JAXB tests
+    // See also https://github.com/javaee/jaxb-v2/issues/1184
+    opens org.joox to java.xml.bind;
 }
 /* [/java-9] */

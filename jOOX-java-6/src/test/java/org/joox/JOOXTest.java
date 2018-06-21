@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.joox.test;
+package org.joox;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -46,13 +46,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.IOUtils;
-import org.joox.Content;
-import org.joox.Context;
-import org.joox.Each;
-import org.joox.Filter;
-import org.joox.JOOX;
-import org.joox.Mapper;
-import org.joox.Match;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
