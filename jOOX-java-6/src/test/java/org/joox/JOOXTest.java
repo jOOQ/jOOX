@@ -46,6 +46,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.IOUtils;
+import org.joox.selector.CSS2XPath;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -617,6 +618,26 @@ public class JOOXTest {
         assertEquals(
             $.find("dvd"),
             $.find("library").find("dvd:only-child"));
+    }
+
+    @Test
+    public void testFindCSSNthChild() {
+        assertEquals("Charles Bronson", $.find("actor:nth-child(1)").text());
+        assertEquals("Jason Robards", $.find("actor:nth-child(2)").text());
+        assertEquals("Claudia Cardinale", $.find("actor:nth-child(3)").text());
+        assertNull($.find("actor:nth-child(4)").text());
+
+        assertEquals("1", $.find("library[name='Amazon']").find("book:nth-child(1)").id());
+        assertEquals("2", $.find("library[name='Amazon']").find("book:nth-child(2)").id());
+        assertEquals("3", $.find("library[name='Amazon']").find("book:nth-child(3)").id());
+        assertEquals("4", $.find("library[name='Amazon']").find("book:nth-child(4)").id());
+        assertNull($.find("library[name='Amazon']").find("book:nth-child(5)").id());
+
+        assertEquals(asList("1", "1", "1"), $.find("book:nth-child(1)").ids());
+        assertEquals(asList("2", "3", "2"), $.find("book:nth-child(2)").ids());
+        assertEquals(asList("3"), $.find("book:nth-child(3)").ids());
+        assertEquals(asList("4"), $.find("book:nth-child(4)").ids());
+        assertEquals(asList(), $.find("book:nth-child(5)").ids());
     }
 
     @Test
@@ -1695,6 +1716,8 @@ public class JOOXTest {
         assertEquals(5, $.xpath("//book[java:org.joox.Functions.byOrwellWithId(number(@id))]").size());
         assertEquals(asList(1, 2, 1, 1, 2), $.xpath("//book[java:org.joox.Functions.byOrwellWithId(number(@id))]").ids(Integer.class));
     }
+
+
 
     @Test
     public void testTags() throws Exception {

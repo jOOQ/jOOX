@@ -176,30 +176,25 @@ public final class CSS2XPath {
                                     PseudoClassSpecifier p = ((PseudoClassSpecifier) specifier);
                                     String value = p.getValue();
 
-                                    if ("empty".equals(value)) {
+                                    if ("empty".equals(value))
                                         sb.append("[not(*|@*|node())]");
-                                    }
-                                    else if ("first-child".equals(value)) {
+                                    else if ("first-child".equals(value))
                                         sb.append("[not(preceding-sibling::*)]");
-                                    }
-                                    else if ("last-child".equals(value)) {
+                                    else if ("last-child".equals(value))
                                         sb.append("[not(following-sibling::*)]");
-                                    }
-                                    else if ("only-child".equals(value)) {
+                                    else if ("only-child".equals(value))
                                         sb.append("[not(preceding-sibling::*) and not(following-sibling::*)]");
-                                    }
-                                    else if ("root".equals(value)) {
+                                    else if ("root".equals(value))
                                         sb.append("[not(parent::*)]");
-                                    }
                                 }
                                 else if (specifier instanceof PseudoNthSpecifier) {
                                     PseudoNthSpecifier p = ((PseudoNthSpecifier) specifier);
                                     String value = p.getValue();
 
                                     if ("nth-child".equals(value)) {
-                                        sb.append("[position() = ");
+                                        sb.append("[count(preceding-sibling::*) = ");
                                         sb.append(p.getArgument());
-                                        sb.append("]");
+                                        sb.append(" - 1]");
                                     }
 
                                     // TODO: Implement this...?
