@@ -254,7 +254,6 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>2.3.0</version>
-            <scope>runtime</scope>
         </dependency>
 
         <!-- From JDK 9 onwards, the JAXB dependency needs to be made explicit -->
