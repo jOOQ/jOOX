@@ -46,8 +46,7 @@
                     <maxmem>512m</maxmem>
                     <meminitial>256m</meminitial>
                     <encoding>UTF-8</encoding>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <release>6</release>
                     <debug>true</debug>
                     <debuglevel>lines,vars,source</debuglevel>
                 </configuration>
@@ -63,8 +62,7 @@
                             <fork>true</fork>
 
                             <!-- Prevent JDK cross releasing logic from replacing these versions by adding whitespace -->
-                            <source> 10 </source>
-                            <target> 10 </target>
+                            <release> 10 </release>
                             <debug>true</debug>
                             <debuglevel>lines,vars,source</debuglevel>
                         </configuration>
