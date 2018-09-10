@@ -2079,6 +2079,34 @@ public class JOOXTest {
     }
 
     @Test
+    public void testNamespacesXPathListing() {
+        $ = $(xmlNamespacesDocument);
+
+        List<String> xpaths = new ArrayList<String>();
+        for (Match m : $.find("*").each())
+            xpaths.add(m.xpath());
+
+        assertEquals(
+            asList(
+                "/root[1]/node[1]",
+                "/root[1]/node[1]/node[1]",
+                "/root[1]/node[1]/ns:node[1]",
+                "/root[1]/ns:node[1]",
+                "/root[1]/nested1[1]",
+                "/root[1]/nested1[1]/node[1]",
+                "/root[1]/nested1[1]/node[1]/node[1]",
+                "/root[1]/nested1[1]/node[1]/ns:node[1]",
+                "/root[1]/nested1[1]/ns:node[1]",
+                "/root[1]/nested2[1]",
+                "/root[1]/nested2[1]/node[1]",
+                "/root[1]/nested2[1]/node[1]/node[1]",
+                "/root[1]/nested2[1]/node[1]/xx:node[1]",
+                "/root[1]/nested2[1]/xx:node[1]"
+            ),
+            xpaths);
+    }
+
+    @Test
     public void testChain() {
         final List<String> result = new ArrayList<String>();
 

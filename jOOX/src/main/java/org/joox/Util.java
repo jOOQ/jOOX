@@ -300,7 +300,7 @@ class Util {
         // All other elements are compared with siblings with the same name
         // TODO: How to deal with namespaces here? Omit or keep?
         else
-            return $(element).parent().children(element.getTagName()).get().indexOf(element);
+            return $(element).parent().children(JOOX.tag(element.getTagName(), false)).get().indexOf(element);
     }
 
     /**
