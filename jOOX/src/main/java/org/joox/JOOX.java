@@ -92,12 +92,10 @@ public final class JOOX {
         Document document = builder().newDocument();
         DocumentFragment fragment = Util.createContent(document, name);
 
-        if (fragment != null) {
+        if (fragment != null)
             document.appendChild(fragment);
-        }
-        else {
+        else
             document.appendChild(document.createElement(name));
-        }
 
         return $(document);
     }
@@ -131,27 +129,22 @@ public final class JOOX {
      * Wrap a DOM document in a jOOX {@link Match} element set
      */
     public static Match $(Document document) {
-        if (document == null) {
+        if (document == null)
             return $();
-        }
-        else if (document.getDocumentElement() == null) {
+        else if (document.getDocumentElement() == null)
             return new Impl(document, null);
-        }
-        else {
+        else
             return $(document.getDocumentElement());
-        }
     }
 
     /**
      * Wrap a DOM element in a jOOX {@link Match} element set
      */
     public static Match $(Element element) {
-        if (element == null) {
+        if (element == null)
             return $();
-        }
-        else {
+        else
             return new Impl(element.getOwnerDocument(), null).addElements(element);
-        }
     }
 
     /**
@@ -165,14 +158,12 @@ public final class JOOX {
      * If the supplied Node is of any other type, then an empty Match is created
      */
     public static Match $(Node node) {
-        if (node instanceof Document) {
+        if (node instanceof Document)
             return $((Document) node);
-        }
-        else if (node instanceof Element) {
+        else if (node instanceof Element)
             return $((Element) node);
-        }
-
-        return $();
+        else
+            return $();
     }
 
     /**
@@ -181,9 +172,8 @@ public final class JOOX {
      * If the supplied NodeList is empty or null, then an empty Match is created
      */
     public static Match $(NodeList list) {
-        if (list != null && list.getLength() > 0) {
+        if (list != null && list.getLength() > 0)
             return new Impl(list.item(0).getOwnerDocument(), null).addNodeList(list);
-        }
 
         return $();
     }
@@ -192,24 +182,20 @@ public final class JOOX {
      * Convenience method for calling <code>$(context.element())</code>
      */
     public static Match $(Context context) {
-        if (context == null) {
+        if (context == null)
             return $();
-        }
-        else {
+        else
             return $(context.element());
-        }
     }
 
     /**
      * Convenience method for calling <code>$(match)</code>
      */
     public static Match $(Match match) {
-        if (match == null) {
+        if (match == null)
             return $();
-        }
-        else {
+        else
             return match;
-        }
     }
 
     /**
@@ -314,11 +300,9 @@ public final class JOOX {
         return new FastFilter() {
             @Override
             public boolean filter(Context context) {
-                for (int i : indexes) {
-                    if (i == context.elementIndex()) {
+                for (int i : indexes)
+                    if (i == context.elementIndex())
                         return true;
-                    }
-                }
 
                 return false;
             }
@@ -461,16 +445,13 @@ public final class JOOX {
      *            <code>tagName</code> must include the actual namespace prefix.
      */
     public static FastFilter tag(final String tagName, final boolean ignoreNamespace) {
-        if (tagName == null || tagName.equals("")) {
+        if (tagName == null || tagName.equals(""))
             return none();
-        }
 
         // [#104] The special * operator is also supported
-        else if ("*".equals(tagName)) {
+        else if ("*".equals(tagName))
             return all();
-        }
-
-        else {
+        else
             return new FastFilter() {
                 @Override
                 public boolean filter(Context context) {
@@ -478,14 +459,12 @@ public final class JOOX {
 
                     // [#103] If namespaces are ignored, consider only local
                     // part of possibly namespace-unaware Element
-                    if (ignoreNamespace) {
+                    if (ignoreNamespace)
                         localName = Util.stripNamespace(localName);
-                    }
 
                     return tagName.equals(localName);
                 }
             };
-        }
     }
 
     /**
@@ -497,26 +476,21 @@ public final class JOOX {
     public static FastFilter namespacePrefix(final String namespacePrefix) {
 
         // The special * operator is also supported
-        if ("*".equals(namespacePrefix)) {
+        if ("*".equals(namespacePrefix))
             return all();
-        }
-
-        else {
+        else
             return new FastFilter() {
 
                 @Override
                 public boolean filter(Context context) {
                     String match = $(context).namespacePrefix();
 
-                    if (match == null || "".equals(match)) {
+                    if (match == null || "".equals(match))
                         return namespacePrefix == null || "".equals(namespacePrefix);
-                    }
-                    else {
+                    else
                         return match.equals(namespacePrefix);
-                    }
                 }
             };
-        }
     }
 
     /**
@@ -530,26 +504,21 @@ public final class JOOX {
     public static FastFilter namespaceURI(final String namespaceURI) {
 
         // The special * operator is also supported
-        if ("*".equals(namespaceURI)) {
+        if ("*".equals(namespaceURI))
             return all();
-        }
-
-        else {
+        else
             return new FastFilter() {
 
                 @Override
                 public boolean filter(Context context) {
                     String match = $(context).namespaceURI();
 
-                    if (match == null || "".equals(match)) {
+                    if (match == null || "".equals(match))
                         return namespaceURI == null || "".equals(namespaceURI);
-                    }
-                    else {
+                    else
                         return match.equals(namespaceURI);
-                    }
                 }
             };
-        }
     }
 
     /**
@@ -559,10 +528,9 @@ public final class JOOX {
      * @see Pattern#matches(String, CharSequence)
      */
     public static FastFilter matchText(final String regex) {
-        if (regex == null || regex.equals("")) {
+        if (regex == null || regex.equals(""))
             return none();
-        }
-        else {
+        else
             return new FastFilter() {
                 private final Pattern pattern = Pattern.compile(regex);
 
@@ -571,7 +539,6 @@ public final class JOOX {
                     return pattern.matcher($(context).text()).matches();
                 }
             };
-        }
     }
 
     /**
@@ -581,10 +548,9 @@ public final class JOOX {
      * @see Pattern#matches(String, CharSequence)
      */
     public static FastFilter matchAttr(final String name, final String valueRegex) {
-        if (name == null || name.equals("") || valueRegex == null || valueRegex.equals("")) {
+        if (name == null || name.equals("") || valueRegex == null || valueRegex.equals(""))
             return none();
-        }
-        else {
+        else
             return new FastFilter() {
                 private final Pattern pattern = Pattern.compile(valueRegex);
 
@@ -598,7 +564,6 @@ public final class JOOX {
                     return pattern.matcher(value).matches();
                 }
             };
-        }
     }
 
     /**
@@ -630,10 +595,9 @@ public final class JOOX {
      * @see Pattern#matches(String, CharSequence)
      */
     public static FastFilter matchTag(final String regex, final boolean ignoreNamespace) {
-        if (regex == null || regex.equals("")) {
+        if (regex == null || regex.equals(""))
             return none();
-        }
-        else {
+        else
             return new FastFilter() {
                 private final Pattern pattern = Pattern.compile(regex);
 
@@ -643,36 +607,32 @@ public final class JOOX {
 
                     // [#106] If namespaces are ignored, consider only local
                     // part of possibly namespace-unaware Element
-                    if (ignoreNamespace) {
+                    if (ignoreNamespace)
                         localName = Util.stripNamespace(localName);
-                    }
 
                     return pattern.matcher(localName).matches();
                 }
             };
-        }
     }
 
     /**
      * A filter that returns all elements with a given attribute
      */
     public static FastFilter attr(final String name) {
-        if (name == null || name.equals("")) {
+        if (name == null || name.equals(""))
             return new FastFilter() {
                 @Override
                 public boolean filter(Context context) {
                     return context.element().getAttributes().getLength() == 0;
                 }
             };
-        }
-        else {
+        else
             return new FastFilter() {
                 @Override
                 public boolean filter(Context context) {
                     return $(context).attr(name) != null;
                 }
             };
-        }
     }
 
     /**
@@ -682,17 +642,15 @@ public final class JOOX {
     public static FastFilter attr(final String name, final String... values) {
         final List<String> list = Arrays.asList(values);
 
-        if (name == null || name.equals("")) {
+        if (name == null || name.equals(""))
             return attr(name);
-        }
-        else {
+        else
             return new FastFilter() {
                 @Override
                 public boolean filter(Context context) {
                     return list.contains($(context).attr(name));
                 }
             };
-        }
     }
 
     /**
@@ -702,11 +660,9 @@ public final class JOOX {
         return new Filter() {
             @Override
             public boolean filter(Context context) {
-                for (Filter filter : filters) {
-                    if (!filter.filter(context)) {
+                for (Filter filter : filters)
+                    if (!filter.filter(context))
                         return false;
-                    }
-                }
 
                 return true;
             }
@@ -720,11 +676,9 @@ public final class JOOX {
         return new Filter() {
             @Override
             public boolean filter(Context context) {
-                for (Filter filter : filters) {
-                    if (filter.filter(context)) {
+                for (Filter filter : filters)
+                    if (filter.filter(context))
                         return true;
-                    }
-                }
 
                 return false;
             }
@@ -782,9 +736,8 @@ public final class JOOX {
      * @see Match#content(Object)
      */
     public static Content content(final Object value) {
-        if (value == null) {
+        if (value == null)
             return content("");
-        }
 
         return new Content() {
             private String marshalled;
@@ -874,11 +827,9 @@ public final class JOOX {
         return new Each() {
             @Override
             public void each(Context context) {
-                if (each != null) {
-                    for (Each e : each) {
+                if (each != null)
+                    for (Each e : each)
                         e.each(context);
-                    }
-                }
             }
         };
     }
@@ -907,9 +858,8 @@ public final class JOOX {
     public static List<Element> list(NodeList elements) {
         List<Element> list = new ArrayList<Element>();
 
-        for (Element element : iterable(elements)) {
+        for (Element element : iterable(elements))
             list.add(element);
-        }
 
         return list;
     }
@@ -1252,9 +1202,8 @@ public final class JOOX {
     public static <T> List<T> convert(List<String> values, Class<T> type) {
         List<T> result = new ArrayList<T>();
 
-        for (String value : values) {
+        for (String value : values)
             result.add(convert(value, type));
-        }
 
         return result;
     }
@@ -1299,12 +1248,10 @@ public final class JOOX {
             for (int i = 0;;i++) {
                 Node item = children.item(i);
 
-                if (item == null) {
+                if (item == null)
                     return true;
-                }
-                else if (item.getNodeType() == Node.ELEMENT_NODE) {
+                else if (item.getNodeType() == Node.ELEMENT_NODE)
                     return false;
-                }
             }
         }
     };
