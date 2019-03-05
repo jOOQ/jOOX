@@ -17,8 +17,6 @@ import static org.joox.JOOX.$;
 
 import javax.xml.xpath.XPathFunction;
 
-import org.apache.xalan.extensions.ExpressionContext;
-import org.joox.Match;
 import org.w3c.dom.NodeList;
 
 /**
@@ -30,7 +28,7 @@ import org.w3c.dom.NodeList;
 public class Functions {
 
     @SuppressWarnings("unused")
-    public static boolean byOrwellWithNodes(ExpressionContext context, NodeList nodes) {
+    public static boolean byOrwellWithNodes(NodeList nodes) {
         return $(nodes).find("author").text().toLowerCase().contains("orwell");
     }
 
