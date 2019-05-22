@@ -14,6 +14,7 @@
 package org.joox.selector;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * A utility class converting CSS selector expressions to XPath expressions.
@@ -29,6 +30,11 @@ import java.util.List;
  *      href="http://www.w3.org/TR/selectors/#selectors">http://www.w3.org/TR/selectors/#selectors</a>
  */
 public final class CSS2XPath {
+
+    /**
+     * A selector pattern that can be evaluated using standard DOM API
+     */
+    private final static Pattern SIMPLE_SELECTOR = Pattern.compile("[\\w\\-]+");
 
     /**
      * Convert a CSS selector expression to an XPath expression
@@ -75,7 +81,15 @@ public final class CSS2XPath {
                         break;
                 }
 
-                sb.append(s.getTagName());
+                // [#163] To stay on the safe side, we need namespace unaware XPath expressions here
+                //        Do this only for actual tag names, not e.g. * or other special characters
+                if (SIMPLE_SELECTOR.matcher(s.getTagName()).matches())
+                    sb.append("*[local-name() = '").append(s.getTagName()).append("']");
+                else
+                    sb.append(s.getTagName());
+
+                // [#163] This would be an XPath 2.0 syntax, not supported by Java's built-in XPath libraries
+                // sb.append("*:").append(s.getTagName());
 
                 if (s.hasSpecifiers()) {
                     for (Specifier specifier : s.getSpecifiers()) {

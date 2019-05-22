@@ -50,6 +50,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 
 /**
@@ -102,6 +103,9 @@ class Util {
         //        of either < or & characters (other entities, like >, ", ' are not stricly XML content)
         if (text != null && (text.contains("<") || text.contains("&"))) {
             DocumentBuilder builder = JOOX.builder();
+
+            // [#162] Prevent log output
+            builder.setErrorHandler(new DefaultHandler());
 
             try {
 

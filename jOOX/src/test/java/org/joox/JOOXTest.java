@@ -2046,6 +2046,18 @@ public class JOOXTest {
     }
 
     @Test
+    public void testNamespacesSelectors() {
+        $ = $(xmlNamespacesDocument);
+
+        // [#107] Short circuiting find implementation
+        assertEquals(12, $.find("node").size());
+
+        // [#163] "Complex" selector
+        assertEquals(4, $.find("nested1 node").size());
+        assertEquals(8, $.find("nested1 node, nested2 node").size());
+    }
+
+    @Test
     public void testNamespacesXPath() {
         $ = $(xmlNamespacesDocument);
 
