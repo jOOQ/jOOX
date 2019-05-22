@@ -232,6 +232,7 @@
     <dependencies>
 
         <!-- Runtime dependencies -->
+        <!-- [java-9] -->
         <!-- Prior to Java 9, the JAXB dependency was shipped with the JDK -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
@@ -247,6 +248,7 @@
             <version>2.4.0-b180830.0438</version>
             <scope>provided</scope>
         </dependency>
+        <!-- [/java-9] -->
 
         <!-- Test dependencies -->
         <dependency>
