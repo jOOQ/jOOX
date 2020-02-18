@@ -22,7 +22,7 @@
 <dependency>
   <groupId>org.jooq</groupId>
   <artifactId>joox</artifactId>
-  <version>1.6.0</version>
+  <version>1.6.2</version>
 </dependency>
 ```
 
@@ -32,7 +32,7 @@
 <dependency>
   <groupId>org.jooq</groupId>
   <artifactId>joox-java-6</artifactId>
-  <version>1.6.0</version>
+  <version>1.6.2</version>
 </dependency>
 ```
 
