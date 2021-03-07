@@ -308,7 +308,7 @@ public class JOOXTest {
 
     @Test
     public void testEachCallback() {
-        final Queue<Integer> queue = new LinkedList<Integer>();
+        final Queue<Integer> queue = new LinkedList<>();
 
         queue.addAll(Arrays.asList(0));
         $.each(new Each() {
@@ -1281,7 +1281,7 @@ public class JOOXTest {
             $.find("actor").cdata("Lukas Eder").cdatas());
         assertEquals(
             Collections.nCopies(3, "<actor><![CDATA[Lukas Eder]]></actor>"),
-            $.find("actor").map(new Mapper<Object>() {
+            $.find("actor").map(new Mapper<>() {
                 @Override
                 public Object map(Context context) {
                     return context.toString();
@@ -2094,7 +2094,7 @@ public class JOOXTest {
     public void testNamespacesXPathListing() {
         $ = $(xmlNamespacesDocument);
 
-        List<String> xpaths = new ArrayList<String>();
+        List<String> xpaths = new ArrayList<>();
         for (Match m : $.find("*").each())
             xpaths.add(m.xpath());
 
@@ -2120,7 +2120,7 @@ public class JOOXTest {
 
     @Test
     public void testChain() {
-        final List<String> result = new ArrayList<String>();
+        final List<String> result = new ArrayList<>();
 
         Match books = $.find("library[name=Amazon]").find("book");
         Each each1 = new Each() {

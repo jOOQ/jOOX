@@ -18,9 +18,7 @@ package org.joox;
  *
  * @author Lukas Eder
  */
-
 @FunctionalInterface
-
 public interface Each {
 
     /**

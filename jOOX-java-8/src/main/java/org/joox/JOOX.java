@@ -701,7 +701,7 @@ public final class JOOX {
      * Create a filter matching id attributes
      */
     public static FastFilter ids(String... ids) {
-        final Set<String> set = new HashSet<String>(Arrays.asList(ids));
+        final Set<String> set = new HashSet<>(Arrays.asList(ids));
 
         return new FastFilter() {
             @Override
@@ -779,7 +779,7 @@ public final class JOOX {
      * Create a mapper that returns all attributes with a given name
      */
     public static Mapper<String> attrs(final String attributeName) {
-        return new Mapper<String>() {
+        return new Mapper<>() {
             @Override
             public String map(Context context) {
                 return $(context).attr(attributeName);
@@ -791,7 +791,7 @@ public final class JOOX {
      * Create a mapper that returns all paths to given elements
      */
     public static Mapper<String> paths() {
-        return new Mapper<String>() {
+        return new Mapper<>() {
             @Override
             public String map(Context context) {
                 return Util.path(context.element());
@@ -856,7 +856,7 @@ public final class JOOX {
      * Wrap a {@link NodeList} into an {@link List}
      */
     public static List<Element> list(NodeList elements) {
-        List<Element> list = new ArrayList<Element>();
+        List<Element> list = new ArrayList<>();
 
         for (Element element : iterable(elements))
             list.add(element);
@@ -918,8 +918,8 @@ public final class JOOX {
     private static final Set<String> FALSE_VALUES;
 
     static {
-        TRUE_VALUES = new HashSet<String>();
-        FALSE_VALUES = new HashSet<String>();
+        TRUE_VALUES = new HashSet<>();
+        FALSE_VALUES = new HashSet<>();
 
         TRUE_VALUES.add("1");
         TRUE_VALUES.add("y");
@@ -1200,7 +1200,7 @@ public final class JOOX {
      * @see #convert(String, Class)
      */
     public static <T> List<T> convert(List<String> values, Class<T> type) {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
 
         for (String value : values)
             result.add(convert(value, type));

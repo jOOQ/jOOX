@@ -193,7 +193,7 @@ class Util {
      * @return Elements that are all in the supplied document, but detached.
      */
     static final List<Element> importOrDetach(Document document, Element... elements) {
-        List<Element> detached = new ArrayList<Element>();
+        List<Element> detached = new ArrayList<>();
 
         for (Element e : elements) {
             if (document != e.getOwnerDocument()) {
@@ -216,7 +216,7 @@ class Util {
      * Transform an {@link Match}[] into an {@link Element}[], removing duplicates.
      */
     static final Element[] elements(Match... content) {
-        Set<Element> result = new LinkedHashSet<Element>();
+        Set<Element> result = new LinkedHashSet<>();
 
         for (Match x : content)
             result.addAll(x.get());
@@ -333,7 +333,7 @@ class Util {
      * Split a string into values
      */
     static final List<String> split(String value) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         SplitState state = SplitState.NEW;
         StringBuilder sb = new StringBuilder();

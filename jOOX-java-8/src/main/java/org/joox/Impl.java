@@ -93,9 +93,9 @@ class Impl implements Match {
 
     Impl(Document document, Map<String, String> namespaces, Impl previousMatch) {
         this.document = document;
-        this.elements = new ArrayList<Element>();
+        this.elements = new ArrayList<>();
         this.previousMatch = previousMatch;
-        this.namespaces = namespaces == null ? new HashMap<String, String>() : new HashMap<String, String>(namespaces);
+        this.namespaces = namespaces == null ? new HashMap<>() : new HashMap<>(namespaces);
     }
 
     final Impl addNodeLists(List<NodeList> lists) {
@@ -128,7 +128,7 @@ class Impl implements Match {
             elements.add(element);
         }
         else if (size > 1) {
-            Set<Element> set = new LinkedHashSet<Element>(e);
+            Set<Element> set = new LinkedHashSet<>(e);
 
             elements.removeAll(set);
             elements.addAll(set);
@@ -189,7 +189,7 @@ class Impl implements Match {
 
     @Override
     public final List<String> namespaceURIs() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (int i = 0; i < elements.size(); i++)
             result.add(namespaceURI(i));
@@ -199,7 +199,7 @@ class Impl implements Match {
 
     @Override
     public final List<String> namespaceURIs(int... indexes) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (int index : indexes)
             result.add(namespaceURI(index));
@@ -224,7 +224,7 @@ class Impl implements Match {
 
     @Override
     public final List<String> namespacePrefixes() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (int i = 0; i < elements.size(); i++)
             result.add(namespacePrefix(i));
@@ -234,7 +234,7 @@ class Impl implements Match {
 
     @Override
     public final List<String> namespacePrefixes(int... indexes) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (int index : indexes)
             result.add(namespacePrefix(index));
@@ -273,7 +273,7 @@ class Impl implements Match {
 
     @Override
     public final List<Element> get(int... indexes) {
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
 
         for (int i : indexes)
             result.add(get(i));
@@ -320,7 +320,7 @@ class Impl implements Match {
 
     @Override
     public final Impl reverse() {
-        List<Element> reversed = new ArrayList<Element>(elements);
+        List<Element> reversed = new ArrayList<>(elements);
         Collections.reverse(reversed);
         return new Impl(document, namespaces).addElements(reversed);
     }
@@ -372,7 +372,7 @@ class Impl implements Match {
     public final Impl children(Filter filter) {
         final int size = size();
 
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
             List<Element> list = list(match.getChildNodes());
@@ -391,7 +391,7 @@ class Impl implements Match {
 
     @Override
     public final List<Match> each() {
-        List<Match> result = new ArrayList<Match>();
+        List<Match> result = new ArrayList<>();
 
         for (Element element : elements)
             result.add(new Impl(document, namespaces).addElements(element));
@@ -428,7 +428,7 @@ class Impl implements Match {
     public final Impl filter(Filter filter) {
         final int size = size();
 
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
 
@@ -460,7 +460,7 @@ class Impl implements Match {
 
         // The * selector is evaluated using the standard DOM API
         if ("*".equals(selector)) {
-            List<NodeList> result = new ArrayList<NodeList>();
+            List<NodeList> result = new ArrayList<>();
 
             for (Element element : elements)
                 result.add(element.getElementsByTagName(selector));
@@ -497,7 +497,7 @@ class Impl implements Match {
 
     @Override
     public final Impl find(Filter filter) {
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
 
         final int size = size();
         final boolean fast = isFast(filter);
@@ -528,7 +528,7 @@ class Impl implements Match {
 
     @Override
     public final Impl xpath(String expression, Object... variables) {
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
 
         try {
             XPathFactory factory = XPathFactory.newInstance();
@@ -572,7 +572,7 @@ class Impl implements Match {
 
     @Override
     public final Impl has(Filter filter) {
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
 
         final int size = size();
         final boolean fast = isFast(filter);
@@ -631,7 +631,7 @@ class Impl implements Match {
     @Override
     public final <E> List<E> map(Mapper<E> map) {
         final int size = size();
-        final List<E> result = new ArrayList<E>();
+        final List<E> result = new ArrayList<>();
 
         for (int matchIndex = 0; matchIndex < size; matchIndex++)
             result.add(map.map(context(get(matchIndex), matchIndex, size)));
@@ -702,7 +702,7 @@ class Impl implements Match {
     private final Impl next(boolean all, Filter until, Filter filter) {
         final int size = size();
 
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
             Node node = match;
@@ -805,7 +805,7 @@ class Impl implements Match {
 
     private final Impl parents(boolean all, Filter until, Filter filter) {
         final int size = size();
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
 
         // Maybe reverse iteration and reverse result?
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
@@ -901,7 +901,7 @@ class Impl implements Match {
     private final Impl prev(boolean all, Filter until, Filter filter) {
         final int size = size();
 
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
             Node node = match;
@@ -1026,7 +1026,7 @@ class Impl implements Match {
     public final Impl after(Content content) {
         final int size = size();
 
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
             result.add(match);
@@ -1061,7 +1061,7 @@ class Impl implements Match {
     public final Impl after(Element... content) {
         final int size = size();
 
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
         List<Element> detached = Util.importOrDetach(document, content);
 
         for (int i = 0; i < size; i++) {
@@ -1093,7 +1093,7 @@ class Impl implements Match {
     public final Impl before(Content content) {
         final int size = size();
 
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
             Document doc = match.getOwnerDocument();
@@ -1128,7 +1128,7 @@ class Impl implements Match {
     public final Impl before(Element... content) {
         final int size = size();
 
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
         List<Element> detached = Util.importOrDetach(document, content);
 
         for (int i = 0; i < size; i++) {
@@ -1263,7 +1263,7 @@ class Impl implements Match {
 
     @Override
     public final List<String> attrs(String name) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (Element element : elements)
             result.add(Util.attr(element, name));
@@ -1315,7 +1315,7 @@ class Impl implements Match {
 
     @Override
     public final List<String> contents() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (Element element : elements)
             result.add(content(element));
@@ -1325,7 +1325,7 @@ class Impl implements Match {
 
     @Override
     public final List<String> contents(int... indexes) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (int index : indexes)
             result.add(content(index));
@@ -1409,7 +1409,7 @@ class Impl implements Match {
 
     @Override
     public final List<String> texts() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (Element element : elements)
             result.add(element.getTextContent());
@@ -1419,7 +1419,7 @@ class Impl implements Match {
 
     @Override
     public final List<String> texts(int... indexes) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (int index : indexes)
             result.add(text(index));
@@ -1521,7 +1521,7 @@ class Impl implements Match {
     public final Impl remove(Filter filter) {
         final int size = size();
 
-        List<Element> remove = new ArrayList<Element>();
+        List<Element> remove = new ArrayList<>();
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
 
@@ -1601,7 +1601,7 @@ class Impl implements Match {
     public final Impl replaceWith(Content content) {
         final int size = size();
 
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
             Document doc = match.getOwnerDocument();
@@ -1634,7 +1634,7 @@ class Impl implements Match {
     public final Impl replaceWith(Element... content) {
         final int size = size();
 
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
         List<Element> detached = Util.importOrDetach(document, content);
 
         for (int i = 0; i < size; i++) {
@@ -1671,7 +1671,7 @@ class Impl implements Match {
     public final Match rename(Content tag) {
         final int size = size();
 
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
 
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
@@ -1718,7 +1718,7 @@ class Impl implements Match {
 
     @Override
     public final List<String> xpaths() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (Element element : elements)
             result.add(Util.xpath(element));
@@ -1728,7 +1728,7 @@ class Impl implements Match {
 
     @Override
     public final List<String> xpaths(int... indexes) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (int index : indexes)
             result.add(xpath(index));
@@ -1753,7 +1753,7 @@ class Impl implements Match {
 
     @Override
     public final List<String> tags() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (Element element : elements)
             result.add(stripNamespace(element.getTagName()));
@@ -1763,7 +1763,7 @@ class Impl implements Match {
 
     @Override
     public final List<String> tags(int... indexes) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (int index : indexes)
             result.add(tag(index));
@@ -1793,7 +1793,7 @@ class Impl implements Match {
 
     @Override
     public final List<String> ids(int... indexes) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         for (int index : indexes)
             result.add(id(index));
@@ -1836,7 +1836,7 @@ class Impl implements Match {
 
     @Override
     public final <T> List<T> unmarshal(Class<T> type) {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
 
         for (Element element : elements)
             result.add(JAXB.unmarshal(new DOMSource(element), type));
@@ -1866,8 +1866,8 @@ class Impl implements Match {
 
     @Override
     public final Impl transform(Transformer transformer) {
-        List<DOMResult> results = new ArrayList<DOMResult>();
-        List<Element> newElements = new ArrayList<Element>();
+        List<DOMResult> results = new ArrayList<>();
+        List<Element> newElements = new ArrayList<>();
 
         // Transform all matched elements
         try {
@@ -1938,7 +1938,7 @@ class Impl implements Match {
     public Match sort(final Comparator<Element> comparator) {
         Impl result = new Impl(document, namespaces);
 
-        List<Element> newElements = new ArrayList<Element>(elements);
+        List<Element> newElements = new ArrayList<>(elements);
         Collections.sort(newElements,comparator);
 
         for (Element e : newElements)
