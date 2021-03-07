@@ -23,14 +23,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import javax.xml.bind.DataBindingException;
@@ -601,6 +594,17 @@ public final class JOOX {
             return context -> context.element().getAttributes().getLength() == 0;
         else
             return context -> $(context).attr(name) != null;
+    }
+
+    /**
+     * A filter that returns all elements with a given attribute being set to a
+     * given value
+     */
+    public static FastFilter attr(final String name, final String value) {
+        if (name == null || name.equals(""))
+            return attr(name);
+        else
+            return context -> Objects.equals($(context).attr(name), value);
     }
 
     /**
