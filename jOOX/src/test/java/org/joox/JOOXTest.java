@@ -1776,6 +1776,8 @@ public class JOOXTest {
     public void test$URLandURI() throws Exception {
         assertEquals($.toString(), $(JOOXTest.class.getResource("/example.xml")).toString());
         assertEquals($.toString(), $(JOOXTest.class.getResource("/example.xml").toURI()).toString());
+        assertEquals($.toString(), $(new File(JOOXTest.class.getResource("/example.xml").toURI())).toString());
+        assertEquals($.toString(), $(new File(JOOXTest.class.getResource("/example.xml").toURI()).toPath()).toString());
     }
 
     @Test

@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -213,6 +214,16 @@ public final class JOOX {
      */
     public static Match $(File file) throws SAXException, IOException {
         return $(builder().parse(file));
+    }
+
+    /**
+     * Read a DOM document from a file into a {@link Match} element set
+     *
+     * @throws IOException
+     * @throws SAXException
+     */
+    public static Match $(Path path) throws SAXException, IOException {
+        return $(path.toFile());
     }
 
     /**
