@@ -297,15 +297,12 @@ public final class JOOX {
      * A filter that returns true on elements at given iteration indexes
      */
     public static FastFilter at(final int... indexes) {
-        return new FastFilter() {
-            @Override
-            public boolean filter(Context context) {
-                for (int i : indexes)
-                    if (i == context.elementIndex())
-                        return true;
+        return context -> {
+            for (int i : indexes)
+                if (i == context.elementIndex())
+                    return true;
 
-                return false;
-            }
+            return false;
         };
     }
 
@@ -452,18 +449,15 @@ public final class JOOX {
         else if ("*".equals(tagName))
             return all();
         else
-            return new FastFilter() {
-                @Override
-                public boolean filter(Context context) {
-                    String localName = context.element().getTagName();
+            return context -> {
+                String localName = context.element().getTagName();
 
-                    // [#103] If namespaces are ignored, consider only local
-                    // part of possibly namespace-unaware Element
-                    if (ignoreNamespace)
-                        localName = Util.stripNamespace(localName);
+                // [#103] If namespaces are ignored, consider only local
+                // part of possibly namespace-unaware Element
+                if (ignoreNamespace)
+                    localName = Util.stripNamespace(localName);
 
-                    return tagName.equals(localName);
-                }
+                return tagName.equals(localName);
             };
     }
 
@@ -479,17 +473,13 @@ public final class JOOX {
         if ("*".equals(namespacePrefix))
             return all();
         else
-            return new FastFilter() {
+            return context -> {
+                String match = $(context).namespacePrefix();
 
-                @Override
-                public boolean filter(Context context) {
-                    String match = $(context).namespacePrefix();
-
-                    if (match == null || "".equals(match))
-                        return namespacePrefix == null || "".equals(namespacePrefix);
-                    else
-                        return match.equals(namespacePrefix);
-                }
+                if (match == null || "".equals(match))
+                    return namespacePrefix == null || "".equals(namespacePrefix);
+                else
+                    return match.equals(namespacePrefix);
             };
     }
 
@@ -507,17 +497,13 @@ public final class JOOX {
         if ("*".equals(namespaceURI))
             return all();
         else
-            return new FastFilter() {
+            return context -> {
+                String match = $(context).namespaceURI();
 
-                @Override
-                public boolean filter(Context context) {
-                    String match = $(context).namespaceURI();
-
-                    if (match == null || "".equals(match))
-                        return namespaceURI == null || "".equals(namespaceURI);
-                    else
-                        return match.equals(namespaceURI);
-                }
+                if (match == null || "".equals(match))
+                    return namespaceURI == null || "".equals(namespaceURI);
+                else
+                    return match.equals(namespaceURI);
             };
     }
 
@@ -528,17 +514,13 @@ public final class JOOX {
      * @see Pattern#matches(String, CharSequence)
      */
     public static FastFilter matchText(final String regex) {
-        if (regex == null || regex.equals(""))
+        if (regex == null || regex.equals("")) {
             return none();
-        else
-            return new FastFilter() {
-                private final Pattern pattern = Pattern.compile(regex);
-
-                @Override
-                public boolean filter(Context context) {
-                    return pattern.matcher($(context).text()).matches();
-                }
-            };
+        }
+        else {
+            Pattern pattern = Pattern.compile(regex);
+            return context -> pattern.matcher($(context).text()).matches();
+        }
     }
 
     /**
@@ -548,22 +530,20 @@ public final class JOOX {
      * @see Pattern#matches(String, CharSequence)
      */
     public static FastFilter matchAttr(final String name, final String valueRegex) {
-        if (name == null || name.equals("") || valueRegex == null || valueRegex.equals(""))
+        if (name == null || name.equals("") || valueRegex == null || valueRegex.equals("")) {
             return none();
-        else
-            return new FastFilter() {
-                private final Pattern pattern = Pattern.compile(valueRegex);
+        }
+        else {
+            Pattern pattern = Pattern.compile(valueRegex);
+            return context -> {
+                String value = $(context).attr(name);
 
-                @Override
-                public boolean filter(Context context) {
-                    String value = $(context).attr(name);
+                if (value == null)
+                    return false;
 
-                    if (value == null)
-                        return false;
-
-                    return pattern.matcher(value).matches();
-                }
+                return pattern.matcher(value).matches();
             };
+        }
     }
 
     /**
@@ -595,24 +575,22 @@ public final class JOOX {
      * @see Pattern#matches(String, CharSequence)
      */
     public static FastFilter matchTag(final String regex, final boolean ignoreNamespace) {
-        if (regex == null || regex.equals(""))
+        if (regex == null || regex.equals("")) {
             return none();
-        else
-            return new FastFilter() {
-                private final Pattern pattern = Pattern.compile(regex);
+        }
+        else {
+            Pattern pattern = Pattern.compile(regex);
+            return context -> {
+                String localName = context.element().getTagName();
 
-                @Override
-                public boolean filter(Context context) {
-                    String localName = context.element().getTagName();
+                // [#106] If namespaces are ignored, consider only local
+                // part of possibly namespace-unaware Element
+                if (ignoreNamespace)
+                    localName = Util.stripNamespace(localName);
 
-                    // [#106] If namespaces are ignored, consider only local
-                    // part of possibly namespace-unaware Element
-                    if (ignoreNamespace)
-                        localName = Util.stripNamespace(localName);
-
-                    return pattern.matcher(localName).matches();
-                }
+                return pattern.matcher(localName).matches();
             };
+        }
     }
 
     /**
@@ -620,19 +598,9 @@ public final class JOOX {
      */
     public static FastFilter attr(final String name) {
         if (name == null || name.equals(""))
-            return new FastFilter() {
-                @Override
-                public boolean filter(Context context) {
-                    return context.element().getAttributes().getLength() == 0;
-                }
-            };
+            return context -> context.element().getAttributes().getLength() == 0;
         else
-            return new FastFilter() {
-                @Override
-                public boolean filter(Context context) {
-                    return $(context).attr(name) != null;
-                }
-            };
+            return context -> $(context).attr(name) != null;
     }
 
     /**
@@ -645,27 +613,19 @@ public final class JOOX {
         if (name == null || name.equals(""))
             return attr(name);
         else
-            return new FastFilter() {
-                @Override
-                public boolean filter(Context context) {
-                    return list.contains($(context).attr(name));
-                }
-            };
+            return context -> list.contains($(context).attr(name));
     }
 
     /**
      * Combine filters
      */
     public static Filter and(final Filter... filters) {
-        return new Filter() {
-            @Override
-            public boolean filter(Context context) {
-                for (Filter filter : filters)
-                    if (!filter.filter(context))
-                        return false;
+        return context -> {
+            for (Filter filter : filters)
+                if (!filter.filter(context))
+                    return false;
 
-                return true;
-            }
+            return true;
         };
     }
 
@@ -673,15 +633,12 @@ public final class JOOX {
      * Combine filters
      */
     public static Filter or(final Filter... filters) {
-        return new Filter() {
-            @Override
-            public boolean filter(Context context) {
-                for (Filter filter : filters)
-                    if (filter.filter(context))
-                        return true;
+        return context -> {
+            for (Filter filter : filters)
+                if (filter.filter(context))
+                    return true;
 
-                return false;
-            }
+            return false;
         };
     }
 
@@ -689,12 +646,7 @@ public final class JOOX {
      * Inverse a filter
      */
     public static Filter not(final Filter filter) {
-        return new Filter() {
-            @Override
-            public boolean filter(Context context) {
-                return !filter.filter(context);
-            }
-        };
+        return context -> !filter.filter(context);
     }
 
     /**
@@ -702,13 +654,7 @@ public final class JOOX {
      */
     public static FastFilter ids(String... ids) {
         final Set<String> set = new HashSet<>(Arrays.asList(ids));
-
-        return new FastFilter() {
-            @Override
-            public boolean filter(Context context) {
-                return set.contains($(context).attr("id"));
-            }
-        };
+        return context -> set.contains($(context).attr("id"));
     }
 
     // ---------------------------------------------------------------------
@@ -720,12 +666,7 @@ public final class JOOX {
      * elements.
      */
     public static Content content(final String value) {
-        return new Content() {
-            @Override
-            public String content(Context context) {
-                return value;
-            }
-        };
+        return context -> value;
     }
 
     /**
@@ -779,24 +720,14 @@ public final class JOOX {
      * Create a mapper that returns all attributes with a given name
      */
     public static Mapper<String> attrs(final String attributeName) {
-        return new Mapper<>() {
-            @Override
-            public String map(Context context) {
-                return $(context).attr(attributeName);
-            }
-        };
+        return context -> $(context).attr(attributeName);
     }
 
     /**
      * Create a mapper that returns all paths to given elements
      */
     public static Mapper<String> paths() {
-        return new Mapper<>() {
-            @Override
-            public String map(Context context) {
-                return Util.path(context.element());
-            }
-        };
+        return context -> Util.path(context.element());
     }
 
     // ---------------------------------------------------------------------
@@ -824,13 +755,10 @@ public final class JOOX {
      * <code>Each</code>, sequentially.
      */
     public static Each chain(final Iterable<? extends Each> each) {
-        return new Each() {
-            @Override
-            public void each(Context context) {
-                if (each != null)
-                    for (Each e : each)
-                        e.each(context);
-            }
+        return context -> {
+            if (each != null)
+                for (Each e : each)
+                    e.each(context);
         };
     }
 
@@ -1212,47 +1140,24 @@ public final class JOOX {
     // Static utilities
     // ---------------------------------------------------------------------
 
-    private static final FastFilter NONE = new FastFilter() {
-        @Override
-        public boolean filter(Context context) {
-            return false;
-        }
-    };
+    private static final FastFilter NONE = context -> false;
 
-    private static final FastFilter ALL = new FastFilter() {
-        @Override
-        public boolean filter(Context context) {
-            return true;
-        }
-    };
+    private static final FastFilter ALL = context -> true;
 
-    private static final FastFilter EVEN = new FastFilter() {
-        @Override
-        public boolean filter(Context context) {
-            return context.elementIndex() % 2 == 0;
-        }
-    };
+    private static final FastFilter EVEN = context -> context.elementIndex() % 2 == 0;
 
-    private static final FastFilter ODD = new FastFilter() {
-        @Override
-        public boolean filter(Context context) {
-            return context.elementIndex() % 2 != 0;
-        }
-    };
+    private static final FastFilter ODD = context -> context.elementIndex() % 2 != 0;
 
-    private static final FastFilter LEAF = new FastFilter() {
-        @Override
-        public boolean filter(Context context) {
-            NodeList children = context.element().getChildNodes();
+    private static final FastFilter LEAF = context -> {
+        NodeList children = context.element().getChildNodes();
 
-            for (int i = 0;;i++) {
-                Node item = children.item(i);
+        for (int i = 0;;i++) {
+            Node item = children.item(i);
 
-                if (item == null)
-                    return true;
-                else if (item.getNodeType() == Node.ELEMENT_NODE)
-                    return false;
-            }
+            if (item == null)
+                return true;
+            else if (item.getNodeType() == Node.ELEMENT_NODE)
+                return false;
         }
     };
 }

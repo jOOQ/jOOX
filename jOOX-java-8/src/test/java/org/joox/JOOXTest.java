@@ -311,33 +311,27 @@ public class JOOXTest {
         final Queue<Integer> queue = new LinkedList<>();
 
         queue.addAll(Arrays.asList(0));
-        $.each(new Each() {
-            @Override
-            public void each(Context context) {
-                assertEquals(context.element(), context.match());
-                assertEquals(context.elementIndex(), context.matchIndex());
-                assertEquals(context.elementSize(), context.matchSize());
+        $.each(context -> {
+            assertEquals(context.element(), context.match());
+            assertEquals(context.elementIndex(), context.matchIndex());
+            assertEquals(context.elementSize(), context.matchSize());
 
-                assertEquals((int) queue.poll(), context.matchIndex());
-                assertEquals(1, context.matchSize());
-                assertEquals("document", context.element().getTagName());
-            }
+            assertEquals((int) queue.poll(), context.matchIndex());
+            assertEquals(1, context.matchSize());
+            assertEquals("document", context.element().getTagName());
         });
 
         assertTrue(queue.isEmpty());
         queue.addAll(Arrays.asList(0, 1, 2));
 
-        $.children().each(new Each() {
-            @Override
-            public void each(Context context) {
-                assertEquals(context.element(), context.match());
-                assertEquals(context.elementIndex(), context.matchIndex());
-                assertEquals(context.elementSize(), context.matchSize());
+        $.children().each(context -> {
+            assertEquals(context.element(), context.match());
+            assertEquals(context.elementIndex(), context.matchIndex());
+            assertEquals(context.elementSize(), context.matchSize());
 
-                assertEquals((int) queue.poll(), context.matchIndex());
-                assertEquals(3, context.matchSize());
-                assertEquals("library", context.element().getTagName());
-            }
+            assertEquals((int) queue.poll(), context.matchIndex());
+            assertEquals(3, context.matchSize());
+            assertEquals("library", context.element().getTagName());
         });
 
         assertTrue(queue.isEmpty());
@@ -834,17 +828,14 @@ public class JOOXTest {
             Arrays.asList("Amazon", "Roesslitor", "Orell Fuessli"),
             $.find("library").map(JOOX.attrs("name")));
 
-        assertEquals(Arrays.asList(0, 1, 2, 3), $.children().first().find("book").map(new Mapper<Integer>() {
-            @Override
-            public Integer map(Context context) {
-                assertEquals(context.element(), context.match());
-                assertEquals(context.elementIndex(), context.matchIndex());
-                assertEquals(context.elementSize(), context.matchSize());
+        assertEquals(Arrays.asList(0, 1, 2, 3), $.children().first().find("book").map(context -> {
+            assertEquals(context.element(), context.match());
+            assertEquals(context.elementIndex(), context.matchIndex());
+            assertEquals(context.elementSize(), context.matchSize());
 
-                assertEquals(4, context.matchSize());
+            assertEquals(4, context.matchSize());
 
-                return context.matchIndex();
-            }
+            return context.matchIndex();
         }));
     }
 
@@ -859,33 +850,27 @@ public class JOOXTest {
         assertEquals(1, $.find("book").eq(0).next().size());
         assertEquals(1, $.find("book").eq(0).next(JOOX.all()).size());
         assertEquals(0, $.find("book").eq(0).next(JOOX.none()).size());
-        assertEquals(0, $.find("book").eq(0).next(new Filter() {
-            @Override
-            public boolean filter(Context context) {
-                assertEquals(0, context.matchIndex());
-                assertEquals(1, context.matchSize());
+        assertEquals(0, $.find("book").eq(0).next(context -> {
+            assertEquals(0, context.matchIndex());
+            assertEquals(1, context.matchSize());
 
-                assertEquals(1, context.elementIndex());
-                assertEquals(context.match(), $(context.element()).prev().get(0));
-                assertEquals("1", $(context.match()).id());
-                assertEquals("2", $(context.element()).id());
+            assertEquals(1, context.elementIndex());
+            assertEquals(context.match(), $(context.element()).prev().get(0));
+            assertEquals("1", $(context.match()).id());
+            assertEquals("2", $(context.element()).id());
 
-                return "Paulo Coelho".equals($(context.element()).find("author").text());
-            }
+            return "Paulo Coelho".equals($(context.element()).find("author").text());
         }).size());
-        assertEquals(1, $.find("book").eq(1).next(new Filter() {
-            @Override
-            public boolean filter(Context context) {
-                assertEquals(0, context.matchIndex());
-                assertEquals(1, context.matchSize());
+        assertEquals(1, $.find("book").eq(1).next(context -> {
+            assertEquals(0, context.matchIndex());
+            assertEquals(1, context.matchSize());
 
-                assertEquals(1, context.elementIndex());
-                assertEquals(context.match(), $(context.element()).prev().get(0));
-                assertEquals("2", $(context.match()).id());
-                assertEquals("3", $(context.element()).id());
+            assertEquals(1, context.elementIndex());
+            assertEquals(context.match(), $(context.element()).prev().get(0));
+            assertEquals("2", $(context.match()).id());
+            assertEquals("3", $(context.element()).id());
 
-                return "Paulo Coelho".equals($(context.element()).find("author").text());
-            }
+            return "Paulo Coelho".equals($(context.element()).find("author").text());
         }).size());
     }
 
@@ -955,33 +940,27 @@ public class JOOXTest {
         assertEquals(1, $.find("book").eq(7).prev().size());
         assertEquals(1, $.find("book").eq(7).prev(JOOX.all()).size());
         assertEquals(0, $.find("book").eq(7).prev(JOOX.none()).size());
-        assertEquals(0, $.find("book").eq(7).prev(new Filter() {
-            @Override
-            public boolean filter(Context context) {
-                assertEquals(0, context.matchIndex());
-                assertEquals(1, context.matchSize());
+        assertEquals(0, $.find("book").eq(7).prev(context -> {
+            assertEquals(0, context.matchIndex());
+            assertEquals(1, context.matchSize());
 
-                assertEquals(1, context.elementIndex());
-                assertEquals(context.match(), $(context.element()).next().get(0));
-                assertEquals("2", $(context.match()).id());
-                assertEquals("1", $(context.element()).id());
+            assertEquals(1, context.elementIndex());
+            assertEquals(context.match(), $(context.element()).next().get(0));
+            assertEquals("2", $(context.match()).id());
+            assertEquals("1", $(context.element()).id());
 
-                return "Paulo Coelho".equals($(context.element()).find("author").text());
-            }
+            return "Paulo Coelho".equals($(context.element()).find("author").text());
         }).size());
-        assertEquals(1, $.find("book").eq(3).prev(new Filter() {
-            @Override
-            public boolean filter(Context context) {
-                assertEquals(0, context.matchIndex());
-                assertEquals(1, context.matchSize());
+        assertEquals(1, $.find("book").eq(3).prev(context -> {
+            assertEquals(0, context.matchIndex());
+            assertEquals(1, context.matchSize());
 
-                assertEquals(1, context.elementIndex());
-                assertEquals(context.match(), $(context.element()).next().get(0));
-                assertEquals("4", $(context.match()).id());
-                assertEquals("3", $(context.element()).id());
+            assertEquals(1, context.elementIndex());
+            assertEquals(context.match(), $(context.element()).next().get(0));
+            assertEquals("4", $(context.match()).id());
+            assertEquals("3", $(context.element()).id());
 
-                return "Paulo Coelho".equals($(context.element()).find("author").text());
-            }
+            return "Paulo Coelho".equals($(context.element()).find("author").text());
         }).size());
     }
 
@@ -1281,12 +1260,7 @@ public class JOOXTest {
             $.find("actor").cdata("Lukas Eder").cdatas());
         assertEquals(
             Collections.nCopies(3, "<actor><![CDATA[Lukas Eder]]></actor>"),
-            $.find("actor").map(new Mapper<>() {
-                @Override
-                public Object map(Context context) {
-                    return context.toString();
-                }
-            }));
+            $.find("actor").map((Mapper<Object>) context -> context.toString()));
 
         assertEquals("<abc/>", $.find("actors").cdata("<abc/>").cdata());
         assertEquals("<actors><![CDATA[<abc/>]]></actors>", $.find("actors").toString());
@@ -1589,12 +1563,7 @@ public class JOOXTest {
 
         assertEquals(
             asList("b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8"),
-            $.find("xx").rename(new Content() {
-                @Override
-                public String content(Context context) {
-                    return "b" + (context.matchIndex() + 1);
-                }
-            }).tags());
+            $.find("xx").rename(context -> "b" + (context.matchIndex() + 1)).tags());
 
         assertEquals(
             asList("b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8"),
@@ -2123,18 +2092,8 @@ public class JOOXTest {
         final List<String> result = new ArrayList<>();
 
         Match books = $.find("library[name=Amazon]").find("book");
-        Each each1 = new Each() {
-            @Override
-            public void each(Context context) {
-                result.add($(context).tag());
-            }
-        };
-        Each each2 = new Each() {
-            @Override
-            public void each(Context context) {
-                result.add($(context).id());
-            }
-        };
+        Each each1 = context -> result.add($(context).tag());
+        Each each2 = context -> result.add($(context).id());
 
         result.clear();
         books.each(chain(each1, each2));
