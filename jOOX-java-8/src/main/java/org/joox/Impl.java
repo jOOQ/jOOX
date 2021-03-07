@@ -1392,8 +1392,7 @@ class Impl implements Match {
 
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
-            String text = content.content(context(match, matchIndex, size));
-            match.setTextContent(text);
+            match.setTextContent(content.content(context(match, matchIndex, size)));
         }
 
         return this;
@@ -1751,12 +1750,9 @@ class Impl implements Match {
 
     @Override
     public final Match write(Writer writer) throws IOException {
-        try {
+        try (Writer w = writer) {
             for (Element e : this)
                 writer.write(JOOX.$(e).toString());
-        }
-        finally {
-            writer.close();
         }
 
         return this;
