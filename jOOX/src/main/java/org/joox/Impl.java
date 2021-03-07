@@ -1874,7 +1874,7 @@ class Impl implements Match {
         Impl result = new Impl(document, namespaces);
 
         List<Element> newElements = new ArrayList<>(elements);
-        Collections.sort(newElements,comparator);
+        newElements.sort(comparator);
 
         for (Element e : newElements)
             if (e != null)
