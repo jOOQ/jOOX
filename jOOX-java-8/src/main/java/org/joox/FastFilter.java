@@ -14,19 +14,19 @@
 package org.joox;
 
 /**
- * A callback to be executed for a set of matched elements.
+ * A filter indicating whether an element/index should be kept when reducing an
+ * {@link Match} node set
+ * <p>
+ * In addition to the filtering functionality, this marker interface can be used
+ * to indicate that {@link Context#elementSize()} may not be needed for
+ * filtering. This is particularly interesting for filters, such as
+ * {@link JOOX#tag(String)}, {@link JOOX#all()}, etc
  *
  * @author Lukas Eder
  */
 
+@FunctionalInterface
 
+public interface FastFilter extends Filter {
 
-public interface Each {
-
-    /**
-     * The callback method invoked for every matched element.
-     *
-     * @param context The context for the current callback call.
-     */
-    void each(Context context);
 }

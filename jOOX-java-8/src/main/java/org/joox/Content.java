@@ -13,22 +13,21 @@
  */
 package org.joox;
 
-
 /**
- * A mapping type providing data for every element.
+ * A Callback providing (mostly new) content for each element
  *
  * @author Lukas Eder
  */
 
+@FunctionalInterface
 
-
-public interface Mapper<E> {
+public interface Content {
 
     /**
      * The callback method invoked for every matched element.
      *
      * @param context The context for the current callback call.
-     * @return The mapped value for the element
+     * @return The new content
      */
-    E map(Context context);
+    String content(Context context);
 }
