@@ -47,6 +47,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXB;
@@ -426,9 +428,13 @@ class Impl implements Match {
 
     @Override
     public final Impl filter(Filter filter) {
-        final int size = size();
+        return new Impl(document, namespaces).addElements(filter0(filter));
+    }
 
+    private final List<Element> filter0(Filter filter) {
+        final int size = size();
         List<Element> result = new ArrayList<>();
+
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
 
@@ -436,7 +442,7 @@ class Impl implements Match {
                 result.add(match);
         }
 
-        return new Impl(document, namespaces).addElements(result);
+        return result;
     }
 
     @Override
@@ -700,37 +706,7 @@ class Impl implements Match {
     }
 
     private final Impl next(boolean all, Filter until, Filter filter) {
-        final int size = size();
-
-        List<Element> result = new ArrayList<>();
-        for (int matchIndex = 0; matchIndex < size; matchIndex++) {
-            Element match = get(matchIndex);
-            Node node = match;
-
-            for (int elementIndex = 1;;) {
-                node = node.getNextSibling();
-
-                if (node == null) {
-                    break;
-                }
-                else if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element e = (Element) node;
-
-                    // TODO: [#34] Calculate elementSize()
-                    if (until.filter(context(match, matchIndex, size, e, elementIndex, -1)))
-                        break;
-
-                    // TODO: [#34] Calculate elementSize()
-                    if (filter.filter(context(match, matchIndex, size, e, elementIndex++, -1)))
-                        result.add(e);
-
-                    if (!all)
-                        break;
-                }
-            }
-        }
-
-        return new Impl(document, namespaces, this).addUniqueElements(result);
+        return axis(all, until, filter, Node::getNextSibling, l -> {});
     }
 
     @Override
@@ -804,38 +780,7 @@ class Impl implements Match {
     }
 
     private final Impl parents(boolean all, Filter until, Filter filter) {
-        final int size = size();
-        List<Element> result = new ArrayList<>();
-
-        // Maybe reverse iteration and reverse result?
-        for (int matchIndex = 0; matchIndex < size; matchIndex++) {
-            Element match = get(matchIndex);
-            Node node = match;
-
-            for (int elementIndex = 1;;) {
-                node = node.getParentNode();
-
-                if (node == null) {
-                    break;
-                }
-                else if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element e = (Element) node;
-
-                    // TODO: [#34] Calculate elementSize()
-                    if (until.filter(context(match, matchIndex, size, e, elementIndex, -1)))
-                        break;
-
-                    // TODO: [#34] Calculate elementSize()
-                    if (filter.filter(context(match, matchIndex, size, e, elementIndex++, -1)))
-                        result.add(e);
-
-                    if (!all)
-                        break;
-                }
-            }
-        }
-
-        return new Impl(document, namespaces, this).addUniqueElements(result);
+        return axis(all, until, filter, Node::getParentNode, l -> {});
     }
 
     @Override
@@ -899,15 +844,19 @@ class Impl implements Match {
     }
 
     private final Impl prev(boolean all, Filter until, Filter filter) {
-        final int size = size();
+        return axis(all, until, filter, Node::getPreviousSibling, Collections::reverse);
+    }
 
+    private final Impl axis(boolean all, Filter until, Filter filter, Function<Node, Node> iterate, Consumer<List<Element>> finisher) {
+        final int size = size();
         List<Element> result = new ArrayList<>();
+
         for (int matchIndex = 0; matchIndex < size; matchIndex++) {
             Element match = get(matchIndex);
             Node node = match;
 
             for (int elementIndex = 1;;) {
-                node = node.getPreviousSibling();
+                node = iterate.apply(node);
 
                 if (node == null) {
                     break;
@@ -929,7 +878,7 @@ class Impl implements Match {
             }
         }
 
-        Collections.reverse(result);
+        finisher.accept(result);
         return new Impl(document, namespaces, this).addUniqueElements(result);
     }
 
@@ -1519,17 +1468,7 @@ class Impl implements Match {
 
     @Override
     public final Impl remove(Filter filter) {
-        final int size = size();
-
-        List<Element> remove = new ArrayList<>();
-        for (int matchIndex = 0; matchIndex < size; matchIndex++) {
-            Element match = get(matchIndex);
-
-            if (filter.filter(context(match, matchIndex, size)))
-                remove.add(match);
-        }
-
-        for (Element element : remove)
+        for (Element element : filter0(filter))
             remove(element);
 
         return this;
