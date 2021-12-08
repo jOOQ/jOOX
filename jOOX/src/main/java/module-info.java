@@ -6,12 +6,12 @@ module org.jooq.joox {
 
     // XML API dependencies
     requires java.xml;
-    requires java.xml.bind;
+    requires jakarta.xml.bind;
 
     exports org.joox;
 
     // Required for JAXB tests
     // See also https://github.com/javaee/jaxb-v2/issues/1184
-    opens org.joox to java.xml.bind;
+    opens org.joox to jakarta.xml.bind;
 }
 /* [/java-9] */

@@ -11,8 +11,12 @@
 
     <groupId>org.jooq</groupId>
     <artifactId>joox-java-6</artifactId>
-    <version>1.6.3</version>
+    <version>2.0.0</version>
     <packaging>bundle</packaging>
+
+    <properties>
+        <jaxb.version>3.0.0</jaxb.version>
+    </properties>
 
     <name>jOOX</name>
     <description>jOOX is a recursive acronym that stands for jOOX Object Oriented XML. It is a simple wrapper for the org.w3c.dom package, to allow for fluent XML document creation and manipulation where DOM is required but too verbose.</description>
@@ -231,24 +235,17 @@
 
     <dependencies>
 
-        <!-- Runtime dependencies -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        <!-- Prior to Java 9, the JAXB dependency was shipped with the JDK -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
