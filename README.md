@@ -138,7 +138,7 @@ Match x4 = $(document).find("book").filter(odd());
 List<String> ids = $(document).find("book").ids();
 
 // This will get all books with ID = 1 or ID = 2
-Match x5 = $(document).find("book").filter(ids(1, 2));
+Match x5 = $(document).find("book").filter(ids("1", "2"));
 
 // Or, use css-selector syntax:
 Match x6 = $(document).find("book#1, book#2");
