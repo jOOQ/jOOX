@@ -183,19 +183,18 @@
                             </includes>
                             <replacements>
                                 <replacement>
-                                    <token><![CDATA[<body>]]></token>
-                                    <value><![CDATA[<body>
-                                        <script type="text/javascript">
-                                          var _gaq = _gaq || [];
-                                          _gaq.push(['_setAccount', 'UA-30716479-1']);
-                                          _gaq.push(['_trackPageview']);
+                                    <token><![CDATA[</body>]]></token>
+                                    <value><![CDATA[
+                                        <!-- Google tag (gtag.js) -->
+                                        <script async src="https://www.googletagmanager.com/gtag/js?id=G-PB08BGF2SR"></script>
+                                        <script>
+                                        window.dataLayer = window.dataLayer || [];
+                                        function gtag(){dataLayer.push(arguments);}
+                                        gtag('js', new Date());
 
-                                          (function() {
-                                            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                                            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                                            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-                                          })();
+                                        gtag('config', 'G-PB08BGF2SR');
                                         </script>
+                                        </body>
                                     ]]></value>
                                 </replacement>
                             </replacements>
@@ -241,13 +240,14 @@
             <artifactId>jakarta.xml.bind-api</artifactId>
             <version>${jaxb.version}</version>
         </dependency>
+
+        <!-- Test dependencies -->
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
             <version>${jaxb.version}</version>
+            <scope>test</scope>
         </dependency>
-
-        <!-- Test dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
