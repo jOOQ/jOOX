@@ -69,9 +69,11 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathVariableResolver;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -1195,6 +1197,23 @@ class Impl implements Match {
         }
 
         return this;
+    }
+
+    @Override
+    public final Set<String> attrNames() {
+        Set<String> result = new LinkedHashSet<>();
+
+        for (Element e : this) {
+            NamedNodeMap m = e.getAttributes();
+            int length = m.getLength();
+
+            for (int i = 0; i < length; i++) {
+                Attr a = (Attr) m.item(i);
+                result.add(a.getName());
+            }
+        }
+
+        return result;
     }
 
     @Override
