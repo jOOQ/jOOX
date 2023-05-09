@@ -22,7 +22,17 @@
 <dependency>
   <groupId>org.jooq</groupId>
   <artifactId>joox</artifactId>
-  <version>1.6.2</version>
+  <version>2.0.0</version>
+</dependency>
+```
+
+**For use with Java 8+**
+
+```xml
+<dependency>
+  <groupId>org.jooq</groupId>
+  <artifactId>joox-java-8</artifactId>
+  <version>2.0.0</version>
 </dependency>
 ```
 
@@ -32,7 +42,7 @@
 <dependency>
   <groupId>org.jooq</groupId>
   <artifactId>joox-java-6</artifactId>
-  <version>1.6.2</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
@@ -138,7 +148,7 @@ Match x4 = $(document).find("book").filter(odd());
 List<String> ids = $(document).find("book").ids();
 
 // This will get all books with ID = 1 or ID = 2
-Match x5 = $(document).find("book").filter(ids(1, 2));
+Match x5 = $(document).find("book").filter(ids("1", "2"));
 
 // Or, use css-selector syntax:
 Match x6 = $(document).find("book#1, book#2");

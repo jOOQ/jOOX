@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -1751,6 +1752,11 @@ public interface Match extends Iterable<Element> {
     // ---------------------------------------------------------------------
     // Manipulation of attributes
     // ---------------------------------------------------------------------
+
+    /**
+     * Get the set of available attribute names in the set of matched elements.
+     */
+    Set<String> attrNames();
 
     /**
      * Get an attribute from the first element in the set of matched elements,
