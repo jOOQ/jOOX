@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.jooq</groupId>
-    <artifactId>joox-java-6</artifactId>
+    <artifactId>joox-java-8</artifactId>
     <version>1.6.3</version>
     <packaging>bundle</packaging>
 
@@ -266,7 +266,21 @@
         <dependency>
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
-            <version>2.7.2</version>
+            <version>2.7.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- xalan:xalan:2.7.3 no longer declares these transitive dependencies -->
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>serializer</artifactId>
+            <version>2.7.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.12.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

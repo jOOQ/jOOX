@@ -43,6 +43,7 @@ import java.util.Queue;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.IOUtils;
@@ -1667,7 +1668,7 @@ public class JOOXTest {
             $.xpath("//*[$1 = $2]", 1);
             fail();
         }
-        catch (IndexOutOfBoundsException expected) {}
+        catch (RuntimeException expected) {}
     }
 
     @Test
