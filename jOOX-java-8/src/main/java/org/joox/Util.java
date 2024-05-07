@@ -88,7 +88,7 @@ class Util {
         "^(\\d{4})(?:[-\\./](\\d{2})(?:[-\\./](\\d{2})(?:(?:[\\sT]|'T')(\\d{2})(?:[-\\./:](\\d{2})(?:[-\\./:](\\d{2})(?:\\.(\\d+))?)?)?)?)?)?$");
 
     /**
-     * Create some content in the context of a given document
+     * Create some content in the context of a given document.
      *
      * @return <ul>
      *         <li>A {@link DocumentFragment} if <code>text</code> is
@@ -98,6 +98,20 @@ class Util {
      *         </ul>
      */
     static final DocumentFragment createContent(Document doc, String text) {
+        return createContent(doc, text, false);
+    }
+
+    /**
+     * Create some content in the context of a given document for use as root node.
+     *
+     * @return <ul>
+     *         <li>A {@link DocumentFragment} if <code>text</code> is
+     *         well-formed.</li>
+     *         <li><code>null</code>, if <code>text</code> is plain text or not
+     *         well formed</li>
+     *         </ul>
+     */
+    static final DocumentFragment createContent(Document doc, String text, boolean rootNode) {
 
         // [#150] Text might hold XML content, which can be leniently identified by the presence
         //        of either < or & characters (other entities, like >, ", ' are not stricly XML content)
@@ -108,10 +122,6 @@ class Util {
             builder.setErrorHandler(new DefaultHandler());
 
             try {
-
-                // [#128] Trimming will get rid of leading and trailing whitespace, which would
-                // otherwise cause a HIERARCHY_REQUEST_ERR raised by the parser
-                text = text.trim();
 
                 // There is a processing instruction. We can safely assume
                 // valid XML and parse it as such

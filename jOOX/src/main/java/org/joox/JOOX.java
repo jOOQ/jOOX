@@ -13,6 +13,9 @@
  */
 package org.joox;
 
+import static org.w3c.dom.Node.CDATA_SECTION_NODE;
+import static org.w3c.dom.Node.TEXT_NODE;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -93,10 +96,30 @@ public final class JOOX {
      */
     public static Match $(String name) {
         Document document = builder().newDocument();
-        DocumentFragment fragment = Util.createContent(document, name);
+        DocumentFragment fragment = Util.createContent(document, name, true);
 
-        if (fragment != null)
-            document.appendChild(fragment);
+
+        if (fragment != null) {
+            NodeList children = fragment.getChildNodes();
+
+            // [#128] [#190] Append only non-Text content (org.w3c.dom.Document doesn't check if it's whitespace only)
+            for (int i = 0; i < children.getLength(); ) {
+                Node node = children.item(i);
+
+                switch (node.getNodeType()) {
+                    case CDATA_SECTION_NODE:
+                    case TEXT_NODE:
+                        i++;
+                        break;
+
+                    default:
+
+                        // appendChild removes children also from NodeList, so don't increment i
+                        document.appendChild(node);
+                        break;
+                }
+            }
+        }
         else
             document.appendChild(document.createElement(name));
 

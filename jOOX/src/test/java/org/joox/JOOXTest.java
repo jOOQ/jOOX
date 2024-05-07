@@ -34,7 +34,6 @@ import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -45,11 +44,9 @@ import java.util.Queue;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.IOUtils;
-import org.joox.selector.CSS2XPath;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -1782,8 +1779,14 @@ public class JOOXTest {
         assertEquals("<a/>", $("a").toString());
         assertEquals("<a/>", $("<a></a>").toString());
         assertEquals("<a/>", $("<a/>").toString());
+
+        // [#190] Include also various whitespace checks
         assertEquals("<a/>", $("<!-- some comment --><a/>").toString());
+        assertEquals("<a/>", $("<!-- some comment --><a></a>").toString());
+        assertEquals("<a/>", $("<!-- some comment --> <a/>").toString());
+        assertEquals("<a/>", $("<!-- some comment --> <a></a>").toString());
         assertEquals("<a/>", $("<?xml version=\"1.0\"?><!-- some comment --><a/>").toString());
+        assertEquals("<a/>", $("<?xml version=\"1.0\"?> <!-- some comment --> <a/>").toString());
     }
 
     @Test
