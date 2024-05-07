@@ -44,7 +44,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.11.0</version>
                 <configuration>
                     <fork>true</fork>
                     <maxmem>512m</maxmem>
@@ -285,6 +285,17 @@
             <artifactId>xercesImpl</artifactId>
             <version>2.12.2</version>
             <scope>test</scope>
+
+            <!-- [java-9] -->
+            <!-- Eclipse is getting confused about duplicate xml-apis on the module path, both declared and <unnamed>
+                 https://stackoverflow.com/a/73831632/521799 -->
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
+            <!-- [/java-9] -->
         </dependency>
     </dependencies>
 </project>
