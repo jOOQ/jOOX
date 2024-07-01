@@ -22,7 +22,7 @@
 <dependency>
   <groupId>org.jooq</groupId>
   <artifactId>joox</artifactId>
-  <version>2.0.0</version>
+  <version>2.0.1</version>
 </dependency>
 ```
 
@@ -32,17 +32,7 @@
 <dependency>
   <groupId>org.jooq</groupId>
   <artifactId>joox-java-8</artifactId>
-  <version>2.0.0</version>
-</dependency>
-```
-
-**For use with Java 6+**
-
-```xml
-<dependency>
-  <groupId>org.jooq</groupId>
-  <artifactId>joox-java-6</artifactId>
-  <version>2.0.0</version>
+  <version>2.0.1</version>
 </dependency>
 ```
 
