@@ -486,9 +486,13 @@ class Impl implements Match {
      * the matched elements
      */
     private boolean isRoot() {
-        for (Element element : elements)
-            if (element.getParentNode().getNodeType() == Node.DOCUMENT_NODE)
+        for (Element element : elements) {
+            Node parent = element.getParentNode();
+
+            // Detached elements have no parent
+            if (parent != null && parent.getNodeType() == Node.DOCUMENT_NODE)
                 return true;
+        }
 
         return false;
     }
