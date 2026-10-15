@@ -35,6 +35,7 @@ import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -866,6 +867,22 @@ public class JOOXTest {
         assertEquals(
             asList("a", "b", "c", "d", "e", "f g"),
             asList(m.attr("class", String[].class)));
+    }
+
+    @Test
+    public void testConvertPrimitiveArrays() throws Exception {
+        assertEquals("[1, 2, 3]", Arrays.toString(JOOX.convert("1,2,3", int[].class)));
+        assertEquals("[1, 2, 3]", Arrays.toString(JOOX.convert("1 2;3", long[].class)));
+        assertEquals("[1, 2, 0]", Arrays.toString(JOOX.convert("1,2,x", short[].class)));
+        assertEquals("[1.5, 2.0]", Arrays.toString(JOOX.convert("1.5,2", double[].class)));
+        assertEquals("[1.5, 2.0]", Arrays.toString(JOOX.convert("1.5,2", float[].class)));
+        assertEquals("[1, 2]", Arrays.toString(JOOX.convert("1,2", byte[].class)));
+        assertEquals("[true, false, false]", Arrays.toString(JOOX.convert("yes,no,x", boolean[].class)));
+        assertEquals("[]", Arrays.toString(JOOX.convert("", int[].class)));
+
+        Match m = $("root", $("child", "1,2,3"));
+        assertEquals("[1, 2, 3]", Arrays.toString(m.find("child").text(int[].class)));
+        assertEquals("[1, 2, 3]", Arrays.toString(m.find("child").texts(int[].class).get(0)));
     }
 
     @Test

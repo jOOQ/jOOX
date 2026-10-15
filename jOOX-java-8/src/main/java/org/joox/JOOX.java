@@ -1034,7 +1034,18 @@ public final class JOOX {
         else if (type.isArray()) {
             Class<?> component = type.getComponentType();
             List<String> split = Util.split(value);
-            return (T) convert(split, component).toArray((Object[]) Array.newInstance(component, split.size()));
+            Object result = Array.newInstance(component, split.size());
+
+            // Array.set() also works for primitive component types, unlike
+            // a cast to Object[]
+            for (int i = 0; i < split.size(); i++) {
+                Object converted = convert(split.get(i), component);
+
+                if (converted != null)
+                    Array.set(result, i, converted);
+            }
+
+            return (T) result;
         }
 
         // Strings are not converted
