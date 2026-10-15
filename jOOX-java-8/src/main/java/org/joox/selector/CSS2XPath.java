@@ -72,132 +72,139 @@ public final class CSS2XPath {
                         break;
                     case ADJACENT_SIBLING:
 
-                        // TODO: Implement this
-                        sb.append("?????");
+                        // The immediately following sibling element, if it matches
+                        sb.append("/following-sibling::*[1]/self::");
                         break;
                     case GENERAL_SIBLING:
-
-                        // TODO: Implement this
-                        sb.append("?????");
+                        sb.append("/following-sibling::");
                         break;
                 }
 
-                // [#163] To stay on the safe side, we need namespace unaware XPath expressions here
-                //        Do this only for actual tag names, not e.g. * or other special characters
-                if (SIMPLE_SELECTOR.matcher(s.getTagName()).matches())
-                    sb.append("*[local-name() = '").append(s.getTagName()).append("']");
-                else
-                    sb.append(s.getTagName());
-
-                // [#163] This would be an XPath 2.0 syntax, not supported by Java's built-in XPath libraries
-                // sb.append("*:").append(s.getTagName());
-
-                if (s.hasSpecifiers()) {
-                    for (Specifier specifier : s.getSpecifiers()) {
-                        switch (specifier.getType()) {
-                            case ATTRIBUTE: {
-                                AttributeSpecifier a = ((AttributeSpecifier) specifier);
-
-                                sb.append("[");
-
-                                if (a.getMatch() == null) {
-                                    sb.append("@");
-                                    sb.append(a.getName());
-                                }
-                                else {
-                                    String name = a.getName();
-                                    String value = a.getValue();
-
-                                    switch (a.getMatch()) {
-                                        case EXACT: {
-                                            sb.append("@").append(name).append("=").append(literal(value));
-                                            break;
-                                        }
-
-                                        case CONTAINS: {
-                                            sb.append("contains(@").append(name).append(", ").append(literal(value)).append(")");
-                                            break;
-                                        }
-
-                                        case HYPHEN: {
-                                            sb.append("@").append(name).append("=").append(literal(value));
-                                            sb.append(" or starts-with(@").append(name).append(", ").append(literal(value + "-")).append(")");
-                                            break;
-                                        }
-
-                                        case PREFIX: {
-                                            sb.append("starts-with(@").append(name).append(", ").append(literal(value)).append(")");
-                                            break;
-                                        }
-
-                                        case SUFFIX: {
-                                            endsWith(sb, name, value);
-                                            break;
-                                        }
-
-                                        case LIST: {
-                                            sb.append("@").append(name).append("=").append(literal(value));
-                                            sb.append(" or starts-with(@").append(name).append(", ").append(literal(value + " ")).append(")");
-                                            sb.append(" or ");
-                                            endsWith(sb, name, " " + value);
-                                            sb.append(" or contains(@").append(name).append(", ").append(literal(" " + value + " ")).append(")");
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                sb.append("]");
-                                break;
-                            }
-
-                            case NEGATION: {
-                                sb.append("[not(");
-
-                                // TODO: implement this..??
-
-                                sb.append(")]");
-                                break;
-                            }
-
-                            case PSEUDO: {
-                                if (specifier instanceof PseudoClassSpecifier) {
-                                    PseudoClassSpecifier p = ((PseudoClassSpecifier) specifier);
-                                    String value = p.getValue();
-
-                                    if ("empty".equals(value))
-                                        sb.append("[not(*|@*|node())]");
-                                    else if ("first-child".equals(value))
-                                        sb.append("[not(preceding-sibling::*)]");
-                                    else if ("last-child".equals(value))
-                                        sb.append("[not(following-sibling::*)]");
-                                    else if ("only-child".equals(value))
-                                        sb.append("[not(preceding-sibling::*) and not(following-sibling::*)]");
-                                    else if ("root".equals(value))
-                                        sb.append("[not(parent::*)]");
-                                }
-                                else if (specifier instanceof PseudoNthSpecifier) {
-                                    PseudoNthSpecifier p = ((PseudoNthSpecifier) specifier);
-                                    String value = p.getValue();
-
-                                    if ("nth-child".equals(value)) {
-                                        sb.append("[count(preceding-sibling::*) = ");
-                                        sb.append(p.getArgument());
-                                        sb.append(" - 1]");
-                                    }
-
-                                    // TODO: Implement this...?
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
+                step(sb, s);
             }
 
             selectorSeparator = " | ";
         }
 
         return sb.toString();
+    }
+
+    /**
+     * Append an XPath node test and predicates for a simple selector, i.e. a
+     * tag name and its specifiers.
+     */
+    private static void step(StringBuilder sb, Selector s) {
+        // [#163] To stay on the safe side, we need namespace unaware XPath expressions here
+        //        Do this only for actual tag names, not e.g. * or other special characters
+        if (SIMPLE_SELECTOR.matcher(s.getTagName()).matches())
+            sb.append("*[local-name() = '").append(s.getTagName()).append("']");
+        else
+            sb.append(s.getTagName());
+
+        // [#163] This would be an XPath 2.0 syntax, not supported by Java's built-in XPath libraries
+        // sb.append("*:").append(s.getTagName());
+
+        if (s.hasSpecifiers()) {
+            for (Specifier specifier : s.getSpecifiers()) {
+                switch (specifier.getType()) {
+                    case ATTRIBUTE: {
+                        AttributeSpecifier a = ((AttributeSpecifier) specifier);
+
+                        sb.append("[");
+
+                        if (a.getMatch() == null) {
+                            sb.append("@");
+                            sb.append(a.getName());
+                        }
+                        else {
+                            String name = a.getName();
+                            String value = a.getValue();
+
+                            switch (a.getMatch()) {
+                                case EXACT: {
+                                    sb.append("@").append(name).append("=").append(literal(value));
+                                    break;
+                                }
+
+                                case CONTAINS: {
+                                    sb.append("contains(@").append(name).append(", ").append(literal(value)).append(")");
+                                    break;
+                                }
+
+                                case HYPHEN: {
+                                    sb.append("@").append(name).append("=").append(literal(value));
+                                    sb.append(" or starts-with(@").append(name).append(", ").append(literal(value + "-")).append(")");
+                                    break;
+                                }
+
+                                case PREFIX: {
+                                    sb.append("starts-with(@").append(name).append(", ").append(literal(value)).append(")");
+                                    break;
+                                }
+
+                                case SUFFIX: {
+                                    endsWith(sb, name, value);
+                                    break;
+                                }
+
+                                case LIST: {
+                                    sb.append("@").append(name).append("=").append(literal(value));
+                                    sb.append(" or starts-with(@").append(name).append(", ").append(literal(value + " ")).append(")");
+                                    sb.append(" or ");
+                                    endsWith(sb, name, " " + value);
+                                    sb.append(" or contains(@").append(name).append(", ").append(literal(" " + value + " ")).append(")");
+                                    break;
+                                }
+                            }
+                        }
+
+                        sb.append("]");
+                        break;
+                    }
+
+                    case NEGATION: {
+
+                        // The negation argument is a simple selector, which is
+                        // matched against the context element itself
+                        sb.append("[not(self::");
+                        step(sb, ((NegationSpecifier) specifier).getSelector());
+                        sb.append(")]");
+                        break;
+                    }
+
+                    case PSEUDO: {
+                        if (specifier instanceof PseudoClassSpecifier) {
+                            PseudoClassSpecifier p = ((PseudoClassSpecifier) specifier);
+                            String value = p.getValue();
+
+                            if ("empty".equals(value))
+                                sb.append("[not(*|@*|node())]");
+                            else if ("first-child".equals(value))
+                                sb.append("[not(preceding-sibling::*)]");
+                            else if ("last-child".equals(value))
+                                sb.append("[not(following-sibling::*)]");
+                            else if ("only-child".equals(value))
+                                sb.append("[not(preceding-sibling::*) and not(following-sibling::*)]");
+                            else if ("root".equals(value))
+                                sb.append("[not(parent::*)]");
+                        }
+                        else if (specifier instanceof PseudoNthSpecifier) {
+                            PseudoNthSpecifier p = ((PseudoNthSpecifier) specifier);
+                            String value = p.getValue();
+
+                            if ("nth-child".equals(value)) {
+                                sb.append("[count(preceding-sibling::*) = ");
+                                sb.append(p.getArgument());
+                                sb.append(" - 1]");
+                            }
+
+                            // TODO: Implement this...?
+                        }
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /**
