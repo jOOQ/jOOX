@@ -61,21 +61,6 @@ import org.xml.sax.helpers.DefaultHandler;
 class Util {
 
     /**
-     * A flag indicating whether xalan extensions have been loaded
-     */
-    private static volatile boolean      xalanExtensionLoaded = false;
-
-    /**
-     * The xalan extensions {@link NamespaceContext} if available
-     */
-    private static NamespaceContext      xalanNamespaceContext;
-
-    /**
-     * The xalan extensions {@link XPathFunctionResolver} if available
-     */
-    private static XPathFunctionResolver xalanFunctionResolver;
-
-    /**
      * A pattern for the dd.mm.yyyy format
      */
     private static final Pattern         PATTERN_DD_MM_YYYY   = Pattern.compile(
@@ -527,31 +512,43 @@ class Util {
      * Make a given {@link XPath} object "xalan-extension aware", if Xalan is on
      * the classpath.
      */
-    @SuppressWarnings("deprecation")
     static final void xalanExtensionAware(XPath xpath) {
-
-        // Load xalan extensions thread-safely for all of jOOX
-        if (!xalanExtensionLoaded) {
-            synchronized (Util.class) {
-                if (!xalanExtensionLoaded) {
-                    xalanExtensionLoaded = true;
-
-                    try {
-                        xalanNamespaceContext = (NamespaceContext)
-                            Class.forName("org.apache.xalan.extensions.ExtensionNamespaceContext").newInstance();
-
-                        xalanFunctionResolver = (XPathFunctionResolver)
-                            Class.forName("org.apache.xalan.extensions.XPathFunctionResolverImpl").newInstance();
-                    }
-                    catch (Exception ignore) {
-                    }
-                }
-            }
+        if (XalanExtensions.NAMESPACE_CONTEXT != null && XalanExtensions.FUNCTION_RESOLVER != null) {
+            xpath.setNamespaceContext(XalanExtensions.NAMESPACE_CONTEXT);
+            xpath.setXPathFunctionResolver(XalanExtensions.FUNCTION_RESOLVER);
         }
+    }
 
-        if (xalanNamespaceContext != null && xalanFunctionResolver != null) {
-            xpath.setNamespaceContext(xalanNamespaceContext);
-            xpath.setXPathFunctionResolver(xalanFunctionResolver);
+    /**
+     * The xalan extensions, if Xalan is on the classpath.
+     * <p>
+     * They are loaded lazily and thread-safely by the JVM when this class is
+     * initialised (initialisation-on-demand holder idiom). A flag that is set
+     * before the extensions are assigned would allow other threads to observe
+     * the flag, but not the extensions.
+     */
+    private static final class XalanExtensions {
+        static final NamespaceContext      NAMESPACE_CONTEXT;
+        static final XPathFunctionResolver FUNCTION_RESOLVER;
+
+        static {
+            NamespaceContext namespaceContext = null;
+            XPathFunctionResolver functionResolver = null;
+
+            try {
+                namespaceContext = (NamespaceContext)
+                    Class.forName("org.apache.xalan.extensions.ExtensionNamespaceContext").getDeclaredConstructor().newInstance();
+
+                functionResolver = (XPathFunctionResolver)
+                    Class.forName("org.apache.xalan.extensions.XPathFunctionResolverImpl").getDeclaredConstructor().newInstance();
+            }
+            catch (Exception | LinkageError ignore) {
+                namespaceContext = null;
+                functionResolver = null;
+            }
+
+            NAMESPACE_CONTEXT = namespaceContext;
+            FUNCTION_RESOLVER = functionResolver;
         }
     }
 
