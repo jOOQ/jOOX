@@ -616,6 +616,35 @@ public class JOOXTest {
     }
 
     @Test
+    public void testFindCSSSiblingCombinatorsAndNegation() throws Exception {
+        Match x = $("<r><a/><b id='1'/><c/><b id='2'/><s><a/><b id='3'/></s></r>");
+
+        // E + F
+        assertEquals(asList("1", "3"), x.find("a + b").ids());
+        assertEquals(asList("c"), x.find("b + c").tags());
+        assertEquals(0, x.find("a + c").size());
+        assertEquals(asList("b", "b"), x.find("a + *").tags());
+
+        // E ~ F
+        assertEquals(asList("1", "2", "3"), x.find("a ~ b").ids());
+        assertEquals(asList("2"), x.find("c ~ b").ids());
+        assertEquals(asList("2"), x.find("c ~ b[id]").ids());
+
+        // Combined with other combinators
+        assertEquals(asList("3"), x.find("r > s > a + b").ids());
+        assertEquals(asList("3"), x.find("s a ~ b").ids());
+
+        // Relative to a non-root element
+        assertEquals(asList("3"), x.find("s").find("a + b").ids());
+
+        // :not()
+        assertEquals(asList("a", "c", "s"), x.find("r > :not(b)").tags());
+        assertEquals(asList("a", "c", "s"), x.find("r > *:not(b)").tags());
+        assertEquals(asList("1", "3"), x.find("b:not([id='2'])").ids());
+        assertEquals(asList("2", "3"), x.find("b:not(:first-child):not(#1)").ids());
+    }
+
+    @Test
     public void testFindCSSAttributeValuesWithQuotes() throws Exception {
         Match x = $("<r><a t=\"it's\"/><a t='say &quot;hi&quot;'/><a t=\"it's &quot;x&quot;\"/><a t='x y'/></r>");
 

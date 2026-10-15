@@ -419,6 +419,10 @@ public final class JOOX {
      * <td>an E element with ID equal to "myid".</td>
      * </tr>
      * <tr>
+     * <td>E:not(s)</td>
+     * <td>an E element that does not match simple selector s</td>
+     * </tr>
+     * <tr>
      * <td>E F</td>
      * <td>an F element descendant of an E element</td>
      * </tr>
