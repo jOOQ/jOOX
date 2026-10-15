@@ -2156,6 +2156,30 @@ public class JOOXTest {
             $.find("record2").attr("sql-time", java.sql.Time.class));
     }
 
+    @Test
+    public void testDatesWithFractionalSeconds() throws Exception {
+
+        // Fractional seconds are fractions, not a number of milliseconds
+        assertEquals(java.sql.Timestamp.valueOf("2020-02-01 10:11:12.5"),
+            JOOX.convert("01.02.2020 10:11:12.5", java.sql.Timestamp.class));
+        assertEquals(java.sql.Timestamp.valueOf("2020-02-01 10:11:12.05"),
+            JOOX.convert("01.02.2020 10:11:12.05", java.sql.Timestamp.class));
+        assertEquals(java.sql.Timestamp.valueOf("2020-02-01 10:11:12.123"),
+            JOOX.convert("01.02.2020 10:11:12.123", java.sql.Timestamp.class));
+
+        // Precision beyond milliseconds is truncated instead of overflowing
+        assertEquals(java.sql.Timestamp.valueOf("2020-02-01 10:11:12.123"),
+            JOOX.convert("01.02.2020 10:11:12.1234", java.sql.Timestamp.class));
+        assertEquals(java.sql.Timestamp.valueOf("2020-02-01 10:11:12.123"),
+            JOOX.convert("01.02.2020 10:11:12.123456789", java.sql.Timestamp.class));
+
+        // The same applies to yyyy-MM-dd formats
+        assertEquals(java.sql.Timestamp.valueOf("2020-02-01 10:11:12.5"),
+            JOOX.convert("2020-02-01 10:11:12.5", java.sql.Timestamp.class));
+        assertEquals(java.sql.Timestamp.valueOf("2020-02-01 10:11:12.123"),
+            JOOX.convert("2020/02/01 10:11:12.1239", java.sql.Timestamp.class));
+    }
+
     private Customer getCustomer() {
         Customer c = new Customer();
 

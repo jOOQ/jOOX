@@ -588,7 +588,7 @@ class Util {
                 String hh = defaultIfEmpty(matcher.group(4), "0");
                 String min = defaultIfEmpty(matcher.group(5), "0");
                 String ss = defaultIfEmpty(matcher.group(6), "0");
-                String ms = defaultIfEmpty(matcher.group(7), "0");
+                String ms = fractionToMillis(matcher.group(7));
 
                 return getDate(Integer.parseInt(yyyy),
                                Integer.parseInt(mm),
@@ -610,7 +610,7 @@ class Util {
                     String hh = defaultIfEmpty(matcher2.group(4), "0");
                     String min = defaultIfEmpty(matcher2.group(5), "0");
                     String ss = defaultIfEmpty(matcher2.group(6), "0");
-                    String ms = defaultIfEmpty(matcher2.group(7), "0");
+                    String ms = fractionToMillis(matcher2.group(7));
 
                     return getDate(Integer.parseInt(yyyy),
                                    Integer.parseInt(mm),
@@ -639,6 +639,18 @@ class Util {
         calendar.set(year, month - 1, day, hour, minute, second);
         calendar.set(Calendar.MILLISECOND, millisecond);
         return calendar.getTime();
+    }
+
+    /**
+     * Interpret the digits after the decimal point of a seconds value as a
+     * fraction of a second, i.e. <code>5</code> is 500ms, not 5ms. Digits
+     * beyond millisecond precision are truncated.
+     */
+    private static final String fractionToMillis(String fraction) {
+        if (fraction == null || fraction.equals(""))
+            return "0";
+
+        return (fraction + "00").substring(0, 3);
     }
 
     static final String defaultIfEmpty(String string, String defaultString) {
