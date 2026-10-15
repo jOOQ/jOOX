@@ -1764,6 +1764,9 @@ public interface Match extends Iterable<Element> {
      * <p>
      * jOOX is namespace-unaware. The supplied attribute name will be compared
      * against all attributes, matching the first one that has the given name.
+     * An attribute whose qualified name (e.g. <code>xlink:href</code>) equals
+     * the supplied name takes precedence over attributes whose local name
+     * (e.g. <code>href</code>) equals the supplied name.
      */
     String attr(String name);
 
@@ -1774,6 +1777,9 @@ public interface Match extends Iterable<Element> {
      * <p>
      * jOOX is namespace-unaware. The supplied attribute name will be compared
      * against all attributes, matching the first one that has the given name.
+     * An attribute whose qualified name (e.g. <code>xlink:href</code>) equals
+     * the supplied name takes precedence over attributes whose local name
+     * (e.g. <code>href</code>) equals the supplied name.
      *
      * @see JOOX#convert(String, Class)
      */
@@ -1784,6 +1790,9 @@ public interface Match extends Iterable<Element> {
      * <p>
      * jOOX is namespace-unaware. The supplied attribute name will be compared
      * against all attributes, matching the first one that has the given name.
+     * An attribute whose qualified name (e.g. <code>xlink:href</code>) equals
+     * the supplied name takes precedence over attributes whose local name
+     * (e.g. <code>href</code>) equals the supplied name.
      */
     List<String> attrs(String name);
 
@@ -1793,6 +1802,9 @@ public interface Match extends Iterable<Element> {
      * <p>
      * jOOX is namespace-unaware. The supplied attribute name will be compared
      * against all attributes, matching the first one that has the given name.
+     * An attribute whose qualified name (e.g. <code>xlink:href</code>) equals
+     * the supplied name takes precedence over attributes whose local name
+     * (e.g. <code>href</code>) equals the supplied name.
      *
      * @see JOOX#convert(String, Class)
      */

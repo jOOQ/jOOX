@@ -1138,6 +1138,40 @@ public class JOOXTest {
     }
 
     @Test
+    public void testAttrWithNamespacePrefix() throws Exception {
+        Match x = $("<r xmlns:xlink='http://www.w3.org/1999/xlink'><i xlink:href='u' href='plain'/><j xlink:href='v'/></r>");
+
+        // Reading by qualified name
+        assertEquals("u", x.find("i").attr("xlink:href"));
+        assertEquals(asList("u", "v"), x.find("i, j").attrs("xlink:href"));
+        assertEquals(1, x.find("i").filter(JOOX.attr("xlink:href", "u")).size());
+
+        // Reading by local name still works, exact matches take precedence
+        assertEquals("plain", x.find("i").attr("href"));
+        assertEquals("v", x.find("j").attr("href"));
+
+        // Writing by qualified name, using the namespace declared in the document
+        Match k = $("<r xmlns:xlink='http://www.w3.org/1999/xlink'><k/></r>").find("k");
+        k.attr("xlink:href", "w");
+        assertEquals("w", k.attr("xlink:href"));
+        assertEquals("http://www.w3.org/1999/xlink", k.get(0).getAttributeNodeNS("http://www.w3.org/1999/xlink", "href").getNamespaceURI());
+        assertEquals("<k xlink:href=\"w\"/>", k.toString().replaceAll(" xmlns:xlink=\"[^\"]*\"", ""));
+
+        // Overwriting and removing by qualified name
+        k.attr("xlink:href", "w2");
+        assertEquals(asList("xlink:href"), new ArrayList<>(k.attrNames()));
+        assertEquals("w2", k.attr("xlink:href"));
+        k.removeAttr("xlink:href");
+        assertNull(k.attr("xlink:href"));
+
+        // Writing by qualified name, using a namespace registered with jOOX
+        Match l = $("<r><l/></r>").find("l").namespace("p", "urn:p");
+        l.attr("p:a", "1");
+        assertEquals("urn:p", l.get(0).getAttributeNodeNS("urn:p", "a").getNamespaceURI());
+        assertEquals("1", $(l.toString()).attr("p:a"));
+    }
+
+    @Test
     public void testAttrFilter() throws Exception {
         assertEquals(35, $.find().filter(attr(null)).size());
         assertEquals(35, $.find().filter(attr("")).size());

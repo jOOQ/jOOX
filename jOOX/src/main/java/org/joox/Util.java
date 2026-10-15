@@ -174,6 +174,16 @@ class Util {
     static final String attr(Element element, String name, boolean ignoreNamespace) {
         NamedNodeMap attributes = element.getAttributes();
 
+        // An attribute whose qualified name matches exactly takes precedence.
+        // This also allows for reading prefixed attributes, e.g. xlink:href
+        Node exact = attributes.getNamedItem(name);
+        if (exact != null)
+            return exact.getNodeValue();
+
+        // A prefixed name can only match exactly
+        if (!ignoreNamespace || getNamespace(name) != null)
+            return null;
+
         for (int i = 0; i < attributes.getLength(); i++) {
             String localName = attributes.item(i).getNodeName();
 
