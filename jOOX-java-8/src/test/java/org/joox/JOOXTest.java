@@ -377,6 +377,16 @@ public class JOOXTest {
     }
 
     @Test
+    public void testFindStarRemovesDuplicates() throws Exception {
+        Match x = $("<r><a><b><c/></b></a></r>");
+
+        assertEquals(asList("a", "b", "c"), x.find("*").tags());
+        assertEquals(asList("b", "c"), x.find("*").find("*").tags());
+        assertEquals(x.find().find(), x.find("*").find("*"));
+        assertEquals(x.find("*"), x.find("*").find("*").andSelf());
+    }
+
+    @Test
     public void testFindCSS() {
 
         // Combinator tests
