@@ -678,6 +678,38 @@ public class JOOXTest {
     }
 
     @Test
+    public void testFindCSSNthChildFormulas() throws Exception {
+        Match x = $("<r><i id='1'/><i id='2'/><i id='3'/><i id='4'/><i id='5'/></r>");
+
+        assertEquals(asList("1", "3", "5"), x.find("i:nth-child(odd)").ids());
+        assertEquals(asList("2", "4"), x.find("i:nth-child(even)").ids());
+        assertEquals(asList("1", "3", "5"), x.find("i:nth-child(2n+1)").ids());
+        assertEquals(asList("2", "4"), x.find("i:nth-child(2n)").ids());
+        assertEquals(asList("3", "5"), x.find("i:nth-child(2n+3)").ids());
+        assertEquals(asList("1", "3", "5"), x.find("i:nth-child(2n-1)").ids());
+        assertEquals(asList("3", "4", "5"), x.find("i:nth-child(n+3)").ids());
+        assertEquals(asList("1", "2"), x.find("i:nth-child(-n+2)").ids());
+        assertEquals(asList("1", "4"), x.find("i:nth-child(-3n+4)").ids());
+        assertEquals(asList("3"), x.find("i:nth-child(3)").ids());
+        assertEquals(asList("5"), x.find("i:nth-last-child(1)").ids());
+        assertEquals(asList("2", "4"), x.find("i:nth-last-child(even)").ids());
+        assertEquals(asList("4", "5"), x.find("i:nth-last-child(-n+2)").ids());
+    }
+
+    @Test
+    public void testFindCSSUnsupportedPseudoClasses() throws Exception {
+        Match x = $("<r><i/><i/></r>");
+
+        for (String selector : asList("i:last-of-type", "i:hover", "i:nth-of-type(2)", "i:first-of-type:not(i)")) {
+            try {
+                x.find(selector);
+                fail("Selector should not be supported: " + selector);
+            }
+            catch (UnsupportedOperationException expected) {}
+        }
+    }
+
+    @Test
     public void testFindFilter() throws Exception {
         assertEquals(0, $.find(JOOX.none()).size());
         assertEquals(totalElements, $.find().size());
