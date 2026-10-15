@@ -30,6 +30,7 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -1382,6 +1383,56 @@ public class JOOXTest {
             asList(1, 2, 3, 4, 1, 3, 1, 2),
             $.find("library").transform(JOOXTest.class.getResource("/book-id-decrement.xsl")).find("book").ids(Integer.class));
         assertEquals($(xmlExampleString).toString(), $.toString());
+    }
+
+    @Test
+    public void testTransformEmptyResult() throws Exception {
+        String stylesheet = "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">"
+                          + "<xsl:template match=\"/\"/>"
+                          + "</xsl:stylesheet>";
+
+        Match result = $.transform(new StringReader(stylesheet));
+
+        assertTrue(result.isEmpty());
+        assertNull(xmlExampleDocument.getDocumentElement());
+    }
+
+    @Test
+    public void testTransformWithEmptyAndNonEmptyResults() throws Exception {
+        Match books = $("<books><book id=\"1\"/><book id=\"2\"/><book id=\"3\"/></books>");
+        String stylesheet = "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">"
+                          + "<xsl:template match=\"book[@id = 2]\"><xsl:copy-of select=\".\"/></xsl:template>"
+                          + "<xsl:template match=\"book\"/>"
+                          + "</xsl:stylesheet>";
+
+        Match result = books.find("book").transform(new StringReader(stylesheet));
+
+        assertEquals(asList(2), result.ids(Integer.class));
+        assertEquals("<books><book id=\"2\"/></books>", books.toString());
+    }
+
+    @Test
+    public void testTransformUnsupportedResultRetainsOriginal() throws Exception {
+        for (String template : asList(
+            "<xsl:template match=\"root\"><xsl:comment>keep me</xsl:comment></xsl:template>",
+            "<xsl:template match=\"root\"><xsl:processing-instruction name=\"keep\">me</xsl:processing-instruction></xsl:template>",
+            "<xsl:output method=\"text\"/><xsl:template match=\"root\">keep me</xsl:template>"
+        )) {
+            Match original = $("<root/>");
+            Element root = original.document().getDocumentElement();
+            String stylesheet = "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">"
+                              + template
+                              + "</xsl:stylesheet>";
+
+            try {
+                original.transform(new StringReader(stylesheet));
+                fail("A non-empty result without an element must not be discarded");
+            }
+            catch (RuntimeException expected) {}
+
+            assertEquals(root, original.document().getDocumentElement());
+            assertEquals("<root/>", original.toString());
+        }
     }
 
     @Test
