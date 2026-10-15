@@ -13,6 +13,7 @@
  */
 package org.joox.selector;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -104,69 +105,42 @@ public final class CSS2XPath {
                                     sb.append(a.getName());
                                 }
                                 else {
+                                    String name = a.getName();
+                                    String value = a.getValue();
+
                                     switch (a.getMatch()) {
                                         case EXACT: {
-                                            sb.append("@");
-                                            sb.append(a.getName());
-                                            sb.append("='");
-                                            sb.append(a.getValue().replace("'", "\\'"));
-                                            sb.append("'");
+                                            sb.append("@").append(name).append("=").append(literal(value));
                                             break;
                                         }
 
                                         case CONTAINS: {
-                                            sb.append("contains(@");
-                                            sb.append(a.getName());
-                                            sb.append(", '");
-                                            sb.append(a.getValue().replace("'", "\\'"));
-                                            sb.append("')");
+                                            sb.append("contains(@").append(name).append(", ").append(literal(value)).append(")");
                                             break;
                                         }
 
                                         case HYPHEN: {
-                                            sb.append("@");
-                                            sb.append(a.getName());
-                                            sb.append("='");
-                                            sb.append(a.getValue().replace("'", "\\'"));
-                                            sb.append("' or starts-with(@");
-                                            sb.append(a.getName());
-                                            sb.append(", '");
-                                            sb.append(a.getValue().replace("'", "\\'"));
-                                            sb.append("-')");
+                                            sb.append("@").append(name).append("=").append(literal(value));
+                                            sb.append(" or starts-with(@").append(name).append(", ").append(literal(value + "-")).append(")");
                                             break;
                                         }
 
                                         case PREFIX: {
-                                            sb.append("starts-with(@");
-                                            sb.append(a.getName());
-                                            sb.append(", '");
-                                            sb.append(a.getValue().replace("'", "\\'"));
-                                            sb.append("')");
+                                            sb.append("starts-with(@").append(name).append(", ").append(literal(value)).append(")");
                                             break;
                                         }
 
                                         case SUFFIX: {
-                                            endsWith(sb, a.getName(), a.getValue());
+                                            endsWith(sb, name, value);
                                             break;
                                         }
 
                                         case LIST: {
-                                            sb.append("@");
-                                            sb.append(a.getName());
-                                            sb.append("='");
-                                            sb.append(a.getValue().replace("'", "\\'"));
-                                            sb.append("' or starts-with(@");
-                                            sb.append(a.getName());
-                                            sb.append(", '");
-                                            sb.append(a.getValue().replace("'", "\\'"));
-                                            sb.append(" ')");
+                                            sb.append("@").append(name).append("=").append(literal(value));
+                                            sb.append(" or starts-with(@").append(name).append(", ").append(literal(value + " ")).append(")");
                                             sb.append(" or ");
-                                            endsWith(sb, a.getName(), " " + a.getValue());
-                                            sb.append(" or contains(@");
-                                            sb.append(a.getName());
-                                            sb.append(", ' ");
-                                            sb.append(a.getValue().replace("'", "\\'"));
-                                            sb.append(" ')");
+                                            endsWith(sb, name, " " + value);
+                                            sb.append(" or contains(@").append(name).append(", ").append(literal(" " + value + " ")).append(")");
                                             break;
                                         }
                                     }
@@ -231,15 +205,43 @@ public final class CSS2XPath {
      * <code>$str2 = substring($str1, string-length($str1) - string-length($str2) + 1)</code>
      */
     private static void endsWith(StringBuilder sb, String attr, String value) {
-        sb.append("'");
-        sb.append(value.replace("'", "\\'"));
-        sb.append("' = substring(@");
+        sb.append(literal(value));
+        sb.append(" = substring(@");
         sb.append(attr);
         sb.append(", string-length(@");
         sb.append(attr);
-        sb.append(") - string-length('");
-        sb.append(value.replace("'", "\\'"));
-        sb.append("') + 1)");
+        sb.append(") - string-length(");
+        sb.append(literal(value));
+        sb.append(") + 1)");
+    }
+
+    /**
+     * Render a string as an XPath 1.0 string literal.
+     * <p>
+     * XPath 1.0 has no escape sequences for quotes, so a literal containing
+     * apostrophes has to be delimited by double quotes, and a literal
+     * containing both kinds of quotes has to be built with
+     * <code>concat()</code>.
+     */
+    static String literal(String value) {
+        if (value.indexOf('\'') < 0)
+            return "'" + value + "'";
+        else if (value.indexOf('"') < 0)
+            return "\"" + value + "\"";
+
+        // Both quote types are contained: concat('a', "'", 'b"c')
+        // There are at least two arguments, as required by concat()
+        List<String> parts = new ArrayList<>();
+        String[] split = value.split("'", -1);
+
+        for (int i = 0; i < split.length; i++) {
+            if (i > 0)
+                parts.add("\"'\"");
+            if (!split[i].isEmpty())
+                parts.add("'" + split[i] + "'");
+        }
+
+        return "concat(" + String.join(", ", parts) + ")";
     }
 
 }

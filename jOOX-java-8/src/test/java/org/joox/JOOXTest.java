@@ -626,6 +626,19 @@ public class JOOXTest {
     }
 
     @Test
+    public void testFindCSSAttributeValuesWithQuotes() throws Exception {
+        Match x = $("<r><a t=\"it's\"/><a t='say &quot;hi&quot;'/><a t=\"it's &quot;x&quot;\"/><a t='x y'/></r>");
+
+        assertEquals(1, x.find("a[t=\"it's\"]").size());
+        assertEquals(1, x.find("a[t='say \"hi\"']").size());
+        assertEquals(2, x.find("a[t*=\"'s\"]").size());
+        assertEquals(2, x.find("a[t^=\"it'\"]").size());
+        assertEquals(1, x.find("a[t$='\"hi\"']").size());
+        assertEquals(2, x.find("a[t~=\"it's\"]").size());
+        assertEquals(1, x.find("a[t|=\"it's\"]").size());
+    }
+
+    @Test
     public void testFindCSSNthChild() {
         assertEquals("Charles Bronson", $.find("actor:nth-child(1)").text());
         assertEquals("Jason Robards", $.find("actor:nth-child(2)").text());
