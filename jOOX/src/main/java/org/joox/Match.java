@@ -1740,7 +1740,9 @@ public interface Match extends Iterable<Element> {
     Match wrap(Content parent);
 
     /**
-     * Removes all elements in the set of matched elements from their parents
+     * Removes the parents of all elements in the set of matched elements,
+     * leaving the matched elements (and any siblings they may have) in their
+     * place.
      * <p>
      * The resulting set of matched elements contains the newly unwrapped
      * elements
