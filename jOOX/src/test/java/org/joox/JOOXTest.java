@@ -41,6 +41,7 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Queue;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -815,6 +816,26 @@ public class JOOXTest {
         assertEquals(0.0f, $.find("name").eq(1).text(float.class), 0.0f);
         assertEquals(0.0, $.find("name").eq(1).text(double.class), 0.0);
         assertFalse($.find("name").eq(1).text(boolean.class));
+    }
+
+    @Test
+    public void testConvertBooleanIndependentOfLocale() throws Exception {
+        Locale locale = Locale.getDefault();
+
+        try {
+
+            // In the Turkish locale, "I".toLowerCase() is a dotless i
+            Locale.setDefault(new Locale("tr", "TR"));
+
+            assertEquals(Boolean.FALSE, JOOX.convert("DISABLED", Boolean.class));
+            assertEquals(Boolean.TRUE, JOOX.convert("ENABLED", Boolean.class));
+            assertEquals(Boolean.TRUE, JOOX.convert("YES", Boolean.class));
+            assertFalse(JOOX.convert("DISABLED", boolean.class));
+            assertEquals(asList(false, true), asList(JOOX.convert("DISABLED,ON", Boolean[].class)));
+        }
+        finally {
+            Locale.setDefault(locale);
+        }
     }
 
     @Test

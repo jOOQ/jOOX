@@ -34,6 +34,7 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -1126,7 +1127,7 @@ public final class JOOX {
 
         // Booleans have a set of allowed values
         else if (type == Boolean.class || type == boolean.class) {
-            String s = value.toLowerCase();
+            String s = value.toLowerCase(Locale.ROOT);
 
             if (TRUE_VALUES.contains(s)) {
                 return (T) Boolean.TRUE;
