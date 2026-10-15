@@ -48,6 +48,20 @@ class PseudoNthSpecifier implements Specifier {
     }
 
     /**
+     * Get the parsed <em>a</em> value of the <em>an+b</em> argument.
+     */
+    int getA() {
+        return a;
+    }
+
+    /**
+     * Get the parsed <em>b</em> value of the <em>an+b</em> argument.
+     */
+    int getB() {
+        return b;
+    }
+
+    /**
      * Get the {@code nth-*} pseudo-class value.
      *
      * @return The value.

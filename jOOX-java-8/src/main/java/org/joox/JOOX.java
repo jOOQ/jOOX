@@ -411,6 +411,16 @@ public final class JOOX {
      * <td>an E element, only child of its parent</td>
      * </tr>
      * <tr>
+     * <td>E:nth-child(an+b)</td>
+     * <td>an E element, the n-th child of its parent (also <code>odd</code>,
+     * <code>even</code>, and formulas like <code>2n+1</code>)</td>
+     * </tr>
+     * <tr>
+     * <td>E:nth-last-child(an+b)</td>
+     * <td>an E element, the n-th child of its parent, counting from the last
+     * one</td>
+     * </tr>
+     * <tr>
      * <td>E:empty</td>
      * <td>an E element that has no children (including text nodes)</td>
      * </tr>
@@ -439,6 +449,9 @@ public final class JOOX {
      * <td>an F element preceded by an E element</td>
      * </tr>
      * </table>
+     * <p>
+     * Other pseudo-classes are not supported and cause an
+     * {@link UnsupportedOperationException}.
      * <p>
      * Note that due to the presence of pseudo selectors, such as
      * <code>:root</code>, <code>:empty</code>, etc, namespaces are not

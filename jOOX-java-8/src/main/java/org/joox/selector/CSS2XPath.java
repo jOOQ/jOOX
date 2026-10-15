@@ -187,24 +187,53 @@ public final class CSS2XPath {
                                 sb.append("[not(preceding-sibling::*) and not(following-sibling::*)]");
                             else if ("root".equals(value))
                                 sb.append("[not(parent::*)]");
+
+                            // Ignoring unsupported pseudo-classes would produce wrong results
+                            else
+                                throw unsupported(":" + value);
                         }
                         else if (specifier instanceof PseudoNthSpecifier) {
                             PseudoNthSpecifier p = ((PseudoNthSpecifier) specifier);
                             String value = p.getValue();
 
-                            if ("nth-child".equals(value)) {
-                                sb.append("[count(preceding-sibling::*) = ");
-                                sb.append(p.getArgument());
-                                sb.append(" - 1]");
-                            }
-
-                            // TODO: Implement this...?
+                            if ("nth-child".equals(value))
+                                nth(sb, "preceding-sibling", p.getA(), p.getB());
+                            else if ("nth-last-child".equals(value))
+                                nth(sb, "following-sibling", p.getA(), p.getB());
+                            else
+                                throw unsupported(":" + value + "(" + p.getArgument() + ")");
+                        }
+                        else {
+                            throw unsupported(specifier.toString());
                         }
                         break;
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Append a predicate matching the <em>an+b</em> formula of an
+     * <code>:nth-child()</code> or <code>:nth-last-child()</code> pseudo-class,
+     * i.e. the element's 1-based position among its sibling elements (counted
+     * along <code>axis</code>) must be <em>an+b</em> for some <em>n &gt;= 0</em>.
+     */
+    private static void nth(StringBuilder sb, String axis, int a, int b) {
+        String position = "(count(" + axis + "::*) + 1)";
+
+        if (a == 0)
+            sb.append("[").append(position).append(" = ").append(b).append("]");
+        else if (a > 0)
+            sb.append("[").append(position).append(" >= ").append(b)
+              .append(" and (").append(position).append(" - (").append(b).append(")) mod ").append(a).append(" = 0]");
+        else
+            sb.append("[").append(position).append(" <= ").append(b)
+              .append(" and ((").append(b).append(") - ").append(position).append(") mod ").append(-a).append(" = 0]");
+    }
+
+    private static UnsupportedOperationException unsupported(String what) {
+        return new UnsupportedOperationException("CSS selector not supported by jOOX: " + what);
     }
 
     /**
