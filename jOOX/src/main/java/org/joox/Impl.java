@@ -52,6 +52,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import jakarta.xml.bind.JAXB;
+import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.transform.OutputKeys;
@@ -1257,10 +1258,48 @@ class Impl implements Match {
             if (value == null)
                 match.removeAttribute(name);
             else
-                match.setAttribute(name, value);
+                setAttribute(match, name, value);
         }
 
         return this;
+    }
+
+    /**
+     * Set an attribute, using the DOM Level 2 API for prefixed names whose
+     * namespace URI can be resolved. Otherwise, the attribute is not
+     * well-formed in a namespace-aware document and cannot be serialised.
+     */
+    private final void setAttribute(Element element, String name, String value) {
+        String prefix = getNamespace(name);
+
+        if (prefix != null) {
+            String uri;
+            boolean declare = false;
+
+            if ("xmlns".equals(prefix)) {
+                uri = XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
+            }
+            else if ("xml".equals(prefix)) {
+                uri = XMLConstants.XML_NS_URI;
+            }
+            else {
+                uri = element.lookupNamespaceURI(prefix);
+
+                // Namespaces registered with jOOX need to be declared, too
+                if (uri == null && (uri = namespaces.get(prefix)) != null)
+                    declare = true;
+            }
+
+            if (uri != null) {
+                if (declare)
+                    element.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:" + prefix, uri);
+
+                element.setAttributeNS(uri, name, value);
+                return;
+            }
+        }
+
+        element.setAttribute(name, value);
     }
 
     @Override
