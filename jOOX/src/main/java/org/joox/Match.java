@@ -2147,6 +2147,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Write the set of matched elements into a writer
      * <p>
+     * The writer is flushed, but not closed.
+     * <p>
      * If the set contains more or less than <code>1</code> element, this will
      * result in writing non-well-formed XML
      */
@@ -2155,6 +2157,8 @@ public interface Match extends Iterable<Element> {
     /**
      * Write the set of matched elements into a stream
      * <p>
+     * The content is encoded in UTF-8. The stream is flushed, but not closed.
+     * <p>
      * If the set contains more or less than <code>1</code> element, this will
      * result in writing non-well-formed XML
      */
@@ -2162,6 +2166,8 @@ public interface Match extends Iterable<Element> {
 
     /**
      * Write the set of matched elements into a file
+     * <p>
+     * The content is encoded in UTF-8.
      * <p>
      * If the set contains more or less than <code>1</code> element, this will
      * result in writing non-well-formed XML
