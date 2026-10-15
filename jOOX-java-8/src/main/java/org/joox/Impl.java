@@ -1530,12 +1530,17 @@ class Impl implements Match {
 
     @Override
     public final Impl unwrap() {
-        final int size = size();
 
-        for (int matchIndex = 0; matchIndex < size; matchIndex++) {
-            Element match = get(matchIndex);
+        // Several matched elements may share the same wrapper, which must be
+        // removed only once. Validate all wrappers before modifying anything.
+        Set<Node> wrappers = new LinkedHashSet<>();
+
+        for (Element match : elements) {
             Node wrapper = match.getParentNode();
-            Node parent = wrapper.getParentNode();
+            Node parent = wrapper == null ? null : wrapper.getParentNode();
+
+            if (wrapper == null || parent == null)
+                throw new RuntimeException("Cannot unwrap detached elements or direct children thereof");
 
             // match or wrapper is the document element
             if (wrapper.getNodeType() == Node.DOCUMENT_NODE ||
@@ -1544,7 +1549,18 @@ class Impl implements Match {
                 throw new RuntimeException("Cannot unwrap document element or direct children thereof");
             }
 
-            parent.replaceChild(match, wrapper);
+            wrappers.add(wrapper);
+        }
+
+        // Replace each wrapper by all of its child nodes, not just the matched element
+        for (Node wrapper : wrappers) {
+            Node parent = wrapper.getParentNode();
+            Node child;
+
+            while ((child = wrapper.getFirstChild()) != null)
+                parent.insertBefore(child, wrapper);
+
+            parent.removeChild(wrapper);
         }
 
         return this;

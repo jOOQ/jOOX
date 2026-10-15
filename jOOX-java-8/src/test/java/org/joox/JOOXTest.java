@@ -1236,6 +1236,32 @@ public class JOOXTest {
     }
 
     @Test
+    public void testUnwrapKeepsSiblings() throws Exception {
+
+        // Siblings of the unwrapped element must not be lost
+        Match x1 = $("<r><w><a/><x/><b/>text</w></r>");
+        Match u1 = x1.find("x").unwrap();
+        assertEquals("<r><a/><x/><b/>text</r>", x1.toString());
+        assertEquals(asList("x"), u1.tags());
+        assertEquals(asList("r"), u1.parent().tags());
+
+        // Several matched elements sharing the same parent
+        Match x2 = $("<r><w><a/><b/></w><w><c/></w></r>");
+        Match u2 = x2.find("w").children().unwrap();
+        assertEquals("<r><a/><b/><c/></r>", x2.toString());
+        assertEquals(asList("a", "b", "c"), u2.tags());
+
+        // Invalid unwrapping must not partially modify the document
+        Match x3 = $("<r><w><a/></w><b/></r>");
+        try {
+            x3.find("a").add(x3.find("b")).unwrap();
+            fail();
+        }
+        catch (RuntimeException expected) {}
+        assertEquals("<r><w><a/></w><b/></r>", x3.toString());
+    }
+
+    @Test
     public void testText() throws Exception {
         assertNull($.find("any").text());
         assertEquals("Sergio Leone", $.find("director").text());
