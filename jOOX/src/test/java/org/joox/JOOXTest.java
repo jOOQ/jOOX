@@ -651,6 +651,16 @@ public class JOOXTest {
     }
 
     @Test
+    public void testFindCSSOnDetachedElement() throws Exception {
+        Element a = $("<r><a><b><c/></b><c/></a></r>").find("a").get(0);
+        a.getParentNode().removeChild(a);
+
+        assertEquals(asList("c"), $(a).find("b > c").tags());
+        assertEquals(asList("b"), $(a).find("b:first-child").tags());
+        assertEquals(2, $(a).find("c").size());
+    }
+
+    @Test
     public void testMatchXPath() throws Exception {
         assertEquals(totalElements + 1, $.xpath("//*").size());
         assertEquals(totalElements, $.xpath(".//*").size());
