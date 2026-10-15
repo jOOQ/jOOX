@@ -103,13 +103,6 @@ class Impl implements Match {
         this.namespaces = namespaces == null ? new HashMap<>() : new HashMap<>(namespaces);
     }
 
-    final Impl addNodeLists(List<NodeList> lists) {
-        for (NodeList list : lists)
-            addNodeList(list);
-
-        return this;
-    }
-
     final Impl addNodeList(NodeList list) {
         final int length = list.getLength();
 
@@ -467,14 +460,10 @@ class Impl implements Match {
     @Override
     public final Impl find(final String selector) {
 
-        // The * selector is evaluated using the standard DOM API
+        // The * selector is evaluated using the standard DOM API. Matched
+        // elements may be nested, so duplicates have to be removed, as in find()
         if ("*".equals(selector)) {
-            List<NodeList> result = new ArrayList<>();
-
-            for (Element element : elements)
-                result.add(element.getElementsByTagName(selector));
-
-            return new Impl(document, namespaces, this).addNodeLists(result);
+            return find(all());
         }
 
         // Simple selectors are valid XML element names without namespaces. They
