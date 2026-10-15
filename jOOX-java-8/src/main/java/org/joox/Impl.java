@@ -54,6 +54,7 @@ import java.util.regex.Pattern;
 import jakarta.xml.bind.JAXB;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -1838,11 +1839,16 @@ class Impl implements Match {
         // Replace all matched elements by their resulting transformations
         for (int i = 0; i < size(); i++) {
             Element element = get(i);
-            Element result = ((Document) results.get(i).getNode()).getDocumentElement();
+            Document resultDocument = (Document) results.get(i).getNode();
+            Element result = resultDocument.getDocumentElement();
 
-            result = (Element) document().importNode(result, true);
-            element.getParentNode().replaceChild(result, element);
-            newElements.add(result);
+            if (!resultDocument.hasChildNodes() && !"text".equals(transformer.getOutputProperty(OutputKeys.METHOD)))
+                element.getParentNode().removeChild(element);
+            else {
+                result = (Element) document().importNode(result, true);
+                element.getParentNode().replaceChild(result, element);
+                newElements.add(result);
+            }
         }
 
         return new Impl(document, namespaces).addElements(newElements);
