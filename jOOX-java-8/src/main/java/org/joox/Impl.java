@@ -36,6 +36,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1770,23 +1771,28 @@ class Impl implements Match {
 
     @Override
     public final Match write(Writer writer) throws IOException {
-        try (Writer w = writer) {
-            for (Element e : this)
-                writer.write(JOOX.$(e).toString());
-        }
 
+        // The writer is owned by the caller, so it is flushed, but not closed
+        for (Element e : this)
+            writer.write(JOOX.$(e).toString());
+
+        writer.flush();
         return this;
     }
 
     @Override
     public final Match write(OutputStream stream) throws IOException {
-        return write(new OutputStreamWriter(stream));
+
+        // Without XML declaration, the XML default encoding UTF-8 must be used.
+        // The stream is owned by the caller, so the writer is not closed
+        return write(new OutputStreamWriter(stream, StandardCharsets.UTF_8));
     }
 
-    @SuppressWarnings("resource")
     @Override
     public final Match write(File file) throws IOException {
-        return write(new FileOutputStream(file));
+        try (OutputStream stream = new FileOutputStream(file)) {
+            return write(stream);
+        }
     }
 
     @Override

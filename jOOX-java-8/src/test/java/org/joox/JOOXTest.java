@@ -30,8 +30,10 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.file.Files;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -1871,6 +1873,45 @@ public class JOOXTest {
         writer = new StringWriter();
         $.find("author").slice(0, 2).write(writer);
         assertEquals("<author>George Orwell</author><author>George Orwell</author>", writer.toString());
+    }
+
+    @Test
+    public void testWriteDoesNotCloseCallerResources() throws Exception {
+        Match m = $("<a>é€</a>");
+
+        // Writers and streams passed by the caller are flushed, not closed
+        final boolean[] closed = { false, false };
+        StringWriter writer = new StringWriter() {
+            @Override
+            public void close() throws IOException {
+                closed[0] = true;
+                super.close();
+            }
+        };
+        ByteArrayOutputStream stream = new ByteArrayOutputStream() {
+            @Override
+            public void close() throws IOException {
+                closed[1] = true;
+                super.close();
+            }
+        };
+
+        m.write(writer).write(writer);
+        m.write(stream).write(stream);
+        assertFalse(closed[0]);
+        assertFalse(closed[1]);
+        assertEquals("<a>é€</a><a>é€</a>", writer.toString());
+
+        // Streams are written in UTF-8, the default encoding of XML documents
+        // without an XML declaration, independently of the platform encoding
+        assertEquals("<a>é€</a><a>é€</a>", new String(stream.toByteArray(), "UTF-8"));
+
+        // Files are written in UTF-8 and closed
+        File file = File.createTempFile("joox", ".xml");
+        file.deleteOnExit();
+        m.write(file);
+        assertEquals("<a>é€</a>", new String(Files.readAllBytes(file.toPath()), "UTF-8"));
+        assertTrue(file.delete());
     }
 
     @Test
