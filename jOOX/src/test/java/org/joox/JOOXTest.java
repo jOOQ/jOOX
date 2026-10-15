@@ -1582,6 +1582,22 @@ public class JOOXTest {
     }
 
     @Test
+    public void testPrependSeveralElementsKeepsOrder() throws Exception {
+        Match x1 = $("<r><z/></r>");
+        x1.prepend($("a"), $("b"), $("c"));
+        assertEquals("<r><a/><b/><c/><z/></r>", x1.toString());
+
+        Match x2 = $("<r><s><z/></s><s/></r>");
+        x2.find("s").prepend($("a"), $("b"));
+        assertEquals("<r><s><a/><b/><z/></s><s><a/><b/></s></r>", x2.toString());
+
+        // Consistent with prepend(String)
+        Match x3 = $("<r><z/></r>");
+        x3.prepend("<a/><b/>");
+        assertEquals("<r><a/><b/><z/></r>", x3.toString());
+    }
+
+    @Test
     public void testReplaceWith() throws Exception {
         assertEquals(
             "best-director-in-the-world",

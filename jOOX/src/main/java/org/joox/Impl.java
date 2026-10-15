@@ -1186,10 +1186,13 @@ class Impl implements Match {
         List<Element> detached = Util.importOrDetach(document, content);
 
         for (int i = 0; i < size; i++) {
-            for (Element e : detached) {
-                Element element = get(i);
-                Node first = element.getFirstChild();
+            Element element = get(i);
 
+            // Insert all content before the original first child to retain
+            // the content's order
+            Node first = element.getFirstChild();
+
+            for (Element e : detached) {
                 if (i == 0)
                     element.insertBefore(e, first);
                 else
