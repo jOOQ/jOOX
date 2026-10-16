@@ -41,6 +41,17 @@
         <finalName>${project.artifactId}-${project.version}</finalName>
 
         <plugins>
+            <!-- New release mechanism: https://central.sonatype.org/publish/publish-portal-maven/ -->
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.11.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>sonatype-nexus-staging</publishingServerId>
+                </configuration>
+            </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
