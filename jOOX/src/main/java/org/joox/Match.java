@@ -2044,6 +2044,8 @@ public interface Match extends Iterable<Element> {
      * Get a copy of the {@link Match} wrapper. This is not a deep-copy of
      * wrapped {@link Element} objects. Both this and the copy will reference
      * the same <code>Element</code>'s
+     *
+     * @see #deepCopy()
      */
     Match copy();
 

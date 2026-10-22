@@ -23,6 +23,7 @@ import static org.joox.JOOX.chain;
 import static org.joox.JOOX.paths;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -2066,8 +2067,8 @@ public class JOOXTest {
         assertEquals(original.toString(), copy.toString());
         assertEquals(2, copy.size());
         for (int i = 0; i < copy.size(); i++) {
-            assertFalse(original.get(i) == copy.get(i));
-            assertFalse(original.get(i).getFirstChild() == copy.get(i).getFirstChild());
+            assertNotSame(original.get(i), copy.get(i));
+            assertNotSame(original.get(i).getFirstChild(), copy.get(i).getFirstChild());
             assertNull(copy.get(i).getParentNode());
         }
         copy.attr("id", "changed").find("value").text("copy");
