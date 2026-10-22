@@ -1712,6 +1712,14 @@ class Impl implements Match {
     }
 
     @Override
+    public final Impl deepCopy() {
+        Impl copy = new Impl(document, namespaces, previousMatch);
+        for (Element element : elements)
+            copy.elements.add((Element) element.cloneNode(true));
+        return copy;
+    }
+
+    @Override
     public final String xpath() {
         return xpath(0);
     }

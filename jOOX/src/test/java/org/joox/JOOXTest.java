@@ -2059,6 +2059,35 @@ public class JOOXTest {
     }
 
     @Test
+    public void testDeepCopy() throws Exception {
+        Match original = $("<root><item id='one'><value>first</value><!--comment--></item>"
+            + "<item id='two'><value>second</value></item></root>").find("item");
+        Match copy = original.deepCopy();
+        assertEquals(original.toString(), copy.toString());
+        assertEquals(2, copy.size());
+        for (int i = 0; i < copy.size(); i++) {
+            assertFalse(original.get(i) == copy.get(i));
+            assertFalse(original.get(i).getFirstChild() == copy.get(i).getFirstChild());
+            assertNull(copy.get(i).getParentNode());
+        }
+        copy.attr("id", "changed").find("value").text("copy");
+        assertEquals(asList("one", "two"), original.attrs("id"));
+        assertEquals(asList("first", "second"), original.find("value").texts());
+        assertEquals(asList("copy", "copy"), copy.find("value").texts());
+        assertEquals(0, $().deepCopy().size());
+    }
+
+    @Test
+    public void testDeepCopyPreservesNamespaceConfiguration() throws Exception {
+        Match original = $("<root xmlns:p='urn:test'><p:item><p:value>old</p:value></p:item></root>")
+            .namespace("x", "urn:test").find("item");
+        Match copy = original.deepCopy();
+        assertEquals("old", copy.xpath("./x:value").text());
+        copy.xpath("./x:value").text("new");
+        assertEquals("old", original.xpath("./x:value").text());
+    }
+
+    @Test
     public void testWrite() throws Exception {
         StringWriter writer = new StringWriter();
         $.write(writer);
