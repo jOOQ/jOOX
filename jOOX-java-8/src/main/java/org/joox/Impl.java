@@ -1356,9 +1356,23 @@ class Impl implements Match {
 
         // The element contains content
         else {
-            // [#151] TODO: Check this code's efficiency
-            String name = element.getTagName();
-            return Util.toString(element).replaceAll("(?s)^<" + name + "(?:[^>]*)>(.*)</" + name + ">$", "$1");
+            // [#151] Remove the serialized outer element without compiling a
+            // regular expression for every call. Ignore '>' inside attributes.
+            String xml = Util.toString(element);
+            char quote = 0;
+            int start = 1;
+            for (; start < xml.length(); start++) {
+                char c = xml.charAt(start);
+                if (quote != 0) {
+                    if (c == quote)
+                        quote = 0;
+                }
+                else if (c == '\'' || c == '"')
+                    quote = c;
+                else if (c == '>')
+                    break;
+            }
+            return xml.substring(start + 1, xml.lastIndexOf('<'));
         }
     }
 
