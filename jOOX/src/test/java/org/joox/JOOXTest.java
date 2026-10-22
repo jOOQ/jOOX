@@ -2059,6 +2059,14 @@ public class JOOXTest {
     }
 
     @Test
+    public void testMixedContentWithOuterAttributes() throws Exception {
+        String content = "before<child>inside</child><!--comment--><![CDATA[a < b]]><?target value?>after";
+        assertEquals(content, $("<a.b data=\"&gt; &quot; &amp;\">" + content + "</a.b>").content());
+        assertEquals("<child><nested/></child>", $("<root><child><nested/></child></root>").content());
+        assertEquals("<!--only-->", $("<root><!--only--></root>").content());
+    }
+
+    @Test
     public void testWrite() throws Exception {
         StringWriter writer = new StringWriter();
         $.write(writer);
