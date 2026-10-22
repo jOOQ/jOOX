@@ -2165,7 +2165,7 @@ public interface Match extends Iterable<Element> {
     Match write(OutputStream stream) throws IOException;
 
     /**
-     * Write the set of matched elements into a file
+     * Write the set of matched elements into a file, creating missing parent directories
      * <p>
      * The content is encoded in UTF-8.
      * <p>

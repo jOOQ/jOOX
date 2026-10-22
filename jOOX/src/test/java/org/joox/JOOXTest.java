@@ -2084,6 +2084,38 @@ public class JOOXTest {
     }
 
     @Test
+    public void testWriteCreatesParentDirectories() throws Exception {
+        File root = Files.createTempDirectory("joox-write").toFile();
+        File parent = new File(root, "one/two");
+        File output = new File(parent, "result.xml");
+        try {
+            Match match = $("<root>é</root>");
+            assertEquals(match, match.write(output));
+            assertEquals("<root>é</root>", new String(Files.readAllBytes(output.toPath()), "UTF-8"));
+            match.write(output);
+        }
+        finally {
+            output.delete();
+            parent.delete();
+            parent.getParentFile().delete();
+            root.delete();
+        }
+    }
+
+    @Test
+    public void testWriteRejectsNonDirectoryParent() throws Exception {
+        File parent = File.createTempFile("joox-write", ".tmp");
+        try {
+            $("<root/>").write(new File(parent, "result.xml"));
+            fail("A regular file cannot contain an output file");
+        }
+        catch (IOException expected) {}
+        finally {
+            parent.delete();
+        }
+    }
+
+    @Test
     public void testWriteDoesNotCloseCallerResources() throws Exception {
         Match m = $("<a>é€</a>");
 
