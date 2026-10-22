@@ -2044,8 +2044,23 @@ public interface Match extends Iterable<Element> {
      * Get a copy of the {@link Match} wrapper. This is not a deep-copy of
      * wrapped {@link Element} objects. Both this and the copy will reference
      * the same <code>Element</code>'s
+     *
+     * @see #deepCopy()
      */
     Match copy();
+
+    /**
+     * Get a copy of this wrapper with deep copies of all matched elements.
+     * <p>
+     * Each copied element includes its attributes and descendants and is
+     * detached from its parent. Copies retain their owner document and this
+     * wrapper's namespace configuration. Changing a copied element does not
+     * change the original element.
+     *
+     * @see #copy()
+     * @see Node#cloneNode(boolean)
+     */
+    Match deepCopy();
 
     /**
      * Get a list of XPath expressions describing the elements in the current
