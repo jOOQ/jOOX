@@ -37,6 +37,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1841,6 +1842,10 @@ class Impl implements Match {
 
     @Override
     public final Match write(File file) throws IOException {
+        File parent = file.getAbsoluteFile().getParentFile();
+        if (parent != null)
+            Files.createDirectories(parent.toPath());
+
         try (OutputStream stream = new FileOutputStream(file)) {
             return write(stream);
         }
